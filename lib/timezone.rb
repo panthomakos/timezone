@@ -62,7 +62,7 @@ class Timezone
     
     raise Error::NilZone, 'No zone was found. Please specify a zone.' if options[:zone].nil?
     
-    file = File.join 'data', "#{options[:zone]}.json"
+    file = File.join File.expand_path(File.dirname(__FILE__)+'/../data'), "#{options[:zone]}.json"
     raise Error::InvalidZone, "'#{options[:zone]}' is not a valid zone." unless File.exists?(file)
 
     data = JSON.parse(open(file).read)
