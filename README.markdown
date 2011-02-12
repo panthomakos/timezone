@@ -1,6 +1,6 @@
 # Timezone
 
-A simple way to get accurate current and historical timezone information based on zone or latitude and longitude coordinates. This gem uses the tz database (http://www.twinsun.com/tz/tz-link.htm) for historical timezone information. It also uses the geonames API for timezone latitude and longitude lookup (http://www.geonames.org/export/web-services.html).
+A simple way to get accurate current and historical timezone information based on zone or latitude and longitude coordinates. This gem uses the [tz database](http://www.twinsun.com/tz/tz-link.htm) for historical timezone information. It also uses the [geonames API](http://www.geonames.org/export/web-services.html) for timezone latitude and longitude lookup.
 
 ## Installation
 
