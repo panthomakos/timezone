@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.authors     = ["Pan Thomakos"]
   s.email       = ["pan.thomakos@gmail.com"]
   s.homepage    = "http://github.com/panthomakos/timezone"
-  s.summary     = "sham-#{Sham::VERSION}"
+  s.summary     = "timezone-#{Timezone::VERSION}"
   s.description = %q{A simple way to get accurate current and historical timezone information based on zone or latitude and longitude coordinates. This gem uses the tz database (http://www.twinsun.com/tz/tz-link.htm) for historical timezone information. It also uses the geonames API for timezone latitude and longitude lookup (http://www.geonames.org/export/web-services.html).}
 
   s.rubyforge_project = "timezone"
