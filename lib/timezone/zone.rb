@@ -1,3 +1,10 @@
+require 'json'
+require 'date'
+require 'time'
+require 'net/http'
+require 'timezone/error'
+require 'timezone/configure'
+
 module Timezone
   class Zone
     attr_accessor :rules, :zone

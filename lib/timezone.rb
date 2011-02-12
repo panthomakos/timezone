@@ -1,6 +1,3 @@
-require 'json'
-require 'date'
-require 'time'
-require 'net/http'
+require File.expand_path('../timezone/zone', __FILE__)
 
 module Timezone; end
