@@ -33,6 +33,7 @@ class TimezoneTest < Test::Unit::TestCase
   def test_getting_utc_offset
     assert_equal 36000, Timezone::Zone.new(:zone => 'Australia/Sydney').utc_offset
     assert_equal -28800, Timezone::Zone.new(:zone => 'America/Los_Angeles').utc_offset
+    assert_equal 20700, Timezone::Zone.new(:zone => 'Asia/Kathmandu').utc_offset
   end
   
   def test_loading_GMT_timezone
