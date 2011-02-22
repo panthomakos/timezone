@@ -1,7 +1,5 @@
 require File.expand_path(File.dirname(__FILE__) + '/../lib/timezone')
 require File.expand_path(File.dirname(__FILE__) + '/../lib/timezone/zone')
-require File.expand_path(File.dirname(__FILE__) + '/../lib/timezone/error')
-require File.expand_path(File.dirname(__FILE__) + '/../lib/timezone/configure')
 require 'test/unit'
 
 class TimezoneTest < Test::Unit::TestCase
@@ -22,6 +20,19 @@ class TimezoneTest < Test::Unit::TestCase
     assert_raise Timezone::Error::InvalidZone do
       Timezone::Zone.new :zone => 'Foo/Bar'
     end
+  end
+  
+  def time_timezone_equivalence
+    gmt = Timezone::Zone.new :zone => 'GMT'
+    australia = Timezone::Zone.new :zone => 'Australia/Sydney'
+    assert gmt == gmt
+    assert gmt <= australia
+    assert gmt < australia
+  end
+  
+  def test_getting_utc_offset
+    assert_equal 36000, Timezone::Zone.new(:zone => 'Australia/Sydney').utc_offset
+    assert_equal -28800, Timezone::Zone.new(:zone => 'America/Los_Angeles').utc_offset
   end
   
   def test_loading_GMT_timezone

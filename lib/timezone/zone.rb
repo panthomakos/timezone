@@ -2,11 +2,12 @@ require 'json'
 require 'date'
 require 'time'
 require 'net/http'
-require 'timezone/error'
-require 'timezone/configure'
+require File.expand_path(File.dirname(__FILE__) + '/error')
+require File.expand_path(File.dirname(__FILE__) + '/configure')
 
 module Timezone
   class Zone
+    include Comparable
     attr_accessor :rules, :zone
     
     # Create a new Timezone object.
@@ -51,7 +52,18 @@ module Timezone
       rule = rules.detect{ |rule| _parsetime(rule['_from']) <= reference && _parsetime(rule['_to']) >= reference }
       reference + rule['offset']
     end
-
+    
+    # Get the current UTC offset in seconds for this timezone.
+    #
+    #   timezone.utc_offset
+    def utc_offset
+      @rules.last['offset']-(@rules.last['dst'] ? 3600 : 0)
+    end
+    
+    def <=> zone #:nodoc:
+      utc_offset <=> zone.utc_offset
+    end
+    
     private
 
     def timezone_id lat, lon #:nodoc:
