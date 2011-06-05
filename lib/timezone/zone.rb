@@ -9,9 +9,9 @@ module Timezone
   class Zone
     include Comparable
     attr_accessor :rules, :zone
-    
+
     # Create a new Timezone object.
-    # 
+    #
     #   Timezone.new(options)
     #
     # :zone       - The actual name of the zone. For example, Australia/Sydney or Americas/Los_Angeles.
@@ -48,23 +48,26 @@ module Timezone
     # offset in the timezone rules. Once the offset has been found that offset is added to the reference UTC time
     # to calculate the reference time in the timezone.
     def time reference
-      reference = reference.utc
-      rule = rules.detect{ |rule| _parsetime(rule['_from']) <= reference && _parsetime(rule['_to']) >= reference }
-      reference + rule['offset']
+      reference.utc + rule_for_reference(reference)['offset']
     end
-    
+
     # Get the current UTC offset in seconds for this timezone.
     #
-    #   timezone.utc_offset
-    def utc_offset
-      @rules.last['offset']-(@rules.last['dst'] ? 3600 : 0)
+    #   timezone.utc_offset(reference)
+    def utc_offset reference=Time.now
+      rule_for_reference(reference)['offset']
     end
-    
+
     def <=> zone #:nodoc:
       utc_offset <=> zone.utc_offset
     end
-    
+
     private
+
+    def rule_for_reference reference
+      reference = reference.utc
+      rules.detect{ |rule| _parsetime(rule['_from']) <= reference && _parsetime(rule['_to']) > reference }
+    end
 
     def timezone_id lat, lon #:nodoc:
       begin
