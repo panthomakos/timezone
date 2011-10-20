@@ -10,7 +10,7 @@ module Timezone
     include Comparable
     attr_accessor :rules, :zone
     
-    DATA_FILES = File.expand_path(File.dirname(__FILE__)+'/../../data')
+    ZONE_FILE_PATH = File.expand_path(File.dirname(__FILE__)+'/../../data')
 
     # Create a new Timezone object.
     #
@@ -39,7 +39,7 @@ module Timezone
     end
     
     def get_zone_data(zone)
-      file = File.join(DATA_FILES, "#{zone}.json")
+      file = File.join(ZONE_FILE_PATH, "#{zone}.json")
       begin 
         return JSON.parse(open(file).read)
       rescue
@@ -51,8 +51,8 @@ module Timezone
       
       # Instantly grab all possible time zone names.
       def zones
-        Dir[File.join(DATA_FILES, "**/**/*.json")].collect do |file|
-          file.gsub("#{DATA_FILES}/", '').gsub(/\.json/, '')
+        Dir[File.join(ZONE_FILE_PATH, "**/**/*.json")].collect do |file|
+          file.gsub("#{ZONE_FILE_PATH}/", '').gsub(/\.json/, '')
         end
       end
       
