@@ -32,25 +32,27 @@ module Timezone
 
       raise Timezone::Error::NilZone, 'No zone was found. Please specify a zone.' if options[:zone].nil?
 
-      data = get_zone_data(options[:zone])
+      data = Zone.get_zone_data(options[:zone])
       
       @rules = data['zone']
       @zone = data['_zone'] || options[:zone]
     end
     
-    def get_zone_data(zone)
-      file = File.join(ZONE_FILE_PATH, "#{zone}.json")
-      begin 
-        return JSON.parse(open(file).read)
-      rescue
-        raise Timezone::Error::InvalidZone, "'#{zone}' is not a valid zone."
-      end
-    end
         
     class << self
       
+      # Retrieve the data from a particular time zone
+      def get_zone_data(zone)
+        file = File.join(ZONE_FILE_PATH, "#{zone}.json")
+        begin 
+          return JSON.parse(open(file).read)
+        rescue
+          raise Timezone::Error::InvalidZone, "'#{zone}' is not a valid zone."
+        end
+      end
+
       # Instantly grab all possible time zone names.
-      def zones
+      def names
         Dir[File.join(ZONE_FILE_PATH, "**/**/*.json")].collect do |file|
           file.gsub("#{ZONE_FILE_PATH}/", '').gsub(/\.json/, '')
         end
