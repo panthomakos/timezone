@@ -9,7 +9,7 @@ module Timezone
   class Zone
     include Comparable
     attr_accessor :rules, :zone
-    
+
     ZONE_FILE_PATH = File.expand_path(File.dirname(__FILE__)+'/../../data')
 
     # Create a new Timezone object.
@@ -33,18 +33,18 @@ module Timezone
       raise Timezone::Error::NilZone, 'No zone was found. Please specify a zone.' if options[:zone].nil?
 
       data = Zone.get_zone_data(options[:zone])
-      
+
       @rules = data['zone']
       @zone = data['_zone'] || options[:zone]
     end
-    
-        
+
+
     class << self
-      
+
       # Retrieve the data from a particular time zone
       def get_zone_data(zone)
         file = File.join(ZONE_FILE_PATH, "#{zone}.json")
-        begin 
+        begin
           return JSON.parse(open(file).read)
         rescue
           raise Timezone::Error::InvalidZone, "'#{zone}' is not a valid zone."
@@ -57,7 +57,7 @@ module Timezone
           file.gsub("#{ZONE_FILE_PATH}/", '').gsub(/\.json/, '')
         end
       end
-      
+
     end
 
     # Determine the time in the timezone.
