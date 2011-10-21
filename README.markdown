@@ -46,5 +46,5 @@ Finally, pass the coordinates to your timezone initialization function.
 
 Retrieving the complete list of timezones is quite simple:
 
-    timezone = Timezone::Zone.names
+    timezones = Timezone::Zone.names
     => ["Africa/Abidjan", "Africa/Accra", "Africa/Addis_Ababa", "Africa/Algiers", ...]
