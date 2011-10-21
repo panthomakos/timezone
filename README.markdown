@@ -41,3 +41,10 @@ Finally, pass the coordinates to your timezone initialization function.
     => "Australia/Adelaide"
     timezone.time Time.now
     => 2011-02-12 12:02:13 UTC
+
+## Getting the complete list of timezones.
+
+Retrieving the complete list of timezones is quite simple:
+
+    timezone = Timezone::Zone.names
+    => ["Africa/Abidjan", "Africa/Accra", "Africa/Addis_Ababa", "Africa/Algiers", ...]
