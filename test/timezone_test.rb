@@ -22,6 +22,13 @@ class TimezoneTest < Test::Unit::TestCase
     end
   end
 
+  def test_timezone_names
+    zones = Timezone::Zone.names
+    assert zones.is_a?(Array)
+    assert zones.count > 0
+    assert zones.include? "Australia/Sydney"
+  end
+
   def time_timezone_equivalence
     gmt = Timezone::Zone.new :zone => 'GMT'
     australia = Timezone::Zone.new :zone => 'Australia/Sydney'
