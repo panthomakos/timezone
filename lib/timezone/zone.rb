@@ -53,11 +53,10 @@ module Timezone
 
       # Instantly grab all possible time zone names.
       def names
-        Dir[File.join(ZONE_FILE_PATH, "**/**/*.json")].collect do |file|
+        @@names ||= Dir[File.join(ZONE_FILE_PATH, "**/**/*.json")].collect do |file|
           file.gsub("#{ZONE_FILE_PATH}/", '').gsub(/\.json/, '')
         end
       end
-
     end
 
     # Determine the time in the timezone.
