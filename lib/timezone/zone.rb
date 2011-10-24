@@ -57,7 +57,7 @@ module Timezone
           file.gsub("#{ZONE_FILE_PATH}/", '').gsub(/\.json/, '')
         end
       end
-            
+      
     end
 
     # Determine the time in the timezone.
