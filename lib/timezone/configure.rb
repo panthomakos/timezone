@@ -31,11 +31,11 @@ module Timezone
     end
     
     def self.default_for_list
-      @@default_infos ||= nil
+      @@default_list ||= nil
     end
     
     def self.default_for_list=(*list)
-      @@default_infos = list.flatten!
+      @@default_list = list.flatten!
     end
     
     def self.order_list_by
