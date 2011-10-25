@@ -30,12 +30,20 @@ module Timezone
       @@replacements
     end
     
-    def self.default_for_info
+    def self.default_for_list
       @@default_infos ||= nil
     end
     
-    def self.default_for_info=(*list)
+    def self.default_for_list=(*list)
       @@default_infos = list.flatten!
+    end
+    
+    def self.order_list_by
+      @@order_by ||= :utc_offset
+    end
+    
+    def self.order_list_by=(order)
+      @@order_by = order
     end
     
   end

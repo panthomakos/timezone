@@ -89,42 +89,28 @@ module Timezone
       # 
       # The result is a Hash of timezones with their title, offset in seconds, UTC offset, and if it uses DST.
       # 
-      def infos(*args)
+      def list(*args)
         args = nil if args.empty? # set to nil if no args are provided
-        zones = args || defaults || self.names # get default list
+        zones = args || Configure.default_for_list || self.names # get default list
         list = self.names.select { |name| zones.include? name } # only select zones if they exist
         
         @zones = []
-        list.each do |name|
-          info = Zone.new(zone: name)
+        list.each do |zone|
+          item = Zone.new(zone: zone)
           @zones << {
-            :zone => info.zone,
-            :title => replacements[info.zone] || info.zone,
-            :offset => info.utc_offset,
-            :utc_offset => (info.utc_offset/(60*60)),
-            :dst => info.time(Time.now).dst?
+            :zone => item.zone,
+            :title => Configure.replacements[item.zone] || item.zone,
+            :offset => item.utc_offset,
+            :utc_offset => (item.utc_offset/(60*60)),
+            :dst => item.time(Time.now).dst?
           }
         end
-        @zones.sort_by! { |zone| zone[:zone] }
-      end
-
-    private
-
-      def replacements
-        @@replacements ||= Configure.replacements
-      end
-      
-      def defaults
-        @@default_list ||= Configure.default_for_info
+        @zones.sort_by! { |zone| zone[Configure.order_list_by] }
       end
 
     end
     
   private
-
-    def replacements
-      @replacements ||= Configure.replacements
-    end
 
     def rule_for_reference reference
       reference = reference.utc
