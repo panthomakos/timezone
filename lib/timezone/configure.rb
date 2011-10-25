@@ -18,7 +18,6 @@ module Timezone
     end
     
     def self.begin
-      @@replacements ||= {}
       yield self
     end
     
