@@ -38,28 +38,6 @@ module Timezone
       @zone = data['_zone'] || options[:zone]
     end
     
-        
-    class << self
-      
-      # Retrieve the data from a particular time zone
-      def get_zone_data(zone)
-        file = File.join(ZONE_FILE_PATH, "#{zone}.json")
-        begin 
-          return JSON.parse(open(file).read)
-        rescue
-          raise Timezone::Error::InvalidZone, "'#{zone}' is not a valid zone."
-        end
-      end
-
-      # Instantly grab all possible time zone names.
-      def names
-        @@names ||= Dir[File.join(ZONE_FILE_PATH, "**/**/*.json")].collect do |file|
-          file.gsub("#{ZONE_FILE_PATH}/", '').gsub(/\.json/, '')
-        end
-      end
-      
-    end
-
     # Determine the time in the timezone.
     #
     #   timezone.time(reference)
@@ -84,11 +62,59 @@ module Timezone
       utc_offset <=> zone.utc_offset
     end
 
-    private
+    class << self
+
+      # Retrieve the data from a particular time zone
+      def get_zone_data(zone)
+        file = File.join(ZONE_FILE_PATH, "#{zone}.json")
+        begin 
+          return JSON.parse(open(file).read)
+        rescue
+          raise Timezone::Error::InvalidZone, "'#{zone}' is not a valid zone."
+        end
+      end
+
+      # Instantly grab all possible time zone names.
+      def names
+        @@names ||= Dir[File.join(ZONE_FILE_PATH, "**/**/*.json")].collect do |file|
+          file.gsub("#{ZONE_FILE_PATH}/", '').gsub(".json", '')
+        end
+      end
+
+      # Get a list of specified timezones and the basic information accompanying that zone
+      #
+      #   zones = Timezone::Zone.infos(zones)
+      # 
+      # zones - An array of timezone names. (i.e. Timezone::Zones.infos("America/Chicago", "Australia/Sydney"))
+      # 
+      # The result is a Hash of timezones with their title, offset in seconds, UTC offset, and if it uses DST.
+      # 
+      def list(*args)
+        args = nil if args.empty? # set to nil if no args are provided
+        zones = args || Configure.default_for_list || self.names # get default list
+        list = self.names.select { |name| zones.include? name } # only select zones if they exist
+        
+        @zones = []
+        list.each do |zone|
+          item = Zone.new(zone: zone)
+          @zones << {
+            :zone => item.zone,
+            :title => Configure.replacements[item.zone] || item.zone,
+            :offset => item.utc_offset,
+            :utc_offset => (item.utc_offset/(60*60)),
+            :dst => item.time(Time.now).dst?
+          }
+        end
+        @zones.sort_by! { |zone| zone[Configure.order_list_by] }
+      end
+
+    end
+    
+  private
 
     def rule_for_reference reference
       reference = reference.utc
-      rules.detect{ |rule| _parsetime(rule['_from']) <= reference && _parsetime(rule['_to']) > reference }
+      @rules.detect{ |rule| _parsetime(rule['_from']) <= reference && _parsetime(rule['_to']) > reference }
     end
 
     def timezone_id lat, lon #:nodoc:
