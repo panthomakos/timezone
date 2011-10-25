@@ -48,3 +48,36 @@ Retrieving the complete list of timezones is quite simple:
 
     timezones = Timezone::Zone.names
     => ["Africa/Abidjan", "Africa/Accra", "Africa/Addis_Ababa", "Africa/Algiers", ...]
+    
+## Listing current information from specific timezones
+
+If you need information from a specific set of timezones rather than a complete list or one at a time, this can be accomplished with the following:
+
+    zone_list = Timezone::Zone.list "America/Chicago", "America/New_York", "America/Boise"
+    # This will return an array of information hashes in the following format:
+    # { 
+    #   :zone => "America/Chicago",
+    #   :title => "America/Chicago", # this can be customized to your needs
+    #   :offset => -18000, # UTC offset in seconds
+    #   :utc_offset => -5, # UTC offset in hours
+    #   :dst => false
+    # }
+    
+You can customize what is placed in the `:title` key in the configuration block. This would be useful in the case of an HTML select list that you would like to display different values than the default name.  For example, the following configuration will set the `:title` key in the list hash to "Chicago" rather than "America/Chicago".
+
+    Timezone::Configure.build do |c|
+      c.replace "America/Chicago", with: "Chicago"
+    end
+    
+Also, if you make numerous calls to the **Zone#list** method in your software, but you would like to avoid duplicating which timezones to retrieve, you can set a default in the configuration:
+
+    Timezone::Configure.begin do |c|
+      c.default_for_list = "America/Chicago", "America/New_York", "Australia/Sydney"
+    end
+    
+Finally, by default the **Zone#list** method will order the results by the timezone's UTC offset. You can customize this behavior this way:
+
+    Timezone::Configure.begin do |c|
+      # this can equal any hash key returned by the Zone#list method
+      c.order_list_by = :title 
+    end
