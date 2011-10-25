@@ -18,7 +18,25 @@ module Timezone
     end
     
     def self.begin
+      @@replacements ||= {}
       yield self
     end
+    
+    def self.replace(what, with = Hash.new)
+      @@replacements[what] = with[:with]
+    end
+    
+    def self.replacements
+      @@replacements
+    end
+    
+    def self.default_list
+      @@default_list ||= nil
+    end
+    
+    def self.default_list=(*list)
+      @@default_list = list.flatten!
+    end
+    
   end
 end

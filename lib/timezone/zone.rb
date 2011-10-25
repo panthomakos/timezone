@@ -38,50 +38,6 @@ module Timezone
       @zone = data['_zone'] || options[:zone]
     end
     
-        
-    class << self
-      
-      # Retrieve the data from a particular time zone
-      def get_zone_data(zone)
-        file = File.join(ZONE_FILE_PATH, "#{zone}.json")
-        begin 
-          return JSON.parse(open(file).read)
-        rescue
-          raise Timezone::Error::InvalidZone, "'#{zone}' is not a valid zone."
-        end
-      end
-
-      # Instantly grab all possible time zone names.
-      def names
-        @@names ||= Dir[File.join(ZONE_FILE_PATH, "**/**/*.json")].collect do |file|
-          file.gsub("#{ZONE_FILE_PATH}/", '').gsub('.json', '')
-        end
-      end
-      
-      # Get a list of specified timezones and the basic information accompanying that zone
-      #
-      #   zones = Timezone::Zone.infos(zones)
-      # 
-      # zones - An array of timezone names. (i.e. Timezone::Zones.infos("America/Chicago", "Australia/Sydney"))
-      # 
-      # The result is a Hash of timezones with their title, offset in seconds, UTC offset, and if it uses DST.
-      # 
-      def infos(*args)
-        list = self.names.select { |name| args.include? name }
-        infos = {}
-        list.each do |name|
-          info = Timezone::Zone.new(zone: name)
-          infos[name] = {
-            :title => info.zone,
-            :offset => info.utc_offset,
-            :utc_offset => (info.utc_offset/(60*60)),
-            :dst => info.time(Time.now).dst?
-          }
-        end
-      end
-      
-    end
-
     # Determine the time in the timezone.
     #
     #   timezone.time(reference)
@@ -106,7 +62,71 @@ module Timezone
       utc_offset <=> zone.utc_offset
     end
 
+    class << self
+
+      # Retrieve the data from a particular time zone
+      def get_zone_data(zone)
+        file = File.join(ZONE_FILE_PATH, "#{zone}.json")
+        begin 
+          return JSON.parse(open(file).read)
+        rescue
+          raise Timezone::Error::InvalidZone, "'#{zone}' is not a valid zone."
+        end
+      end
+
+      # Instantly grab all possible time zone names.
+      def names
+        @@names ||= Dir[File.join(ZONE_FILE_PATH, "**/**/*.json")].collect do |file|
+          file.gsub("#{ZONE_FILE_PATH}/", '').gsub('.json', '')
+        end
+      end
+
+      # Get a list of specified timezones and the basic information accompanying that zone
+      #
+      #   zones = Timezone::Zone.infos(zones)
+      # 
+      # zones - An array of timezone names. (i.e. Timezone::Zones.infos("America/Chicago", "Australia/Sydney"))
+      # 
+      # The result is a Hash of timezones with their title, offset in seconds, UTC offset, and if it uses DST.
+      # 
+      def infos(*args)
+        # set to nil if no args are provided
+        args = nil if args.empty?
+        # get default list
+        zones = args || defaults || self.names
+        
+        list = self.names.select { |name| zones.include? name }
+        infos = []
+        list.each do |name|
+          info = Timezone::Zone.new(zone: name)
+          infos << {
+            :zone => info.zone,
+            :title => replacements[info.zone] || info.zone,
+            :offset => info.utc_offset,
+            :utc_offset => (info.utc_offset/(60*60)),
+            :dst => info.time(Time.now).dst?
+          }
+        end
+        return infos
+      end
+
     private
+
+      def replacements
+        @@replacements ||= Configure.replacements
+      end
+      
+      def defaults
+        @@defaults ||= Configure.default_list
+      end
+
+    end
+    
+  private
+
+    def replacements
+      @replacements ||= Configure.replacements
+    end
 
     def rule_for_reference reference
       reference = reference.utc
