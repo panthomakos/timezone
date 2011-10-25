@@ -22,6 +22,7 @@ module Timezone
     end
     
     def self.replace(what, with = Hash.new)
+      replacements # instantiate @@replacements
       @@replacements[what] = with[:with]
     end
     
