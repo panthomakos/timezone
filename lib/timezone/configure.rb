@@ -27,7 +27,7 @@ module Timezone
     end
     
     def self.replacements
-      @@replacements
+      @@replacements ||= {}
     end
     
     def self.default_for_list
