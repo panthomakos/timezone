@@ -30,12 +30,12 @@ module Timezone
       @@replacements
     end
     
-    def self.default_list
-      @@default_list ||= nil
+    def self.default_for_info
+      @@default_infos ||= nil
     end
     
-    def self.default_list=(*list)
-      @@default_list = list.flatten!
+    def self.default_for_info=(*list)
+      @@default_infos = list.flatten!
     end
     
   end

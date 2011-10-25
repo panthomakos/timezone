@@ -77,7 +77,7 @@ module Timezone
       # Instantly grab all possible time zone names.
       def names
         @@names ||= Dir[File.join(ZONE_FILE_PATH, "**/**/*.json")].collect do |file|
-          file.gsub("#{ZONE_FILE_PATH}/", '').gsub('.json', '')
+          file.gsub("#{ZONE_FILE_PATH}/", '').gsub(".json", '')
         end
       end
 
@@ -90,16 +90,14 @@ module Timezone
       # The result is a Hash of timezones with their title, offset in seconds, UTC offset, and if it uses DST.
       # 
       def infos(*args)
-        # set to nil if no args are provided
-        args = nil if args.empty?
-        # get default list
-        zones = args || defaults || self.names
+        args = nil if args.empty? # set to nil if no args are provided
+        zones = args || defaults || self.names # get default list
+        list = self.names.select { |name| zones.include? name } # only select zones if they exist
         
-        list = self.names.select { |name| zones.include? name }
-        infos = []
+        @zones = []
         list.each do |name|
-          info = Timezone::Zone.new(zone: name)
-          infos << {
+          info = Zone.new(zone: name)
+          @zones << {
             :zone => info.zone,
             :title => replacements[info.zone] || info.zone,
             :offset => info.utc_offset,
@@ -107,7 +105,7 @@ module Timezone
             :dst => info.time(Time.now).dst?
           }
         end
-        return infos
+        @zones.sort_by! { |zone| zone[:zone] }
       end
 
     private
@@ -117,7 +115,7 @@ module Timezone
       end
       
       def defaults
-        @@defaults ||= Configure.default_list
+        @@default_list ||= Configure.default_for_info
       end
 
     end
