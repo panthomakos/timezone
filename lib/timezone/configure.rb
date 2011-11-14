@@ -12,39 +12,39 @@ module Timezone
     def self.username
       @@username
     end
-    
+
     def self.username= username
       @@username = username
     end
-    
+
     def self.begin
       yield self
     end
-    
+
     def self.replace(what, with = Hash.new)
       replacements # instantiate @@replacements
       @@replacements[what] = with[:with]
     end
-    
+
     def self.replacements
       @@replacements ||= {}
     end
-    
+
     def self.default_for_list
       @@default_list ||= nil
     end
-    
+
     def self.default_for_list=(*list)
       @@default_list = list.flatten!
     end
-    
+
     def self.order_list_by
       @@order_by ||= :utc_offset
     end
-    
+
     def self.order_list_by=(order)
       @@order_by = order
     end
-    
+
   end
 end
