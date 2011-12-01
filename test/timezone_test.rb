@@ -22,6 +22,30 @@ class TimezoneTest < Test::Unit::TestCase
     end
   end
 
+  def test_timezone_list
+    list = Timezone::Zone.list "Australia/Sydney", "America/Chicago"
+    assert list.is_a?(Array)
+    assert list.count == 2
+    assert list.first.is_a?(Hash)
+    assert list.first[:zone] == "Australia/Sydney"
+  end
+
+  def test_timezone_custom_list_order
+    Timezone::Configure.order_list_by = :title
+    Timezone::Configure.replace "America/Chicago", with: "Chicago"
+    list = Timezone::Zone.list "Australia/Sydney", "America/Chicago"
+    assert list.first[:title] == "Australia/Sydney"
+    assert list.last[:title] == "Chicago"
+    assert list.last[:zone] == "America/Chicago"
+  end
+
+  def test_timezone_default_list
+    Timezone::Configure.default_for_list = "America/Chicago", "Australia/Sydney"
+    list = Timezone::Zone.list
+    assert list.count == 2
+    assert list.first.has_value? "Australia/Sydney"
+  end
+
   def test_timezone_names
     zones = Timezone::Zone.names
     assert zones.is_a?(Array)
