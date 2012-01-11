@@ -9,6 +9,14 @@ module Timezone
   # your application for latitude and longitude based timezone searches. If you aren't going to
   # initialize timezone objects based on latitude and longitude then this configuration is not necessary.
   class Configure
+    def self.url
+      @@url ||= 'ws.geonames.org'
+    end
+
+    def self.url= url
+      @@url = url
+    end
+
     def self.username
       @@username
     end

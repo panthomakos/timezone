@@ -101,4 +101,16 @@ class TimezoneTest < Test::Unit::TestCase
     local = Time.utc(2010, 12, 24, 6, 7, 15)
     assert_equal local.to_i, timezone.time(utc).to_i
   end
+
+  def test_configure_url_default
+    assert_equal 'ws.geonames.org', Timezone::Configure.url
+  end
+
+  def test_configure_url_custom
+    Timezone::Configure.begin { |c| c.url = 'www.newtimezoneserver.com' }
+    assert_equal 'www.newtimezoneserver.com', Timezone::Configure.url
+    # clean up url after test
+    Timezone::Configure.begin { |c| c.url = nil }
+  end
+
 end
