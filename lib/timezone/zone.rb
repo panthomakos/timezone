@@ -119,7 +119,7 @@ module Timezone
 
     def timezone_id lat, lon #:nodoc:
       begin
-        response = Net::HTTP.get('ws.geonames.org', "/timezoneJSON?lat=#{lat}&lng=#{lon}&username=#{Timezone::Configure.username}")
+        response = Net::HTTP.get(Timezone::Configure.url, "/timezoneJSON?lat=#{lat}&lng=#{lon}&username=#{Timezone::Configure.username}")
         JSON.parse(response)['timezoneId']
       rescue Exception => e
         raise Timezone::Error::GeoNames, e.message
