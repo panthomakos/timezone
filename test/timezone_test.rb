@@ -103,7 +103,7 @@ class TimezoneTest < Test::Unit::TestCase
   end
 
   def test_configure_url_default
-    assert_equal 'ws.geonames.org', Timezone::Configure.url
+    assert_equal 'api.geonames.org', Timezone::Configure.url
   end
 
   def test_configure_url_custom
