@@ -83,9 +83,9 @@ module Timezone
 
       # Get a list of specified timezones and the basic information accompanying that zone
       #
-      #   zones = Timezone::Zone.infos(zones)
+      #   zones = Timezone::Zone.list(*zones)
       #
-      # zones - An array of timezone names. (i.e. Timezone::Zones.infos("America/Chicago", "Australia/Sydney"))
+      # zones - An array of timezone names. (i.e. Timezone::Zones.list("America/Chicago", "Australia/Sydney"))
       #
       # The result is a Hash of timezones with their title, offset in seconds, UTC offset, and if it uses DST.
       #
