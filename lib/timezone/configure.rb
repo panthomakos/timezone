@@ -10,7 +10,7 @@ module Timezone
   # initialize timezone objects based on latitude and longitude then this configuration is not necessary.
   class Configure
     def self.url
-      @@url ||= 'ws.geonames.org'
+      @@url ||= 'api.geonames.org'
     end
 
     def self.url= url
