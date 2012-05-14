@@ -120,4 +120,24 @@ class TimezoneTest < Test::Unit::TestCase
     Timezone::Configure.begin { |c| c.url = nil }
   end
 
+  def test_utc_offset_without_dst
+    timezone = Timezone::Zone.new :zone => 'Europe/Helsinki'
+    # just before DST starts
+    utc = Time.utc(2012, 3, 25, 0, 59, 59)
+    assert_equal timezone.utc_offset(utc), 7200
+    # on the second DST ends
+    utc = Time.utc(2012, 10, 28, 1, 0, 0)
+    assert_equal timezone.utc_offset(utc), 7200
+  end
+
+  def test_utc_offset_with_dst
+    timezone = Timezone::Zone.new :zone => 'Europe/Helsinki'
+    # on the second DST starts
+    utc = Time.utc(2012, 3, 25, 1, 0, 0)
+    assert_equal timezone.utc_offset(utc), 10800
+    # right before DST end
+    utc = Time.utc(2012, 10, 28, 0, 59, 59)
+    assert_equal timezone.utc_offset(utc), 10800
+  end
+
 end
