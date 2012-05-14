@@ -128,7 +128,7 @@ module Timezone
 
     def _parsetime time #:nodoc:
       begin
-        Time.strptime(time, "%Y-%m-%dT%H:%M:%SZ")
+        Time.strptime(time, "%Y-%m-%dT%H:%M:%S%Z")
       rescue Exception => e
         raise Timezone::Error::ParseTime, e.message
       end
