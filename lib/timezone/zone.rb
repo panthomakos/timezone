@@ -116,7 +116,7 @@ module Timezone
       reference = reference.utc
       @rules.detect do |rule|
         if rule['from'] && rule['to']
-          from = _read_timestamp(rule['_from'])
+          from = _read_timestamp(rule['from'])
           to = _read_timestamp(rule['to'])
         else
           from = _parsetime(rule['_from'])
