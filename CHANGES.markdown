@@ -1,3 +1,7 @@
+# 0.1.6
+
+# Performance improvement in parsing timezone files. (nessche)
+
 # 0.1.5
 
 * Fixed date parsing around DST. (nessche)
