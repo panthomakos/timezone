@@ -114,7 +114,24 @@ module Timezone
 
     def rule_for_reference reference
       reference = reference.utc
-      @rules.detect{ |rule| _parsetime(rule['_from']) <= reference && _parsetime(rule['_to']) > reference }
+      @rules.detect do |rule|
+        if rule['from'] && rule['to']
+          from = _read_timestamp(rule['from'])
+          to = _read_timestamp(rule['to'])
+        else
+          from = _parsetime(rule['_from'])
+          to = _parsetime(rule['_to'])
+        end
+        from <= reference && to > reference
+      end
+    end
+
+    def _read_timestamp timestamp #:nodoc:
+      begin
+        Time.at(timestamp.to_i / 1000.0)
+      rescue Exception => e
+        raise Timezone::Error::ParseTime, e.message
+      end
     end
 
     def timezone_id lat, lon #:nodoc:
