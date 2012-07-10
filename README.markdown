@@ -81,3 +81,7 @@ Finally, by default the **Zone#list** method will order the results by the timez
       # this can equal any hash key returned by the Zone#list method
       c.order_list_by = :title 
     end
+
+## Build Status [![Build Status](https://secure.travis-ci.org/panthomakos/timezone.png?branch=master)](http://travis-ci.org/panthomakos/timezone)
+
+## Code Quality [![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/panthomakos/timezone)
