@@ -20,6 +20,4 @@ Gem::Specification.new do |s|
   s.extra_rdoc_files = ['README.markdown', 'License.txt']
   s.rdoc_options = ['--charset=UTF-8']
   s.require_paths = ["lib"]
-
-  s.add_development_dependency 'rake'
 end
