@@ -2,5 +2,3 @@ source "http://rubygems.org"
 
 # Specify your gem's dependencies in timezone.gemspec
 gemspec
-
-gem 'rake'
