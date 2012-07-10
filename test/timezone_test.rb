@@ -1,9 +1,8 @@
-require File.expand_path(File.dirname(__FILE__) + '/../lib/timezone')
-require File.expand_path(File.dirname(__FILE__) + '/../lib/timezone/zone')
+require 'timezone'
+require 'timezone/zone'
 require 'test/unit'
 
 class TimezoneTest < Test::Unit::TestCase
-
   def test_valid_timezone
     assert_nothing_raised do
       Timezone::Zone.new :zone => 'Australia/Sydney'
@@ -151,5 +150,4 @@ class TimezoneTest < Test::Unit::TestCase
       assert_equal timezone.utc_offset(utc), 10800
     end
   end
-
 end
