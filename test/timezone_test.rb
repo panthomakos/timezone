@@ -94,13 +94,6 @@ class TimezoneTest < Test::Unit::TestCase
     assert_equal 'Australia/Adelaide', timezone.zone
   end
 
-  def test_using_old_ws_geonames_api
-    Timezone::Configure.begin { |c| c.url = 'ws.geonames.org' }
-    timezone = Timezone::Zone.new :latlon => [-34.92771808058, 138.477041423321]
-    assert_equal 'Australia/Adelaide', timezone.zone
-    Timezone::Configure.begin { |c| c.url = nil }
-  end
-
   def test_australian_timezone_with_dst
     timezone = Timezone::Zone.new :zone => 'Australia/Adelaide'
     utc = Time.utc(2010, 12, 23, 19, 37, 15)
