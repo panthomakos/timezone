@@ -1,6 +1,10 @@
+# 0.2.0
+
+* Update JSON data from the tzdata repository. (panthomakos)
+
 # 0.1.6
 
-# Performance improvement in parsing timezone files. (nessche)
+* Performance improvement in parsing timezone files. (nessche)
 
 # 0.1.5
 
