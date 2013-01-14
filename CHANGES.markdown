@@ -1,6 +1,6 @@
-# 0.2.0
+# 0.2.1
 
-* Update JSON data from the tzdata repository. (panthomakos)
+* Update JSON data from the tzdata repository. (panthomakos, petergoldstein)
 
 # 0.1.6
 
