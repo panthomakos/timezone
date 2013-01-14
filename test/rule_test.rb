@@ -2,15 +2,16 @@ require 'timezone/rule'
 require 'minitest/autorun'
 
 describe Timezone::Rule do
-  before{ Timezone.rules.clear }
-
-  before{ @rule = Timezone::Rule.new('Zion') }
+  before do
+    Timezone.rules.clear
+    @rule = Timezone::Rule.new('Zion')
+  end
 
   it 'adds itself to the rules' do
     assert_equal ['Zion'], Timezone.rules.keys
   end
 
-  it 'adds multiple rules' do
+  it 'adds multiple rules with the same name' do
     Timezone::Rule.new('Zion')
     assert_equal 2, Timezone.rules['Zion'].count
   end
