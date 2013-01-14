@@ -39,4 +39,17 @@ describe Timezone::Rule do
       assert @rule.dst?
     end
   end
+
+  it 'properly parses TZDATA rules' do
+    rule = Timezone.rule("Rule	Zion	1940	only	-	Jun	 1	0:00	1:00	D")
+
+    assert_instance_of Timezone::Rule, rule
+    assert_equal 'Zion', rule.name
+    assert_equal '1940', rule.from
+    assert_equal 'only', rule.to
+    assert_equal 'Jun', rule.month
+    assert_equal '1', rule.day
+    assert_equal '1:00', rule.save
+    assert_equal 'D', rule.letter
+  end
 end

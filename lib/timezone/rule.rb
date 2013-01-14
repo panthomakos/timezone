@@ -2,6 +2,10 @@ module Timezone
   @@rules = {}
   def self.rules ; @@rules ; end
 
+  def self.rule(line)
+    Rule.new(*line.split("\t").values_at(*(1..9).to_a).map(&:strip))
+  end
+
   Rule = Struct.new(:name, :from, :to, :type, :month, :day, :time, :save, :letter) do
     def initialize(name, *args)
       super.tap do |rule|
