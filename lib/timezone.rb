@@ -1,3 +1,3 @@
-require File.expand_path('../timezone/zone', __FILE__)
+require 'timezone/zone'
 
 module Timezone; end
