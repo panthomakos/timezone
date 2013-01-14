@@ -4,18 +4,14 @@ require 'minitest/autorun'
 describe Timezone::Rule do
   before{ Timezone.rules.clear }
 
-  def setup
-    @rule = Timezone::Rule.new('Zion')
-  end
+  before{ @rule = Timezone::Rule.new('Zion') }
 
   it 'adds itself to the rules' do
-    assert_empty Timezone.rules
-    Timezone::Rule.new('Zion')
     assert_equal ['Zion'], Timezone.rules.keys
   end
 
   it 'adds multiple rules' do
-    2.times{ Timezone::Rule.new('Zion') }
+    Timezone::Rule.new('Zion')
     assert_equal 2, Timezone.rules['Zion'].count
   end
 
