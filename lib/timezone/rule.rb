@@ -3,7 +3,7 @@ module Timezone
   def self.rules ; @@rules ; end
 
   def self.rule(line)
-    Rule.new(*line.split("\t").values_at(*(1..9).to_a).map(&:strip))
+    Rule.new(*line.split("\t")[1..9].map(&:strip))
   end
 
   Rule = Struct.new(:name, :from, :to, :type, :month, :day, :time, :save, :letter) do
