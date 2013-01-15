@@ -1,7 +1,9 @@
 module Timezone
+  # All the rules that are parsed are stored in the `@@rules` hash by name.
   @@rules = {}
   def self.rules ; @@rules ; end
 
+  # Given a line from the TZDATA file, generate a Rule object.
   def self.rule(line)
     Rule.new(*line.split("\t")[1..9].map(&:strip))
   end
