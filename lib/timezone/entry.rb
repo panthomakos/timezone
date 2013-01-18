@@ -1,4 +1,6 @@
 require 'timezone/rule'
+require 'timezone/data'
+require 'time'
 
 module Timezone
   @@zone_name = ''
@@ -23,9 +25,51 @@ module Timezone
     Entry.new(@@zone_name, *line.match(ENTRY)[1..-1].map(&:strip))
   end
 
-  Entry = Struct.new(:name, :offset, :rule, :format, :until) do
+  # An entry from the TZData file.
+  class Entry
+    attr_reader :name, :format
+
+    def initialize(name, offset, rule, format, end_date)
+      @name = name
+      @offset = offset
+      @rule = rule
+      @format = format
+      @end_date = end_date
+    end
+
+    # Rules that this TZData entry references.
     def rules
-      Timezone.rules[rule]
+      Timezone.rules[@rule]
+    end
+
+    # The integer offset of this entry.
+    def offset
+      @time ||= Time.parse(@offset)
+      @time.hour*60*60 + @time.min*60 + @time.sec
+    end
+
+    # Formats for the UNTIL value in the TZData entry.
+    UNTIL_FORMATS = [
+      '%Y %b', # 1900 Oct
+      '%Y %b %-d', # 1948 May 15
+    ]
+
+    # The integer value of UNTIL with offset taken into consideration.
+    def end_date
+      UNTIL_FORMATS.each do |format|
+        begin
+          time = Time.strptime(@end_date+' UTC', format+' %Z')
+          return (time - offset).to_i * 1_000
+        rescue ArgumentError
+          next
+        end
+      end
+
+      nil
+    end
+
+    def data # Eventually want to pass the existing entries in here.
+      [Data.new(nil, end_date, false, offset, format)]
     end
   end
 end

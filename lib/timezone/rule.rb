@@ -20,12 +20,8 @@ module Timezone
     #
     # Example: 1:00 # => 3600
     def offset
-      @offset ||= save
-        .split(':')
-        .reverse
-        .each_with_index
-        .map{ |number,index| number.to_i*(60**(index+1)) }
-        .reduce(&:+)
+      @time ||= Time.parse(save)
+      @offset ||= @time.hour*60*60 + @time.min*60 + @time.sec
     end
 
     # Does this rule have daylight savings time?

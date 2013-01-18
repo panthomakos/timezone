@@ -28,8 +28,8 @@ Zone	Asia/Hebron	2:20:23	-	LMT	1900 Oct
   end
 
   it 'properly parses offsets' do
-    assert_equal '2:20:23', @entries.first.offset
-    assert @entries[1..-1].all?{ |e| e.offset == '2:00' }
+    assert_equal 8423, @entries.first.offset
+    assert @entries[1..-1].all?{ |e| e.offset == 7200 }
   end
 
   it 'proplery parses rules' do
@@ -45,8 +45,18 @@ Zone	Asia/Hebron	2:20:23	-	LMT	1900 Oct
     assert_equal 'EE%sT', @entries[2].format
   end
 
-  it 'properly parses until' do
-    assert '1900 Oct', @entries.first.until
-    assert '', @entries.last.until
+  it 'properly parses end_date' do
+    assert_equal -2185410023000, @entries.first.end_date
+    assert_equal nil, @entries.last.end_date
+  end
+
+  it 'properly applies' do
+    first = @entries[0].data.first
+
+    assert_equal Timezone::START_DATE, first.from
+    assert_equal Timezone::END_DATE, first.to
+    assert_equal false, first.dst
+    assert_equal 8423, first.offset
+    assert_equal 'LMT', first.name
   end
 end
