@@ -1,7 +1,7 @@
-require 'timezone/entry'
+require 'timezone/parser/entry'
 require 'minitest/autorun'
 
-describe Timezone::Entry do
+describe Timezone::Parser::Entry do
   LINES = <<-LINES
 Zone	Asia/Hebron	2:20:23	-	LMT	1900 Oct
       2:00	Zion	EET	1948 May 15
@@ -20,7 +20,7 @@ Zone	Asia/Hebron	2:20:23	-	LMT	1900 Oct
   LINES
 
   def setup
-    @entries = Timezone.entries(LINES)
+    @entries = Timezone::Parser.entries(LINES)
   end
 
   it 'properly parses entry names' do
@@ -33,10 +33,10 @@ Zone	Asia/Hebron	2:20:23	-	LMT	1900 Oct
   end
 
   it 'proplery parses rules' do
-    Timezone::Rule.new('Zion')
-    Timezone::Rule.new('Palestine')
-    assert_equal Timezone.rules['Zion'], @entries[1].rules
-    assert_equal Timezone.rules['Palestine'], @entries[5].rules
+    Timezone::Parser::Rule.new('Zion')
+    Timezone::Parser::Rule.new('Palestine')
+    assert_equal Timezone::Parser.rules['Zion'], @entries[1].rules
+    assert_equal Timezone::Parser.rules['Palestine'], @entries[5].rules
   end
 
   it 'properly parses format' do
@@ -53,8 +53,8 @@ Zone	Asia/Hebron	2:20:23	-	LMT	1900 Oct
   it 'properly applies' do
     first = @entries[0].data.first
 
-    assert_equal Timezone::START_DATE, first.from
-    assert_equal Timezone::END_DATE, first.to
+    assert_equal Timezone::Parser::START_DATE, first.from
+    assert_equal Timezone::Parser::END_DATE, first.to
     assert_equal false, first.dst
     assert_equal 8423, first.offset
     assert_equal 'LMT', first.name
