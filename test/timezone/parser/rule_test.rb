@@ -47,8 +47,7 @@ describe Timezone::Parser::Rule do
       entry.expect(:offset, 7_200)
       sub = @lastSun.apply(entry)
 
-      # TODO This test needs fixing... something wrong with the parsing here.
-      # assert_equal Time.utc(1996, 10, 26, 23, 0, 0).to_i*1_000, sub.start_date
+      assert_equal Time.utc(1996, 10, 27, 3, 0, 0).to_i*1_000, sub.start_date
     end
   end
 

@@ -25,6 +25,7 @@ module Timezone
           entries << entry(line)
         else
           process(entries)
+          entries = []
         end
       end
 
@@ -36,11 +37,10 @@ module Timezone
 
       rules = []
       previous = nil
-      last_entry = nil
 
       entries.map{ |entry|
-        previous = entry.data(previous ? previous.last.end_date : nil, last_entry && last_entry.end_date)
-        last_entry = entry
+        rules = entry.data(rules, previous && previous.end_date)
+        previous = entry
       }.flatten
     end
   end
