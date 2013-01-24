@@ -10,14 +10,23 @@ module Timezone
 
     # The resulting JSON data structure for a timezone file.
     class Data
-      attr_accessor :start_date, :end_date, :dst, :offset, :name
+      attr_writer :end_date
+      attr_accessor :start_date, :dst, :offset, :name
 
       def initialize(start_date, end_date, dst, offset, name)
         @start_date = start_date || START_DATE
-        @end_date = end_date || END_DATE
+        @end_date = end_date
         @dst = dst
         @offset = offset
         @name = name
+      end
+
+      def end_date
+        @end_date || END_DATE
+      end
+
+      def has_end_date?
+        !!@end_date
       end
 
       def to_hash
@@ -43,7 +52,7 @@ module Timezone
       end
 
       def _to
-        ftime(@end_date)
+        ftime(end_date)
       end
 
       def ftime(time)

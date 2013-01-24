@@ -36,9 +36,11 @@ module Timezone
 
       rules = []
       previous = nil
+      last_entry = nil
 
       entries.map{ |entry|
-        previous = entry.data(previous ? previous.last.end_date : nil)
+        previous = entry.data(previous ? previous.last.end_date : nil, last_entry && last_entry.end_date)
+        last_entry = entry
       }.flatten
     end
   end

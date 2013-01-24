@@ -76,30 +76,45 @@ module Timezone
         nil
       end
 
-      def data(start_date = nil)
-        set = [Data.new(start_date, end_date, false, offset, format)]
+      # def data(start_date = nil)
+      #   set = [Data.new(start_date, end_date, false, offset, format)]
+      def data(set = [], limit)
+        previous = set.last
+
+        additions = []
+
+        if rules.empty?
+          # TODO what if there is no end date?
+          additions << Data.new(previous && previous.end_date, end_date, false, offset, format)
+        else
+          if previous && previous.has_end_date?
+            additions << Data.new(previous.end_date, nil, false, offset, format)
+          else
+            additions << set.pop
+          end
+        end
 
         rules.each do |rule|
-          set.each_with_index do |data, i|
+          additions.each_with_index do |data, i|
             sub = rule.apply(self)
 
             # If the rule applies.
-            if sub.start_date > data.start_date && sub.start_date < data.end_date
+            if sub.start_date > data.start_date && sub.start_date < data.end_date && (!limit || sub.start_date > limit)
               insert = Data.new(
                 sub.start_date,
-                data.end_date,
+                data.has_end_date? ? data.end_date : nil,
                 sub.dst?,
                 sub.offset,
                 format)
 
               data.end_date = insert.start_date
 
-              set.insert(i+1, insert)
+              additions.insert(i+1, insert)
             end
           end
         end
 
-        set
+        set + additions
       end
 
       private

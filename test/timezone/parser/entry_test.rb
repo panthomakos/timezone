@@ -71,8 +71,8 @@ Zone	Asia/Hebron	2:20:23	-	LMT	1900 Oct
     Timezone::Parser.rule("Rule	Zion	1949	only	-	May	 1	0:00	1:00	D")
 
     rules = []
-    rules.concat(@entries[0].data)
-    rules.concat(@entries[1].data(rules.first.end_date))
+    rules = @entries[0].data(rules, nil)
+    rules = @entries[1].data(rules, @entries[0].end_date)
     Timezone::Parser.normalize!(rules)
 
     assert_equal 12, rules.count
@@ -140,14 +140,12 @@ Zone	Asia/Nicosia	2:13:28 -	LMT	1921 Nov 14
       Timezone::Parser.rule("Rule	EUAsia	1996	max	-	Oct	lastSun	 1:00u	0	-")
 
       rules = []
-      rules.concat(@nicosia[0].data)
-      rules.concat(@nicosia[1].data(rules.last.end_date))
-      rules.concat(@nicosia[2].data(rules.last.end_date))
+      rules = @nicosia[0].data(rules, nil)
+      rules = @nicosia[1].data(rules, @nicosia[0].end_date)
+      rules = @nicosia[2].data(rules, @nicosia[1].end_date)
       Timezone::Parser.normalize!(rules)
 
-      # puts rules.map(&:to_json)
-
-      # assert_equal 154, rules.count
+      assert_equal 154, rules.count
     end
   end
 end
