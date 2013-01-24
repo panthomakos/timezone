@@ -12,21 +12,23 @@ module Timezone
         next if line =~ /^\s*#/
 
         if line =~ /^Rule/
-          puts line
           rule(line)
           next
         elsif line =~ /^Zone/
           entries = []
+        elsif line =~ /^Link/
+          # TODO We need to add linking.
+          next
         end
 
         if line != '' && !line.nil?
-          entries = entry(line)
+          entries << entry(line)
         else
           process(entries)
         end
       end
 
-      parse(entries)
+      process(entries)
     end
 
     def self.process(entries)

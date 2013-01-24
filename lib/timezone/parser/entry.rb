@@ -53,7 +53,7 @@ module Timezone
         return [] unless Timezone::Parser.rules[@rule]
 
         @rules ||= Timezone::Parser.rules[@rule].select{ |rule|
-          rule.start_date < end_date
+          end_date.nil? || rule.start_date < end_date
         }
       end
 
@@ -85,21 +85,16 @@ module Timezone
 
             # If the rule applies.
             if sub.start_date > data.start_date && sub.start_date < data.end_date
-              additions = []
+              insert = Data.new(
+                sub.start_date,
+                data.end_date,
+                sub.dst?,
+                sub.offset,
+                format)
 
-              sub.years.each_with_index do |year, i|
-                additions << Data.new(
-                  sub.start_date(year),
-                  sub.start_date(year+1),
-                  sub.dst?,
-                  sub.offset,
-                  format)
-              end
+              data.end_date = insert.start_date
 
-              additions.last.end_date = data.end_date
-              data.end_date = additions.first.start_date
-
-              set.insert(i+1, *additions)
+              set.insert(i+1, insert)
             end
           end
         end

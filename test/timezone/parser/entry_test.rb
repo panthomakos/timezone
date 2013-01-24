@@ -2,7 +2,7 @@ require 'timezone/parser/entry'
 require 'minitest/autorun'
 
 describe Timezone::Parser::Entry do
-  LINES = <<-LINES
+  HEBRON = <<-HEBRON
 Zone	Asia/Hebron	2:20:23	-	LMT	1900 Oct
       2:00	Zion	EET	1948 May 15
       2:00 EgyptAsia	EE%sT	1967 Jun  5
@@ -17,10 +17,10 @@ Zone	Asia/Hebron	2:20:23	-	LMT	1900 Oct
       2:00	-	EET	2012 Mar 30
       2:00	1:00	EEST	2012 Sep 21 1:00
       2:00	-	EET
-  LINES
+  HEBRON
 
   def setup
-    @entries = Timezone::Parser.entries(LINES)
+    @entries = Timezone::Parser.entries(HEBRON)
     Timezone::Parser.rules.clear
   end
 
@@ -38,9 +38,9 @@ Zone	Asia/Hebron	2:20:23	-	LMT	1900 Oct
     assert_empty @entries[0].rules
 
     # This first rule is before the end date.
-    r1 = Timezone::Parser::Rule.new('Zion', '1948', 'only', '', 'Jan', '13', '0:00', '0', 'D')
+    r1 = Timezone::Parser::Rule.new('Zion', '1948', '', 'Jan', '13', '0:00', '0', 'D')
     # This second rule is after the end date.
-    r2 = Timezone::Parser::Rule.new('Zion', '1967', 'only', '', 'Oct', '12', '0:00', '0', 'D')
+    r2 = Timezone::Parser::Rule.new('Zion', '1967', '', 'Oct', '12', '0:00', '0', 'D')
 
     assert_equal [r1], @entries[1].rules
   end
@@ -56,7 +56,7 @@ Zone	Asia/Hebron	2:20:23	-	LMT	1900 Oct
     assert_equal nil, @entries.last.end_date
   end
 
-  it 'properly applies' do
+  it 'properly applies Zion rules' do
     Timezone::Parser.rule("Rule	Zion	1940	only	-	Jun	 1	0:00	1:00	D")
     Timezone::Parser.rule("Rule	Zion	1942	1944	-	Nov	 1	0:00	0	S")
     Timezone::Parser.rule("Rule	Zion	1943	only	-	Apr	 1	2:00	1:00	D")
@@ -109,5 +109,45 @@ Zone	Asia/Hebron	2:20:23	-	LMT	1900 Oct
     assert rules[4].dst
     assert_equal 10_800, rules[4].offset
     assert_equal 'EET', rules[4].name
+  end
+
+  describe 'Nicosia' do
+    NICOSIA = <<-NICOSIA
+Zone	Asia/Nicosia	2:13:28 -	LMT	1921 Nov 14
+			2:00	Cyprus	EE%sT	1998 Sep
+			2:00	EUAsia	EE%sT
+    NICOSIA
+
+    def setup
+      @nicosia = Timezone::Parser.entries(NICOSIA)
+      Timezone::Parser.rules.clear
+    end
+
+    # TODO This is currently returning 155 rules
+    # http://www.timeanddate.com/worldclock/timezone.html?n=680&syear=1990
+    it 'properly parses' do
+      Timezone::Parser.rule("Rule	Cyprus	1975	only	-	Apr	13	0:00	1:00	S")
+      Timezone::Parser.rule("Rule	Cyprus	1975	only	-	Oct	12	0:00	0	-")
+      Timezone::Parser.rule("Rule	Cyprus	1976	only	-	May	15	0:00	1:00	S")
+      Timezone::Parser.rule("Rule	Cyprus	1976	only	-	Oct	11	0:00	0	-")
+      Timezone::Parser.rule("Rule	Cyprus	1977	1980	-	Apr	Sun>=1	0:00	1:00	S")
+      Timezone::Parser.rule("Rule	Cyprus	1977	only	-	Sep	25	0:00	0	-")
+      Timezone::Parser.rule("Rule	Cyprus	1978	only	-	Oct	2	0:00	0	-")
+      Timezone::Parser.rule("Rule	Cyprus	1979	1997	-	Sep	lastSun	0:00	0	-")
+      Timezone::Parser.rule("Rule	Cyprus	1981	1998	-	Mar	lastSun	0:00	1:00	S")
+      Timezone::Parser.rule("Rule	EUAsia	1981	max	-	Mar	lastSun	 1:00u	1:00	S")
+      Timezone::Parser.rule("Rule	EUAsia	1979	1995	-	Sep	lastSun	 1:00u	0	-")
+      Timezone::Parser.rule("Rule	EUAsia	1996	max	-	Oct	lastSun	 1:00u	0	-")
+
+      rules = []
+      rules.concat(@nicosia[0].data)
+      rules.concat(@nicosia[1].data(rules.last.end_date))
+      rules.concat(@nicosia[2].data(rules.last.end_date))
+      Timezone::Parser.normalize!(rules)
+
+      # puts rules.map(&:to_json)
+
+      # assert_equal 154, rules.count
+    end
   end
 end

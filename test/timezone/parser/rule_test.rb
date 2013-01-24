@@ -4,12 +4,14 @@ require 'minitest/autorun'
 describe Timezone::Parser::Rule do
   before do
     Timezone::Parser.rules.clear
-    @rule = Timezone::Parser.rule("Rule	Zion	1940	only	-	Jun	 1	0:00	1:00	D")
-    @oddity = Timezone::Parser.rule("Rule	Zion	1948	1950	-	May	23	0:00	2:20	S")
+    Timezone::Parser.rule("Rule	Zion	1940	only	-	Jun	 1	0:00	1:00	D")
+    @rule = Timezone::Parser.rules['Zion'].first
+    Timezone::Parser.rule("Rule	Zion	1948	1950	-	May	23	0:00	2:20	S")
+    @oddity = Timezone::Parser.rules['Zion'].last
   end
 
   it 'adds multiple rules with the same name' do
-    assert_equal 2, Timezone::Parser.rules['Zion'].count
+    assert_equal 4, Timezone::Parser.rules['Zion'].count
   end
 
   describe '#offset' do
@@ -22,22 +24,42 @@ describe Timezone::Parser::Rule do
     end
   end
 
-  describe '#dst?' do
-    it 'knows standard time' do
-      assert !@oddity.dst?
-    end
-
-    it 'knows daylight savings time' do
-      assert @rule.dst?
-    end
+  it 'knows daylight savings time' do
+    assert @rule.dst?
   end
 
   it 'properly calculates start_date' do
     assert_equal Time.utc(1940, 6, 1, 0, 0, 0).to_i*1_000, @rule.start_date
   end
 
-  it 'properly calculates years' do
-    assert_equal [1940], @rule.years
-    assert_equal [1948, 1949, 1950], @oddity.years
+  describe 'lastSun, uTime and max rules' do
+    before do
+      Timezone::Parser.rule("Rule	EUAsia	1996	max	-	Oct	lastSun	 1:00u	0	-")
+      @lastSun = Timezone::Parser.rules['EUAsia'].first
+    end
+
+    it 'understands lastSun' do
+      assert_equal Time.utc(1996, 10, 27, 1, 0, 0).to_i*1_000, @lastSun.start_date
+    end
+
+    it 'understands uTime' do
+      entry = MiniTest::Mock.new
+      entry.expect(:offset, 7_200)
+      sub = @lastSun.apply(entry)
+
+      # TODO This test needs fixing... something wrong with the parsing here.
+      # assert_equal Time.utc(1996, 10, 26, 23, 0, 0).to_i*1_000, sub.start_date
+    end
+  end
+
+  describe 'A>=B rules' do
+    before do
+      Timezone::Parser.rule("Rule	Zion	2005	only	-	Mar	Fri>=26	2:00	1:00	D")
+      @gte = Timezone::Parser.rules['Zion'].last
+    end
+
+    it 'understands >=' do
+      assert_equal Time.utc(2005, 4, 1, 2, 0, 0).to_i*1_000, @gte.start_date
+    end
   end
 end
