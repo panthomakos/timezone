@@ -42,7 +42,7 @@ module Timezone
     end
 
     class Rule
-      attr_accessor :offset, :name, :year
+      attr_accessor :offset, :name
 
       def initialize(name, year, type, month, day, time, save, letter)
         @name, @year, @type, @month, @day, @time, @save, @letter = \
