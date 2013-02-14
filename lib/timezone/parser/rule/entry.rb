@@ -3,58 +3,77 @@ require 'timezone/parser/rule/on_rules'
 
 module Timezone::Parser::Rule
   class Entry
-    attr_accessor :offset, :name, :letter
+    attr_accessor :offset
+    attr_reader :name, :letter, :start_date
+
+    UTIME = /^.*u$/
+    STIME = /^.*s$/
+    START_DATE = '%Y %b %d %H:%M %Z'
 
     def initialize(name, year, type, month, day, time, save, letter)
-      @name, @year, @type, @month, @day, @time, @save, @letter = \
-        name, year, type, month, day, time, save, letter
+      @name, @offset, @letter = name, offset, letter
 
-      @month, @day = On.parse(day, month, year)
-
-      @time = "0#{@time}" if @time.match(/^\d:\d\d/)
-      @day = "0#{@day}" if @day.match(/^\d$/)
-
-      if @time.match(/^.*u$/)
-        @utime = true
-        @time = @time.gsub(/u/, '')
-      elsif @time.match(/^.*s$/) # TODO What is s time?
-        @stime = true
-        @time = @time.gsub(/s/, '')
-      end
-
-      @offset = parse_offset
+      @month, @day = parse_month_day(day, month, year)
+      @utime       = parse_utime(time)
+      @stime       = parse_stime(time)
+      @time        = parse_time(time)
+      @day         = parse_day(@day)
+      @offset      = parse_offset(save)
+      @start_date  = parse_start_date(year, @month, @day, @time)
+      @dst         = parse_dst(save)
     end
 
-    def utime?
-      @utime
-    end
+    def utime? ; @utime ; end
+    def stime? ; @stime ; end
+    def dst?   ; @dst   ; end
 
-    # The day the rule starts (in UTC) on the given year.
-    def start_date
-      parsed = Time.strptime(
-        "#{@year} #{@month} #{@day} #{@time} UTC",
-        '%Y %b %d %H:%M %Z')
-
-      parsed.to_i * 1000
-    end
-
-    # Does this rule have daylight savings time?
-    def dst?
-      @save != '0'
-    end
-
-    # Create a new rule with an offset based on the given entry.
-    def apply(entry)
-      dup.tap do |rule|
-        rule.offset = entry.offset + offset
-      end
+    # Create a new rule with an offset based on the given zone entry.
+    def apply(zone_entry)
+      dup.tap{ |rule| rule.offset = zone_entry.offset + offset }
     end
 
     private
 
-    def parse_offset
-      offset = Time.parse(@save == '0' ? '0:00' : @save)
+    # Day should be zero padded.
+    def parse_day(day)
+      '%.2d' % day.to_i
+    end
+
+    # Time should be zero padded and not include 'u' or 's'.
+    def parse_time(time)
+      time = "0#{time}" if time.match(/^\d:\d\d/)
+      time = time.gsub(/u/, '') if utime?
+      time = time.gsub(/s/, '') if stime?
+
+      time
+    end
+
+    def parse_utime(time)
+      time =~ UTIME
+    end
+
+    def parse_stime(time)
+      time =~ STIME
+    end
+
+    # Offset is calculated in seconds.
+    def parse_offset(save)
+      offset = Time.parse(save == '0' ? '0:00' : save)
       offset.hour*60*60 + offset.min*60 + offset.sec
+    end
+
+    # Check special rules that modify the month and day depending on the year.
+    def parse_month_day(day, month, year)
+      On.parse(day, month, year)
+    end
+
+    # The UTC time on which the rule beings to apply in milliseconds.
+    def parse_start_date(y, m, d, t)
+      Time.strptime([y, m, d, t, 'UTC'].join(' '), START_DATE).to_i * 1_000
+    end
+
+    def parse_dst(save)
+      save != '0'
     end
   end
 end

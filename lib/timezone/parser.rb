@@ -1,6 +1,6 @@
 require 'timezone/parser/rule'
 require 'timezone/parser/data'
-require 'timezone/parser/entry'
+require 'timezone/parser/zone'
 
 module Timezone
   module Parser
@@ -22,7 +22,7 @@ module Timezone
         end
 
         if line != '' && !line.nil?
-          entries << entry(line)
+          entries << zone(line)
         else
           process(entries)
           entries = []

@@ -2,6 +2,8 @@ require 'timezone/parser/rule'
 require 'time'
 
 module Timezone::Parser::Rule
+  def self.on(*args) ; On.new(*args) ; end
+
   class On
     @@rules = []
 

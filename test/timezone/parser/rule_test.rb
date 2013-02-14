@@ -32,26 +32,16 @@ describe Timezone::Parser::Rule do
     assert_equal Time.utc(1940, 6, 1, 0, 0, 0).to_i*1_000, @rule.start_date
   end
 
-  describe 'lastSun, uTime and max rules' do
-    before do
-      Timezone::Parser.rule("Rule	EUAsia	1996	max	-	Oct	lastSun	 1:00u	0	-")
-      @lastSun = Timezone::Parser.rules['EUAsia'].first
-    end
+  it 'understands lastDAY rules' do
+    Timezone::Parser.rule("Rule	EUAsia	1996	max	-	Oct	lastSun	 1:00u	0	-")
+    rule = Timezone::Parser.rules['EUAsia'].first
 
-    it 'understands lastSun' do
-      # Offset is 0, so 1:00u is the same as 1:00 GMT.
-      assert_equal Time.utc(1996, 10, 27, 1, 0, 0).to_i*1_000, @lastSun.start_date
-    end
+    assert_equal Time.utc(1996, 10, 27, 1, 0, 0).to_i*1_000, rule.start_date
   end
 
-  describe 'A>=B rules' do
-    before do
-      Timezone::Parser.rule("Rule	Zion	2005	only	-	Mar	Fri>=26	2:00	1:00	D")
-      @gte = Timezone::Parser.rules['Zion'].last
-    end
-
-    it 'understands >=' do
-      assert_equal Time.utc(2005, 4, 1, 2, 0, 0).to_i*1_000, @gte.start_date
-    end
+  it 'understands DAY>=NUM rules' do
+    Timezone::Parser.rule("Rule	Zion	2005	only	-	Mar	Fri>=26	2:00	1:00	D")
+    rule = Timezone::Parser.rules['Zion'].last
+    assert_equal Time.utc(2005, 4, 1, 2, 0, 0).to_i*1_000, rule.start_date
   end
 end

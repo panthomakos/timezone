@@ -1,7 +1,7 @@
-require 'timezone/parser/entry'
+require 'timezone/parser/zone'
 require 'minitest/autorun'
 
-describe Timezone::Parser::Entry do
+describe Timezone::Parser::Zone do
   HEBRON = <<-HEBRON
 Zone	Asia/Hebron	2:20:23	-	LMT	1900 Oct
       2:00	Zion	EET	1948 May 15
@@ -20,40 +20,40 @@ Zone	Asia/Hebron	2:20:23	-	LMT	1900 Oct
   HEBRON
 
   def setup
-    @entries = Timezone::Parser.entries(HEBRON)
+    @zones = Timezone::Parser.zones(HEBRON)
     Timezone::Parser.rules.clear
   end
 
-  it 'properly parses entry names' do
-    assert @entries.all?{ |e| e.name == 'Asia/Hebron' }
+  it 'properly parses zone names' do
+    assert @zones.all?{ |e| e.name == 'Asia/Hebron' }
   end
 
   it 'properly parses offsets' do
-    assert_equal 8423, @entries.first.offset
-    assert @entries[1..-1].all?{ |e| e.offset == 7200 }
+    assert_equal 8423, @zones.first.offset
+    assert @zones[1..-1].all?{ |e| e.offset == 7200 }
   end
 
   it 'properly selects rules based on a timeline' do
     # Empty rule set.
-    assert_empty @entries[0].rules
+    assert_empty @zones[0].rules
 
     # This first rule is before the end date.
     Timezone::Parser.rule("Rule	Zion	1948	only	-	Jan	13	0:00	0:00	D")
     # This second rule is after the end date.
     Timezone::Parser.rule("Rule	Zion	1967	only	-	Oct	12	0:00	0:00	D")
 
-    assert_equal 1, @entries[1].rules.count
+    assert_equal 1, @zones[1].rules.count
   end
 
   it 'properly parses format' do
-    assert_equal 'LMT', @entries[0].format
-    assert_equal 'EET', @entries[1].format
-    assert_equal 'EE%sT', @entries[2].format
+    assert_equal 'LMT', @zones[0].format
+    assert_equal 'EET', @zones[1].format
+    assert_equal 'EE%sT', @zones[2].format
   end
 
   it 'properly parses end_date' do
-    assert_equal Time.utc(1900, 10, 1, 0, 0, 0).to_i * 1_000, @entries.first.end_date
-    assert_equal nil, @entries.last.end_date
+    assert_equal Time.utc(1900, 10, 1, 0, 0, 0).to_i * 1_000, @zones.first.end_date
+    assert_equal nil, @zones.last.end_date
   end
 
   it 'properly applies Zion rules' do
@@ -71,8 +71,8 @@ Zone	Asia/Hebron	2:20:23	-	LMT	1900 Oct
     Timezone::Parser.rule("Rule	Zion	1949	only	-	May	 1	0:00	1:00	D")
 
     rules = []
-    rules = @entries[0].data(rules, nil)
-    rules = @entries[1].data(rules, @entries[0].end_date)
+    rules = @zones[0].data(rules, nil)
+    rules = @zones[1].data(rules, @zones[0].end_date)
     Timezone::Parser.normalize!(rules)
 
     assert_equal 12, rules.count
@@ -119,7 +119,7 @@ Zone	Asia/Nicosia	2:13:28 -	LMT	1921 Nov 14
     NICOSIA
 
     def setup
-      @nicosia = Timezone::Parser.entries(NICOSIA)
+      @nicosia = Timezone::Parser.zones(NICOSIA)
       Timezone::Parser.rules.clear
     end
 

@@ -2,6 +2,20 @@ require 'json'
 
 module Timezone
   module Parser
+    def self.data(*args) ; Data.new(*args) ; end
+
+    # After all results have been collected, set the adjust dates for each
+    # data. A data's end date is based on its own offset. A data's start
+    # date is based on the previous data's end date.
+    def self.normalize!(set)
+      set.each_cons(2) do |first, second|
+        first.normalize!
+        second.start_date = first.end_date
+      end
+
+      set.last.normalize!
+    end
+
     # The very first date '-9999-01-01T00:00:00Z'.
     END_DATE = 253402300799000
 
@@ -18,14 +32,12 @@ module Timezone
         @end_date = end_date
         @dst = dst
         @offset = offset
-        @name = name.sub(/%s/, letter == '-' ? '' : letter)
+        @name = parse_name(name, letter)
         @utime = utime
       end
 
       def normalize!
-        unless @utime
-          self.end_date = end_date - (offset * 1_000)
-        end
+        self.end_date = end_date - (offset * 1_000) unless @utime
       end
 
       def end_date
@@ -41,7 +53,7 @@ module Timezone
           '_from' => _from,
           'from' => @start_date,
           '_to' => _to,
-          'to' => @end_date,
+          'to' => end_date,
           'dst' => @dst,
           'offset' => @offset,
           'name' => @name
@@ -54,13 +66,12 @@ module Timezone
 
       private
 
-      def _from
-        ftime(@start_date)
+      def parse_name(name, letter)
+        name.sub(/%s/, letter == '-' ? '' : letter)
       end
 
-      def _to
-        ftime(end_date)
-      end
+      def _from ; ftime(@start_date) ; end
+      def _to ; ftime(end_date) ; end
 
       def ftime(time)
         Time.at(time / 1_000).utc.strftime('%Y-%m-%dT%H:%M:%SZ')
