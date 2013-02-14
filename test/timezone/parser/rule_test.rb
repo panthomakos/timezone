@@ -42,16 +42,6 @@ describe Timezone::Parser::Rule do
       # Offset is 0, so 1:00u is the same as 1:00 GMT.
       assert_equal Time.utc(1996, 10, 27, 1, 0, 0).to_i*1_000, @lastSun.start_date
     end
-
-    it 'understands uTime' do
-      entry = MiniTest::Mock.new
-      entry.expect(:offset, 7_200)
-      sub = @lastSun.apply(entry)
-
-      # Offset is 2 hours, so 1:00u is the same as 3:00 GMT.
-      assert_equal Time.utc(1996, 10, 27, 3, 0, 0).to_i*1_000, sub.start_date
-      assert_equal Time.utc(1996, 10, 27, 1, 0, 0).to_i*1_000, sub.start_date - (7_200 * 1_000)
-    end
   end
 
   describe 'A>=B rules' do

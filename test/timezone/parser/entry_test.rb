@@ -38,11 +38,11 @@ Zone	Asia/Hebron	2:20:23	-	LMT	1900 Oct
     assert_empty @entries[0].rules
 
     # This first rule is before the end date.
-    r1 = Timezone::Parser::Rule.new('Zion', '1948', '', 'Jan', '13', '0:00', '0', 'D')
+    Timezone::Parser.rule("Rule	Zion	1948	only	-	Jan	13	0:00	0:00	D")
     # This second rule is after the end date.
-    r2 = Timezone::Parser::Rule.new('Zion', '1967', '', 'Oct', '12', '0:00', '0', 'D')
+    Timezone::Parser.rule("Rule	Zion	1967	only	-	Oct	12	0:00	0:00	D")
 
-    assert_equal [r1], @entries[1].rules
+    assert_equal 1, @entries[1].rules.count
   end
 
   it 'properly parses format' do
