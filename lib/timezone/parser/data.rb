@@ -13,12 +13,19 @@ module Timezone
       attr_writer :end_date
       attr_accessor :start_date, :dst, :offset, :name
 
-      def initialize(start_date, end_date, dst, offset, name)
+      def initialize(start_date, end_date, dst, offset, name, utime = false, letter = '-')
         @start_date = start_date || START_DATE
         @end_date = end_date
         @dst = dst
         @offset = offset
-        @name = name
+        @name = name.sub(/%s/, letter == '-' ? '' : letter)
+        @utime = utime
+      end
+
+      def normalize!
+        unless @utime
+          self.end_date = end_date - (offset * 1_000)
+        end
       end
 
       def end_date

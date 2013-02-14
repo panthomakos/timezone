@@ -123,8 +123,6 @@ Zone	Asia/Nicosia	2:13:28 -	LMT	1921 Nov 14
       Timezone::Parser.rules.clear
     end
 
-    # TODO This is currently returning 155 rules
-    # http://www.timeanddate.com/worldclock/timezone.html?n=680&syear=1990
     it 'properly parses' do
       Timezone::Parser.rule("Rule	Cyprus	1975	only	-	Apr	13	0:00	1:00	S")
       Timezone::Parser.rule("Rule	Cyprus	1975	only	-	Oct	12	0:00	0	-")
@@ -144,6 +142,18 @@ Zone	Asia/Nicosia	2:13:28 -	LMT	1921 Nov 14
       rules = @nicosia[1].data(rules, @nicosia[0].end_date)
       rules = @nicosia[2].data(rules, @nicosia[1].end_date)
       Timezone::Parser.normalize!(rules)
+
+      assert rules[-2].dst
+      assert_equal 10_800, rules[-2].offset
+      assert_equal 2531955600000, rules[-2].start_date
+      assert_equal 2550704400000, rules[-2].end_date
+      assert_equal 'EEST', rules[-2].name
+
+      assert !rules.last.dst
+      assert_equal 7_200, rules.last.offset
+      assert_equal 2550704400000, rules.last.start_date
+      assert_equal 253402300799000, rules.last.end_date
+      assert_equal 'EET', rules.last.name
 
       assert_equal 154, rules.count
     end

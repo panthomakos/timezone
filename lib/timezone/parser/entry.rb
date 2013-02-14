@@ -31,9 +31,11 @@ module Timezone
     # date is based on the previous entry's end date.
     def self.normalize!(set)
       set.each_cons(2) do |first, second|
-        first.end_date = first.end_date - (first.offset * 1_000)
+        first.normalize!
         second.start_date = first.end_date
       end
+
+      set.last.normalize!
     end
 
     # An entry from the TZData file.
@@ -105,7 +107,9 @@ module Timezone
                 data.has_end_date? ? data.end_date : nil,
                 sub.dst?,
                 sub.offset,
-                format)
+                format,
+                sub.utime?,
+                sub.letter)
 
               data.end_date = insert.start_date
 

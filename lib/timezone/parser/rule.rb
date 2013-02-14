@@ -13,13 +13,15 @@ module Timezone
       RuleGenerator.generate(line)
     end
 
+    END_YEAR = 2050
+
     module RuleGenerator
       class << self
         def generate(line)
           name, from, to, type, month, day, time, save, letter = \
             *line.match(RULE)[1..-1]
 
-          years(from, to).each do |year|
+          years(from, to).map do |year|
             Rule.new(name, year, type, month, day, time, save, letter)
           end
         end
@@ -34,7 +36,7 @@ module Timezone
         def end_year(from, to)
           case to
           when 'only' then from.to_i
-          when 'max' then 2050
+          when 'max' then END_YEAR
           else to.to_i
           end
         end
@@ -42,7 +44,7 @@ module Timezone
     end
 
     class Rule
-      attr_accessor :offset, :name
+      attr_accessor :offset, :name, :letter
 
       def initialize(name, year, type, month, day, time, save, letter)
         @name, @year, @type, @month, @day, @time, @save, @letter = \
@@ -67,13 +69,17 @@ module Timezone
         Timezone::Parser.rules[name] << self
       end
 
+      def utime?
+        @utime
+      end
+
       # The day the rule starts (in UTC) on the given year.
       def start_date
         parsed = Time.strptime(
           "#{@year} #{@month} #{@day} #{@time} UTC",
           '%Y %b %d %H:%M %Z')
 
-        (parsed + (@utime ? offset : 0)).to_i * 1_000
+        parsed.to_i * 1000
       end
 
       # Does this rule have daylight savings time?
