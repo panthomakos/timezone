@@ -32,51 +32,22 @@ module Timezone::Parser::Zone
         set
       end
 
+      private
 
       def update(zone, set = [], limit = nil)
-        previous = set.last
-
-        additions = []
-
-        if zone.rules.empty?
-          # If there are no rules, generate a new entry for this time period.
-          additions << Timezone::Parser.data(
-            previous && previous.end_date,
-            zone.end_date,
-            false,
-            zone.offset,
-            zone.format)
-        else
-          if previous && previous.has_end_date?
-            # If the last entry had a hard cutoff end date, create a new addition
-            # that picks up from where the last entry left off.
-            additions << Timezone::Parser.data(
-              previous.end_date,
-              nil,
-              false,
-              zone.offset,
-              zone.format)
-          else
-            # If the last entry did not have a hard cutoff end date, pop it off
-            # the stack for use in these calculations.
-            additions << set.pop
-          end
-        end
+        additions = [first_addition(zone, set)]
 
         zone.rules.each do |rule|
           additions.each_with_index do |data, i|
-            sub = rule.apply(zone)
-
-            # If the rule applies.
-            if sub.start_date > data.start_date && sub.start_date < data.end_date && (!limit || sub.start_date > limit)
+            if rule_applies?(rule, data, limit)
               insert = Timezone::Parser.data(
-                sub.start_date,
+                rule.start_date,
                 data.has_end_date? ? data.end_date : nil,
-                sub.dst?,
-                sub.offset,
+                rule.dst?,
+                rule.offset,
                 zone.format,
-                sub.utime?,
-                sub.letter)
+                rule.utime?,
+                rule.letter)
 
               data.end_date = insert.start_date
 
@@ -86,6 +57,44 @@ module Timezone::Parser::Zone
         end
 
         set + additions
+      end
+
+      # The rule has to fall within the time range (start_date..end_date)
+      # and the rule's start date cannot be over the limit.
+      def rule_applies?(rule, data, limit)
+        rule.start_date > data.start_date &&
+          rule.start_date < data.end_date &&
+          (!limit || rule.start_date > limit)
+      end
+
+      def first_addition(zone, set)
+        previous = set.last
+
+        if zone.rules.empty?
+          # If there are no rules, generate a new entry for this time period.
+          Timezone::Parser.data(
+            previous && previous.end_date,
+            zone.end_date,
+            false,
+            zone.offset,
+            zone.format)
+        else
+          if previous && previous.has_end_date?
+            # If the last entry had a hard cutoff end date, create a new
+            # addition that picks up from where the last entry left off.
+            Timezone::Parser.data(
+              previous.end_date,
+              nil,
+              false,
+              zone.offset,
+              zone.format)
+          else
+            # If the last entry did not have a hard cutoff end date, pop it off
+            # the stack for use in these calculations.
+            set.pop
+          end
+        end
+
       end
     end
   end

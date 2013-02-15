@@ -18,7 +18,9 @@ module Timezone::Parser::Zone
     private
 
     def parse_rules(name, end_date)
-      Timezone::Parser.select_rules(name, end_date)
+      Timezone::Parser
+        .select_rules(name, end_date)
+        .map{ |rule| rule.apply(self) }
     end
 
     def parse_end_date(end_date)
