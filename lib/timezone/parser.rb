@@ -5,38 +5,25 @@ require 'timezone/parser/zone/data_generator'
 
 module Timezone
   module Parser
-    # TODO [panthomakos] This needs refactoring.
+    COMMENT_REGEXP = /^\s*#/
+    RULE_REGEXP    = /^Rule/
+    LINK_REGEXP    = /^Link/
+    ZONE_REGEXP    = /^Zone/
+
     def self.parse(file)
-      zone = false
-      entries = []
-
       IO.readlines(file).map(&:strip).each do |line|
-        next if line =~ /^\s*#/
-
-        if line =~ /^Rule/
+        if line =~ COMMENT_REGEXP
+          next
+        elsif line =~ RULE_REGEXP
           rule(line)
-          next
-        elsif line =~ /^Zone/
-          entries = []
-        elsif line =~ /^Link/
+        elsif line =~ LINK_REGEXP
           # TODO [panthomakos] Need to add linking.
-          next
-        end
-
-        if line != '' && !line.nil?
-          entries << zone(line)
+        elsif line =~ ZONE_REGEXP || (line != '' && !line.nil?)
+          zone(line)
         else
-          process(entries)
-          entries = []
+          Timezone::Parser::Zone.generate(Timezone::Parser::Zone.last)
         end
       end
-
-      process(entries)
-    end
-
-    def self.process(entries)
-      return if entries.empty?
-      Timezone::Parser::Zone.generate(entries)
     end
   end
 end

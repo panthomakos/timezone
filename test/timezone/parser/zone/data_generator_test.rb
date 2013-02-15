@@ -3,6 +3,7 @@ require 'minitest/autorun'
 
 describe Timezone::Parser::Zone::DataGenerator do
   it 'properly parses Asia/Hebron Zion rules' do
+    Timezone::Parser.zones.clear
     Timezone::Parser.rules.clear
 
     Timezone::Parser.rule("Rule	Zion	1940	only	-	Jun	 1	0:00	1:00	D")
@@ -18,11 +19,10 @@ describe Timezone::Parser::Zone::DataGenerator do
     Timezone::Parser.rule("Rule	Zion	1948	1949	-	Nov	 1	2:00	0	S")
     Timezone::Parser.rule("Rule	Zion	1949	only	-	May	 1	0:00	1:00	D")
 
-    zones = []
-    zones << Timezone::Parser.zone('Zone	Asia/Hebron	2:20:23	-	LMT	1900 Oct')
-    zones << Timezone::Parser.zone('2:00	Zion	EET	1948 May 15')
+    Timezone::Parser.zone('Zone	Asia/Hebron	2:20:23	-	LMT	1900 Oct')
+    Timezone::Parser.zone('2:00	Zion	EET	1948 May 15')
 
-    zones = Timezone::Parser::Zone.generate(zones)
+    zones = Timezone::Parser::Zone.generate('Asia/Hebron')
 
     assert_equal 12, zones.count
 
@@ -61,6 +61,7 @@ describe Timezone::Parser::Zone::DataGenerator do
   end
 
   it 'properly parses Asia/Nicosia' do
+    Timezone::Parser.zones.clear
     Timezone::Parser.rules.clear
 
     Timezone::Parser.rule("Rule	Cyprus	1975	only	-	Apr	13	0:00	1:00	S")
@@ -76,13 +77,12 @@ describe Timezone::Parser::Zone::DataGenerator do
     Timezone::Parser.rule("Rule	EUAsia	1979	1995	-	Sep	lastSun	 1:00u	0	-")
     Timezone::Parser.rule("Rule	EUAsia	1996	max	-	Oct	lastSun	 1:00u	0	-")
 
-    zones = []
-    zones << Timezone::Parser.zone('Zone	Asia/Nicosia	2:13:28 -	LMT	1921 Nov 14')
-    zones << Timezone::Parser.zone('			2:00	Cyprus	EE%sT	1998 Sep')
-    zones << Timezone::Parser.zone('			2:00	EUAsia	EE%sT')
+    Timezone::Parser.zone('Zone	Asia/Nicosia	2:13:28 -	LMT	1921 Nov 14')
+    Timezone::Parser.zone('			2:00	Cyprus	EE%sT	1998 Sep')
+    Timezone::Parser.zone('			2:00	EUAsia	EE%sT')
 
 
-    zones = Timezone::Parser::Zone.generate(zones)
+    zones = Timezone::Parser::Zone.generate('Asia/Nicosia')
 
     assert zones[-2].dst
     assert_equal 10_800, zones[-2].offset

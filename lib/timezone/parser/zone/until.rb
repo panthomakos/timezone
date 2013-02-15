@@ -1,19 +1,22 @@
 require 'timezone/parser/zone'
 require 'time'
 
+# Responsible for parsing the UNTIL value of a TZData zone entry.
 module Timezone::Parser::Zone
   module Until
-    # Formats for the UNTIL value in the TZData entry.
     FORMATS = [
       '%Y %b', # 1900 Oct
       '%Y %b %e', # 1948 May 15
     ]
 
-    # The integer value of UNTIL with offset taken into consideration.
-    def self.parse(end_date)
+    # Tries to parse the date using FORMATS. If parsing of one format fails
+    # (raises and ArgumentError) then try the next format.
+    #
+    # Returns the millisecond value of date.
+    def self.parse(date)
       FORMATS.each do |format|
         begin
-          return Time.strptime(end_date+' UTC', format+' %Z').to_i * 1_000
+          return Time.strptime(date+' UTC', format+' %Z').to_i * 1_000
         rescue ArgumentError
           next
         end

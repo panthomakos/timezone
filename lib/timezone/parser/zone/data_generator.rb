@@ -8,7 +8,11 @@ module Timezone::Parser::Zone
   # TODO [panthomakos] This needs refactoring.
   module DataGenerator
     class << self
-      def generate(zones)
+      def generate(zone)
+        zones = Timezone::Parser.zones[zone].to_a
+
+        return if zones.empty?
+
         set = zones
           .each_cons(2)
           .inject(update(zones.first)) do |set, (previous, zone)|

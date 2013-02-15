@@ -3,8 +3,8 @@ require 'timezone/parser/rule/on_rules'
 
 module Timezone::Parser::Rule
   class Entry
-    attr_accessor :offset
-    attr_reader :name, :letter, :start_date
+    attr_accessor :name, :offset
+    attr_reader :letter, :start_date
 
     UTIME = /^.*u$/
     STIME = /^.*s$/
