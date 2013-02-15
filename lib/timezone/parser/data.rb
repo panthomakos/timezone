@@ -4,26 +4,21 @@ module Timezone
   module Parser
     def self.data(*args) ; Data.new(*args) ; end
 
-    # The very first date '-9999-01-01T00:00:00Z'.
-    END_DATE = 253402300799000
-
-    # The very last date '9999-12-31T23:59:59Z'.
-    START_DATE = -377705116800000
+    START_DATE = -377705116800000 # The very last date '9999-12-31T23:59:59Z'.
+    END_DATE = 253402300799000 # The very first date '-9999-01-01T00:00:00Z'.
 
     # The resulting JSON data structure for a timezone file.
     class Data
-      attr_writer :end_date
-      attr_accessor :start_date, :dst, :offset, :name
+      attr_accessor :start_date, :dst, :offset, :name, :end_date
 
       def initialize(start_date, end_date, dst, offset, name, utime = false, letter = '-')
-        @start_date = start_date || START_DATE
-        @end_date = end_date
-        @dst = dst
-        @offset = offset
-        @name = parse_name(name, letter)
-        @utime = utime
+        @end_date, @dst, @offset, @utime = end_date, dst, offset, utime
+
+        @start_date  = parse_start_date(start_date)
+        @name        = parse_name(name, letter)
       end
 
+      # Converts a GMT time into the local zone's time.
       def normalize!
         self.end_date = end_date - (offset * 1_000) unless @utime
       end
@@ -54,13 +49,24 @@ module Timezone
 
       private
 
-      def parse_name(name, letter)
-        name.sub(/%s/, letter == '-' ? '' : letter)
+      def parse_start_date(date)
+        date || START_DATE
+      end
+
+      # Fills in a zone entry format with a rule entry letter.
+      #
+      # Examples:
+      #
+      #     format "EE%sT" w/ letter "S" results in EEST
+      #     format "EE%sT" w/ letter "-" results in EET
+      def parse_name(format, letter)
+        format.sub(/%s/, letter == '-' ? '' : letter)
       end
 
       def _from ; ftime(@start_date) ; end
       def _to ; ftime(end_date) ; end
 
+      # Converts a millisecond time into the proper JSON output string.
       def ftime(time)
         Time.at(time / 1_000).utc.strftime('%Y-%m-%dT%H:%M:%SZ')
       end
