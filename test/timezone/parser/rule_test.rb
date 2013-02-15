@@ -24,6 +24,11 @@ describe Timezone::Parser::Rule do
     end
   end
 
+  it 'selects rules given an end date' do
+    end_date = Time.new(1947, 1, 1).to_i * 1_000
+    assert_equal [@rule], Timezone::Parser.select_rules('Zion', end_date)
+  end
+
   it 'knows daylight savings time' do
     assert @rule.dst?
   end

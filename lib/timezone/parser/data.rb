@@ -4,18 +4,6 @@ module Timezone
   module Parser
     def self.data(*args) ; Data.new(*args) ; end
 
-    # After all results have been collected, set the adjust dates for each
-    # data. A data's end date is based on its own offset. A data's start
-    # date is based on the previous data's end date.
-    def self.normalize!(set)
-      set.each_cons(2) do |first, second|
-        first.normalize!
-        second.start_date = first.end_date
-      end
-
-      set.last.normalize!
-    end
-
     # The very first date '-9999-01-01T00:00:00Z'.
     END_DATE = 253402300799000
 

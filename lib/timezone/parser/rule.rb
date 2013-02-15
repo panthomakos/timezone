@@ -4,8 +4,15 @@ module Timezone
   module Parser
     # Given a rule from a TZDATA file, generate the appropriate rule objects.
     def self.rule(line) ; Rule.generate(line) ; end
+
     # Get a list of all processed rules.
     def self.rules ; Rule.rules ; end
+
+    # Select rules based on a name and end date.
+    def self.select_rules(name, end_date)
+      rules.fetch(name){ [] }
+        .select{ |rule| end_date.nil? || rule.start_date < end_date }
+    end
 
     module Rule
       # Format:  Rule	NAME	FROM	TO	TYPE	IN	ON	AT	SAVE	LETTER/S

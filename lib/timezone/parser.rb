@@ -1,9 +1,11 @@
 require 'timezone/parser/rule'
 require 'timezone/parser/data'
 require 'timezone/parser/zone'
+require 'timezone/parser/zone/data_generator'
 
 module Timezone
   module Parser
+    # TODO [panthomakos] This needs refactoring.
     def self.parse(file)
       zone = false
       entries = []
@@ -17,7 +19,7 @@ module Timezone
         elsif line =~ /^Zone/
           entries = []
         elsif line =~ /^Link/
-          # TODO We need to add linking.
+          # TODO [panthomakos] Need to add linking.
           next
         end
 
@@ -33,15 +35,8 @@ module Timezone
     end
 
     def self.process(entries)
-      return [] if entries.empty?
-
-      rules = []
-      previous = nil
-
-      entries.map{ |entry|
-        rules = entry.data(rules, previous && previous.end_date)
-        previous = entry
-      }.flatten
+      return if entries.empty?
+      Timezone::Parser::Zone.generate(entries)
     end
   end
 end
