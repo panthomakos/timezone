@@ -4,23 +4,47 @@ module Timezone
   module Parser
     def self.data(*args) ; Data.new(*args) ; end
 
+    def self.from_zone(previous, zone)
+      data(previous && previous.end_date, zone.end_date, zone)
+    end
+
+    def self.extension(previous, zone)
+      data(previous.end_date, nil, zone)
+    end
+
+    def self.from_rule(zone, rule)
+      data(rule.start_date, nil, zone, rule)
+    end
+
     START_DATE = -377705116800000 # The very last date '9999-12-31T23:59:59Z'.
     END_DATE = 253402300799000 # The very first date '-9999-01-01T00:00:00Z'.
 
+    class NilRule
+      def letter ; '-' ; end
+      def offset ; 0 ; end
+      def utime? ; false ; end
+      def dst? ; false ; end
+    end
+
     # The resulting JSON data structure for a timezone file.
     class Data
-      attr_accessor :start_date, :dst, :offset, :name, :end_date
+      attr_accessor :start_date, :dst, :offset, :name
 
-      def initialize(start_date, end_date, dst, offset, name, utime = false, letter = '-')
-        @end_date, @dst, @offset, @utime = end_date, dst, offset, utime
-
-        @start_date  = parse_start_date(start_date)
-        @name        = parse_name(name, letter)
+      def initialize(start_date, end_date, zone, rule = NilRule.new)
+        @dst = rule.dst?
+        @offset = parse_offset(zone, rule)
+        @name = parse_name(zone.format, rule.letter)
+        @utime = rule.utime?
+        @start_date = parse_start_date(start_date)
+        self.end_date = end_date
       end
 
-      # Converts a GMT time into the local zone's time.
-      def normalize!
-        self.end_date = end_date - (offset * 1_000) unless @utime
+      def end_date=(date)
+        if date.nil? || @utime
+          @end_date = date
+        else
+          @end_date = date - (@offset * 1_000)
+        end
       end
 
       def end_date
@@ -48,6 +72,10 @@ module Timezone
       end
 
       private
+
+      def parse_offset(zone, rule)
+        zone.offset + rule.offset
+      end
 
       def parse_start_date(date)
         date || START_DATE

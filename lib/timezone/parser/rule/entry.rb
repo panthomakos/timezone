@@ -27,11 +27,6 @@ module Timezone::Parser::Rule
     def stime? ; @stime ; end
     def dst?   ; @dst   ; end
 
-    # Create a new rule with an offset based on the given zone entry.
-    def apply(zone_entry)
-      dup.tap{ |rule| rule.offset = zone_entry.offset + offset }
-    end
-
     private
 
     # Day should be zero padded.

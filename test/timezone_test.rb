@@ -81,6 +81,45 @@ class TimezoneTest < Test::Unit::TestCase
     assert_equal local.to_i, timezone.time(utc).to_i
   end
 
+  # http://www.timeanddate.com/worldclock/clockchange.html?n=137&year=2011
+  def test_historical_time_change_in_la_forward
+    timezone = Timezone::Zone.new :zone => 'America/Los_Angeles'
+    local = Time.strptime('2011-03-13T01:59:59 UTC', '%Y-%m-%dT%H:%M:%S %Z')
+    utc = Time.strptime('2011-03-13T09:59:59 UTC', '%Y-%m-%dT%H:%M:%S %Z')
+    assert_equal local.to_i, timezone.time(utc).to_i
+
+    timezone = Timezone::Zone.new :zone => 'America/Los_Angeles'
+    local = Time.strptime('2011-03-13T03:00:00 UTC', '%Y-%m-%dT%H:%M:%S %Z')
+    utc = Time.strptime('2011-03-13T10:00:00 UTC', '%Y-%m-%dT%H:%M:%S %Z')
+    assert_equal local.to_i, timezone.time(utc).to_i
+  end
+
+  # http://www.timeanddate.com/worldclock/clockchange.html?n=137&year=2011
+  def test_historical_time_change_in_la_backward
+    timezone = Timezone::Zone.new :zone => 'America/Los_Angeles'
+    local = Time.strptime('2011-11-06T01:59:59 UTC', '%Y-%m-%dT%H:%M:%S %Z')
+    utc = Time.strptime('2011-11-06T08:59:59 UTC', '%Y-%m-%dT%H:%M:%S %Z')
+    assert_equal local.to_i, timezone.time(utc).to_i
+
+    timezone = Timezone::Zone.new :zone => 'America/Los_Angeles'
+    local = Time.strptime('2011-11-06T01:00:00 UTC', '%Y-%m-%dT%H:%M:%S %Z')
+    utc = Time.strptime('2011-11-06T09:00:00 UTC', '%Y-%m-%dT%H:%M:%S %Z')
+    assert_equal local.to_i, timezone.time(utc).to_i
+  end
+
+  # http://www.timeanddate.com/worldclock/clockchange.html?n=2364&year=1940
+  def test_historical_time_change_in_hebron
+    timezone = Timezone::Zone.new :zone => 'Asia/Hebron'
+    local = Time.strptime('1940-05-31T23:59:59 UTC', '%Y-%m-%dT%H:%M:%S %Z')
+    utc = Time.strptime('1940-05-31T21:59:59 UTC', '%Y-%m-%dT%H:%M:%S %Z')
+    assert_equal local.to_i, timezone.time(utc).to_i
+
+    timezone = Timezone::Zone.new :zone => 'Asia/Hebron'
+    local = Time.strptime('1940-06-01T01:00:00 UTC', '%Y-%m-%dT%H:%M:%S %Z')
+    utc = Time.strptime('1940-05-31T22:00:00 UTC', '%Y-%m-%dT%H:%M:%S %Z')
+    assert_equal local.to_i, timezone.time(utc).to_i
+  end
+
   def test_loading_half_hour_timezone
     timezone = Timezone::Zone.new :zone => 'Asia/Kathmandu'
     utc = Time.utc(2011, 1, 4, 3, 51, 29)

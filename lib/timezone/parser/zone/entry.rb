@@ -22,9 +22,7 @@ module Timezone::Parser::Zone
     # Only select rules that fall within the timeline of this entry.
     # Then apply the rule to this entry so that the offset is accurate.
     def parse_rules(name, end_date)
-      Timezone::Parser
-        .select_rules(name, end_date)
-        .map{ |rule| rule.apply(self) }
+      Timezone::Parser.select_rules(name, end_date).sort_by(&:start_date)
     end
 
     # Use the UNTIL parser to decode the end date.
