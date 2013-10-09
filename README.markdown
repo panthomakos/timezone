@@ -42,6 +42,13 @@ Finally, pass the coordinates to your timezone initialization function.
     timezone.time Time.now
     => 2011-02-12 12:02:13 UTC
 
+Also, you can display time zone in the Rails way
+
+    timezone = Timezone::Zone.new :latlon => [-34.92771808058, 138.477041423321]
+    timezone.active_support_time_zone
+    => "Eastern Time (US & Canada)"
+
+
 ## Getting the complete list of timezones.
 
 Retrieving the complete list of timezones is quite simple:
@@ -82,6 +89,6 @@ Finally, by default the **Zone#list** method will order the results by the timez
       c.order_list_by = :title 
     end
 
-## Build Status [![Build Status](https://secure.travis-ci.org/panthomakos/timezone.png?branch=master)](http://travis-ci.org/panthomakos/timezone)
+## Build Status [![Build Status](https://secure.travis-ci.org/chebyte/timezone.png?branch=master)](http://travis-ci.org/chebyte/timezone)
 
-## Code Quality [![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/panthomakos/timezone)
+## Code Quality [![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/chebyte/timezone)
