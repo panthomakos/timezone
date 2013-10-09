@@ -4,11 +4,12 @@ require 'time'
 require 'net/http'
 require File.expand_path(File.dirname(__FILE__) + '/error')
 require File.expand_path(File.dirname(__FILE__) + '/configure')
+require File.expand_path(File.dirname(__FILE__) + '/active_support')
 
 module Timezone
   class Zone
     include Comparable
-    attr_accessor :rules, :zone
+    attr_accessor :rules, :zone, :active_support_time_zone
 
     ZONE_FILE_PATH = File.expand_path(File.dirname(__FILE__)+'/../../data')
 
@@ -36,6 +37,7 @@ module Timezone
 
       @rules = data['zone']
       @zone = data['_zone'] || options[:zone]
+      @active_support_time_zone = Timezone::ActiveSupport.format(@zone)
     end
 
     # Determine the time in the timezone.
@@ -150,5 +152,6 @@ module Timezone
         raise Timezone::Error::ParseTime, e.message
       end
     end
+
   end
 end
