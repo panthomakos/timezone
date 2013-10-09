@@ -182,4 +182,12 @@ class TimezoneTest < Test::Unit::TestCase
       assert_equal timezone.utc_offset(utc), 10800
     end
   end
+
+  def test_time_zone_mapping
+    Timezone::Configure.begin { |c| c.username = 'timezone' }
+    timezone = Timezone::Zone.new :latlon => [-34.92771808058, 138.477041423321]
+    assert_equal 'Australia/Adelaide', timezone.zone
+    assert_equal 'Adelaide', timezone.active_support_time_zone
+  end
+
 end
