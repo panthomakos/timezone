@@ -404,7 +404,7 @@ module Timezone
     }
 
     def self.format(zone)
-      TIMEZONE_MAPPING.select{|k, v| k == zone }.values.first      
+      TIMEZONE_MAPPING[zone]
     end
   end
 end

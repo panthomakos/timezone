@@ -42,12 +42,11 @@ Finally, pass the coordinates to your timezone initialization function.
     timezone.time Time.now
     => 2011-02-12 12:02:13 UTC
 
-Also, you can display time zone in the Rails way
+## Displaying a timezone's name in a Rails/ActiveSupport compatible format
 
     timezone = Timezone::Zone.new :latlon => [-34.92771808058, 138.477041423321]
     timezone.active_support_time_zone
     => "Eastern Time (US & Canada)"
-
 
 ## Getting the complete list of timezones.
 
@@ -55,7 +54,7 @@ Retrieving the complete list of timezones is quite simple:
 
     timezones = Timezone::Zone.names
     => ["Africa/Abidjan", "Africa/Accra", "Africa/Addis_Ababa", "Africa/Algiers", ...]
-    
+
 ## Listing current information from specific timezones
 
 If you need information from a specific set of timezones rather than a complete list or one at a time, this can be accomplished with the following:
@@ -69,19 +68,19 @@ If you need information from a specific set of timezones rather than a complete 
     #   :utc_offset => -5, # UTC offset in hours
     #   :dst => false
     # }
-    
+
 You can customize what is placed in the `:title` key in the configuration block. This would be useful in the case of an HTML select list that you would like to display different values than the default name.  For example, the following configuration will set the `:title` key in the list hash to "Chicago" rather than "America/Chicago".
 
     Timezone::Configure.build do |c|
       c.replace "America/Chicago", with: "Chicago"
     end
-    
+
 Also, if you make numerous calls to the **Zone#list** method in your software, but you would like to avoid duplicating which timezones to retrieve, you can set a default in the configuration:
 
     Timezone::Configure.begin do |c|
       c.default_for_list = "America/Chicago", "America/New_York", "Australia/Sydney"
     end
-    
+
 Finally, by default the **Zone#list** method will order the results by the timezone's UTC offset. You can customize this behavior this way:
 
     Timezone::Configure.begin do |c|
@@ -89,6 +88,6 @@ Finally, by default the **Zone#list** method will order the results by the timez
       c.order_list_by = :title 
     end
 
-## Build Status [![Build Status](https://secure.travis-ci.org/chebyte/timezone.png?branch=master)](http://travis-ci.org/chebyte/timezone)
+## Build Status [![Build Status](https://secure.travis-ci.org/panthomakos/timezone.png?branch=master)](http://travis-ci.org/panthomakos/timezone)
 
-## Code Quality [![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/chebyte/timezone)
+## Code Quality [![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/panthomakos/timezone)

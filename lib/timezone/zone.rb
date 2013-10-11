@@ -9,7 +9,7 @@ require File.expand_path(File.dirname(__FILE__) + '/active_support')
 module Timezone
   class Zone
     include Comparable
-    attr_accessor :rules, :zone, :active_support_time_zone
+    attr_reader :rules, :zone
 
     ZONE_FILE_PATH = File.expand_path(File.dirname(__FILE__)+'/../../data')
 
@@ -37,7 +37,10 @@ module Timezone
 
       @rules = data['zone']
       @zone = data['_zone'] || options[:zone]
-      @active_support_time_zone = Timezone::ActiveSupport.format(@zone)
+    end
+
+    def active_support_time_zone
+      @active_support_time_zone ||= Timezone::ActiveSupport.format(@zone)
     end
 
     # Determine the time in the timezone.
@@ -109,7 +112,6 @@ module Timezone
         end
         @zones.sort_by! { |zone| zone[Configure.order_list_by] }
       end
-
     end
 
   private
