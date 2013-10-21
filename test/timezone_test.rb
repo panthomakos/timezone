@@ -1,6 +1,7 @@
 require 'timezone'
 require 'timezone/zone'
 require 'test/unit'
+require 'timecop'
 
 class TimezoneTest < Test::Unit::TestCase
   def test_valid_timezone
@@ -27,6 +28,15 @@ class TimezoneTest < Test::Unit::TestCase
     assert list.count == 2
     assert list.first.is_a?(Hash)
     assert list.first[:zone] == "Australia/Sydney"
+  end
+
+  def test_timezone_list
+    Timecop.freeze(Time.new(2012,2,2,0,0,0)) do
+      assert !Timezone::Zone.list('EST5EDT').first[:dst]
+    end
+    Timecop.freeze(Time.new(2013,6,6,0,0,0)) do
+      assert Timezone::Zone.list('EST5EDT').first[:dst]
+    end
   end
 
   def test_timezone_custom_list_order

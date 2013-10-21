@@ -56,6 +56,11 @@ module Timezone
       reference.utc + rule_for_reference(reference)['offset']
     end
 
+    # Whether or not the time in the timezone is in DST.
+    def dst?(reference)
+      rule_for_reference(reference)['dst']
+    end
+
     # Get the current UTC offset in seconds for this timezone.
     #
     #   timezone.utc_offset(reference)
@@ -100,6 +105,7 @@ module Timezone
         list = self.names.select { |name| zones.include? name } # only select zones if they exist
 
         @zones = []
+        now = Time.now
         list.each do |zone|
           item = Zone.new(zone: zone)
           @zones << {
@@ -107,7 +113,7 @@ module Timezone
             :title => Configure.replacements[item.zone] || item.zone,
             :offset => item.utc_offset,
             :utc_offset => (item.utc_offset/(60*60)),
-            :dst => item.time(Time.now).dst?
+            :dst => item.dst?(now)
           }
         end
         @zones.sort_by! { |zone| zone[Configure.order_list_by] }

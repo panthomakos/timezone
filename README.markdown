@@ -14,7 +14,8 @@ Then install your bundle.
 
 ## Getting Started
 
-Getting the current time or any historical time in any timezone, with daylight savings time taken into consideration, is easy:
+Getting the current time or any historical time in any timezone, with daylight
+savings time taken into consideration, is easy:
 
     timezone = Timezone::Zone.new :zone => 'America/Los_Angeles'
     timezone.time Time.now
@@ -22,7 +23,19 @@ Getting the current time or any historical time in any timezone, with daylight s
     timezone.time Time.utc(2010, 1, 1, 0, 0, 0)
     => 2009-12-31 16:00:00 UTC
 
-Time is always returned in the UTC timezone, but it accurately reflects the actual time in the specified timezone. The reason for this is that this function also takes into account daylight savings time, which can alter the timezone offset and hence put Ruby in the wrong timezone.
+Time is always returned in the UTC timezone, but it accurately reflects the
+actual time in the specified timezone. The reason for this is that this function
+also takes into account daylight savings time, which can alter the timezone
+offset and hence put Ruby in the wrong timezone.
+
+You can also query a `Timezone::Zone` object to determine if it was in Daylight
+Savings Time:
+
+    timezone = Timezone::Zone.new :zone => 'America/Los_Angeles'
+    timezone.dst?(Time.now)
+    => true
+    timezone.dst?(Time.utc(2010, 1, 1, 0, 0, 0))
+    => false
 
 ## Getting the timezone for a specific latitude and longitude
 
