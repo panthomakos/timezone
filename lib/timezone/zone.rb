@@ -147,7 +147,11 @@ module Timezone
     def timezone_id lat, lon #:nodoc:
       begin
         response = Net::HTTP.get(Timezone::Configure.url, "/timezoneJSON?lat=#{lat}&lng=#{lon}&username=#{Timezone::Configure.username}")
-        JSON.parse(response)['timezoneId']
+        id = JSON.parse(response)['timezoneId']
+        if id['status']
+          raise TimeZone::Error::GeoNames, "api limit reached" if id['status']['value'] == 18
+        end
+        return id
       rescue Exception => e
         raise Timezone::Error::GeoNames, e.message
       end

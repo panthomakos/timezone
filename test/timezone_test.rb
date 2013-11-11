@@ -1,6 +1,7 @@
 require 'timezone'
 require 'timezone/zone'
 require 'test/unit'
+require "mocha/setup"
 require 'timecop'
 
 class TimezoneTest < Test::Unit::TestCase
@@ -138,9 +139,23 @@ class TimezoneTest < Test::Unit::TestCase
   end
 
   def test_using_lat_lon_coordinates
+    mock_path = File.expand_path(File.join(File.dirname(__FILE__), 'mocks'))
+    mock = File.open(mock_path + '/lat_lon_coords.txt').read
+    http_mock = mock('Net::HTTPResponse')
+    http_mock.stubs(:body).returns(mock)
     Timezone::Configure.begin { |c| c.username = 'timezone' }
     timezone = Timezone::Zone.new :latlon => [-34.92771808058, 138.477041423321]
     assert_equal 'Australia/Adelaide', timezone.zone
+  end
+
+  def test_api_limit_read_lat_lon_coordinates
+    mock_path = File.expand_path(File.join(File.dirname(__FILE__), 'mocks'))
+    mock = File.open(mock_path + '/api_limit_reached.txt').read
+    http_mock = mock('Net::HTTPResponse')
+    http_mock.stubs(:body).returns(mock)
+    assert_raise Timezone::Error::GeoNames do
+      Timezone::Zone.new :latlon => [-34.92771808058, 138.477041423321]
+    end
   end
 
   def test_australian_timezone_with_dst

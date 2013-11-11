@@ -1,0 +1,1 @@
+{"time":"2013-10-29 15:30","countryName":"Australia","sunset":"2013-10-30 19:42","rawOffset":9.5,"dstOffset":9.5,"countryCode":"AU","gmtOffset":10.5,"lng":138.477041423321,"sunrise":"2013-10-30 06:17","timezoneId":"Australia/Adelaide","lat":-34.92771808058}
