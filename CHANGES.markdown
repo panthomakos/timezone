@@ -1,3 +1,11 @@
+# 0.3.2
+
+* Added `Timezone::Configure::http_client` for configuring alternative http
+  clients. (panthomakos)
+* Added `Timezone::Configure::protocol` for configuring alternative net
+  protocols. (panthomakos)
+* Fixed issue w/ code that detects API rate limiting. (panthomakos)
+
 # 0.2.1
 
 * Update JSON data from the tzdata repository. (panthomakos, petergoldstein)
