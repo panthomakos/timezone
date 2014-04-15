@@ -101,6 +101,27 @@ Finally, by default the **Zone#list** method will order the results by the timez
       c.order_list_by = :title 
     end
 
+## Using Your Own HTTP Client
+
+If you have non-standard http request needs or want to have more control over
+API calls to Geonames, you can write your own very simple http client wrapper
+instead of using the built-in default.
+
+    class MyHTTPClient
+      def initialize(protocol, host)
+      end
+
+      # Return a response object that responds to #body and #code
+      def get(url)
+      end
+    end
+
+    Timezone::Configure.begin do |c|
+      c.http_client = MyHTTPClient
+    end
+
+For an example, see `Timezone::NetHTTPClient` which uses the standard `Net::HTTP` library to perform API calls.
+
 ## Build Status [![Build Status](https://secure.travis-ci.org/panthomakos/timezone.png?branch=master)](http://travis-ci.org/panthomakos/timezone)
 
 ## Code Quality [![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/panthomakos/timezone)

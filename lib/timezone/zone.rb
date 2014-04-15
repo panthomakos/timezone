@@ -1,7 +1,7 @@
 require 'json'
 require 'date'
 require 'time'
-require 'net/http'
+
 require File.expand_path(File.dirname(__FILE__) + '/error')
 require File.expand_path(File.dirname(__FILE__) + '/configure')
 require File.expand_path(File.dirname(__FILE__) + '/active_support')
@@ -146,13 +146,17 @@ module Timezone
 
     def timezone_id lat, lon #:nodoc:
       begin
-        response = Net::HTTP.get(Timezone::Configure.url, "/timezoneJSON?lat=#{lat}&lng=#{lon}&username=#{Timezone::Configure.username}")
-        id = JSON.parse(response)['timezoneId']
-        if id['status']
-          raise TimeZone::Error::GeoNames, "api limit reached" if id['status']['value'] == 18
+        response = http_client.get("/timezoneJSON?lat=#{lat}&lng=#{lon}&username=#{Timezone::Configure.username}")
+        return nil unless response.code =~ /^2\d\d$/
+
+        data = JSON.parse(response.body)
+
+        if data['status'] && data['status']['value'] == 18
+          raise Timezone::Error::GeoNames, "api limit reached"
         end
-        return id
-      rescue Exception => e
+
+        return data['timezoneId']
+      rescue => e
         raise Timezone::Error::GeoNames, e.message
       end
     end
@@ -165,5 +169,11 @@ module Timezone
       end
     end
 
+    private
+
+    def http_client #:nodoc:
+      @http_client ||= Timezone::Configure.http_client.new(
+        Timezone::Configure.protocol, Timezone::Configure.url)
+    end
   end
 end

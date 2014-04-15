@@ -138,22 +138,44 @@ class TimezoneTest < Test::Unit::TestCase
     assert_equal local.to_i, timezone.time(utc).to_i
   end
 
+  class HTTPTestClient
+    class << self ; attr_accessor :body ; end
+
+    Response = Struct.new(:body) do
+      def code ; '200' ; end
+    end
+
+    def initialize(protocol, host)
+    end
+
+    def get(url)
+      HTTPTestClient::Response.new(self.class.body)
+    end
+  end
+
   def test_using_lat_lon_coordinates
     mock_path = File.expand_path(File.join(File.dirname(__FILE__), 'mocks'))
-    mock = File.open(mock_path + '/lat_lon_coords.txt').read
-    http_mock = mock('Net::HTTPResponse')
-    http_mock.stubs(:body).returns(mock)
-    Timezone::Configure.begin { |c| c.username = 'timezone' }
+    HTTPTestClient.body = File.open(mock_path + '/lat_lon_coords.txt').read
+
+    Timezone::Configure.begin do |c|
+      c.http_client = HTTPTestClient
+      c.username = 'timezone'
+    end
+
     timezone = Timezone::Zone.new :latlon => [-34.92771808058, 138.477041423321]
     assert_equal 'Australia/Adelaide', timezone.zone
   end
 
   def test_api_limit_read_lat_lon_coordinates
     mock_path = File.expand_path(File.join(File.dirname(__FILE__), 'mocks'))
-    mock = File.open(mock_path + '/api_limit_reached.txt').read
-    http_mock = mock('Net::HTTPResponse')
-    http_mock.stubs(:body).returns(mock)
-    assert_raise Timezone::Error::GeoNames do
+    HTTPTestClient.body = File.open(mock_path + '/api_limit_reached.txt').read
+
+    Timezone::Configure.begin do |c|
+      c.http_client = HTTPTestClient
+      c.username = 'timezone'
+    end
+
+    assert_raise Timezone::Error::GeoNames, 'api limit reached' do
       Timezone::Zone.new :latlon => [-34.92771808058, 138.477041423321]
     end
   end

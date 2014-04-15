@@ -1,20 +1,70 @@
+require 'timezone/net_http_client'
+
 module Timezone
   # Configuration class for the Timezone gem.
   #
-  #   Timezone::Configure.begin do |c| ... end
+  # You'll want to sign up for a geonames username at
+  # {http://www.geonames.org/login Geonames}. Use the username to
+  # configure your application for latitude and longitude based
+  # timezone searches.
   #
-  # c.username = username - the geonames username you use to access the geonames timezone API.
+  # If you aren't going to initialize timezone objects based on lat,lng
+  # then this configuration is not necessary.
   #
-  # Signup for a geonames username at http://www.geonames.org/login. Use that username to configure
-  # your application for latitude and longitude based timezone searches. If you aren't going to
-  # initialize timezone objects based on latitude and longitude then this configuration is not necessary.
+  # @example
+  #     Timezone::Configure.begin do |c|
+  #       c.url = 'api.geonames.org'
+  #       c.username = 'foo-bar'
+  #     end
+  #
   class Configure
+    # The Geonames API URL
+    #
+    # @return [Sting]
+    #   the Geonames API URL ('api.geonames.org')
     def self.url
       @@url ||= 'api.geonames.org'
     end
 
-    def self.url= url
+    # The Geonames API URL
+    #
+    # @param [Sting] url
+    #   the Geonames API URL
+    def self.url=(url)
       @@url = url
+    end
+
+    # The Geonames API HTTP protocol
+    #
+    # @param [String] protocol
+    #   the Geonames API HTTP procotol
+    def self.protocol=(protocol)
+      @@protocol = protocol
+    end
+
+    # The Geonames API HTTP protocol
+    #
+    # @return [Sting]
+    #   the Geonames API URL ('api.geonames.org')
+    def self.protocol
+      @protocol ||= 'http'
+    end
+
+    # The HTTP client that handles requests to geonames
+    #
+    # @return [Object]
+    #   the HTTP client ({Timezone::NetHTTPClient Timezone::NetHTTPClient})
+    def self.http_client
+      @@http_client ||= Timezone::NetHTTPClient
+    end
+
+    # The HTTP client that handles requests to geonames
+    #
+    # @param [Object] client
+    #   the HTTP client that handles requests to geonames
+    #
+    def self.http_client=(client)
+      @@http_client = client
     end
 
     def self.username
@@ -53,6 +103,5 @@ module Timezone
     def self.order_list_by=(order)
       @@order_by = order
     end
-
   end
 end
