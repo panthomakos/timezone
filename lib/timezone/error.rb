@@ -11,6 +11,7 @@ module Timezone
     class InvalidZone < Base; end
     class NilZone < Base; end
     class GeoNames < Base; end
+    class Google < Base; end
     class ParseTime < Base; end
   end
 end
