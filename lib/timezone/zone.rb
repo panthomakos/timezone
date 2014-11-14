@@ -168,9 +168,7 @@ module Timezone
           data = JSON.parse(response.body)
 
           if data['status'] && data['status']['value'] == 18
-            p "area 1"
             if Timezone::Configure.google_api_key
-              p "google api key exists in area 1"
               google_timezone_id lat, lon
             else
               raise Timezone::Error::GeoNames, "api limit reached"
@@ -178,16 +176,11 @@ module Timezone
           end
 
           return data['timezoneId']
-        else
-          p "area 2 - failed to find geonames"
+        elsif Timezone::Configure.google_api_key
           google_timezone_id lat, lon
         end
       rescue => e
-        p "area 3 - rescue"
-        p "***#{Timezone::Configure.username}***"
-        p Timezone::Configure.google_api_key
         if Timezone::Configure.google_api_key
-          p "google api key exists in area 3"
           google_timezone_id lat, lon
         else
           raise Timezone::Error::GeoNames, e.message
@@ -197,35 +190,21 @@ module Timezone
 
     def google_timezone_id lat, lon #:nodoc:
       begin
-        p "google area 1"
+        protocol = Timezone::Configure.google_protocol
+        url = Timezone::Configure.google_url.split('/', 2).first
         path = Timezone::Configure.google_url.split('/', 2).last
-        p path
         timestamp = Time.zone.now.to_i
-        p timestamp
-        p path
-        p lat
-        p lon
-        p "/#{path}?location=#{lat},#{lon}"
-        p "/#{path}?location=#{lat},#{lon}&timestamp=#{timestamp}"
-        p "/#{path}?location=#{lat},#{lon}&timestamp=#{timestamp}&key=#{Timezone::Configure.google_api_key}"
-        # http_client.get("/#{path}?location=#{lat},#{lng}&timestamp=#{timestamp}&key=#{Timezone::Configure.google_api_key}")
-        response = http_client_google.get("/#{path}?location=#{lat},#{lon}&timestamp=#{timestamp}&key=#{Timezone::Configure.google_api_key}")
-        p response
-        p response.code
+        api_key = Timezone::Configure.google_api_key
+        response = http_client(protocol, url).get("/#{path}?location=#{lat},#{lon}&timestamp=#{timestamp}&key=#{api_key}")
         if response.code =~ /^2\d\d$/
-          p "in google area 2"
           data = JSON.parse(response.body)
-          p data
           unless data['status'] == 'OK'
-            p "google failed"
             raise Timezone::Error::Google, data['status']
           end
-          p "google did not fail"
 
           return data['timeZoneId']
         end
       rescue => e
-        p "google really failed"
         raise Timezone::Error::Google, e.message
       end
     end
@@ -240,18 +219,10 @@ module Timezone
 
     private
 
-    def http_client #:nodoc:
+    def http_client(protocol, url) #:nodoc:
       @http_client ||= Timezone::Configure.http_client.new(
-        Timezone::Configure.protocol, Timezone::Configure.url)
-    end
-
-    def http_client_google #:nodoc:
-      p Timezone::Configure.google_protocol
-      p Timezone::Configure.google_url.split('/', 2).first
-      @http_client_google ||= Timezone::Configure.http_client.new(
-        Timezone::Configure.google_protocol,
-        Timezone::Configure.google_url.split('/', 2).first
-        )
+        protocol || Timezone::Configure.protocol,
+        url || Timezone::Configure.url)
     end
   end
 end

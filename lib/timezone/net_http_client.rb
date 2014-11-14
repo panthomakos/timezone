@@ -14,6 +14,7 @@ module Timezone
     def initialize(protocol, host)
       uri = URI.parse("#{protocol}://#{host}")
       @http = Net::HTTP.new(uri.host, uri.port)
+      @http.use_ssl = true if protocol == 'https'
     end
 
     def get(url)
