@@ -24,7 +24,7 @@ module Timezone
     # @return [Sting]
     #   the Geonames API URL ('api.geonames.org')
     def self.url
-      @@url ||= 'xapi.geonames.org'
+      @@url ||= 'api.geonames.org'
     end
 
     # The Geonames API URL
@@ -112,6 +112,9 @@ module Timezone
       @@google_api_key
     end
 
+    # Google API Console
+    #
+    # Either allow all referers or make sure webserver is included in list
     def self.google_api_key= api_key
       @@google_api_key = api_key
     end
