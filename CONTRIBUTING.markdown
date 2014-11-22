@@ -7,5 +7,6 @@
 # How to Acquire New TZData Information
 
 * Download `tzdataXYZ.tar.gz` from [IANA](http://www.iana.org/time-zones).
-* Extract using `tar -xvzf tzdataXYZ.tar.gz -C path`.
-* Convert the timezone text files to JSON.
+* Extract and use `zic` to load data into `/usr/share/zoneinfo`.
+* Run `bundle exec rake parse` to parse files in `right/` directory into
+  the local `data` directory.

@@ -10,3 +10,9 @@ Rake::TestTask.new do |t|
 end
 
 task :default => :test
+
+task :parse do
+  require 'timezone/parser'
+
+  Timezone::Parser.new.perform
+end

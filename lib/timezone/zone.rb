@@ -11,6 +11,11 @@ module Timezone
     include Comparable
     attr_reader :rules, :zone
 
+    SOURCE_BIT = 0
+    NAME_BIT = 1
+    DST_BIT = 2
+    OFFSET_BIT = 3
+
     ZONE_FILE_PATH = File.expand_path(File.dirname(__FILE__)+'/../../data')
 
     # Create a new Timezone object.
@@ -33,10 +38,20 @@ module Timezone
 
       raise Timezone::Error::NilZone, 'No zone was found. Please specify a zone.' if options[:zone].nil?
 
-      data = Zone.get_zone_data(options[:zone])
+      data = get_zone_data(options[:zone])
 
-      @rules = data['zone']
-      @zone = data['_zone'] || options[:zone]
+      @rules = []
+
+      data.split("\n").each do |line|
+        source, name, dst, offset = line.split(':')
+        source = source.to_i
+        dst = dst == '1'
+        offset = offset.to_i
+        source = @rules.last[SOURCE_BIT]+source if @rules.last
+        @rules << [source, name, dst, offset]
+      end
+
+      @zone = options[:zone]
     end
 
     def active_support_time_zone
@@ -53,19 +68,19 @@ module Timezone
     # offset in the timezone rules. Once the offset has been found that offset is added to the reference UTC time
     # to calculate the reference time in the timezone.
     def time reference
-      reference.utc + rule_for_reference(reference)['offset']
+      reference.utc + rule_for_reference(reference)[OFFSET_BIT]
     end
 
     # Whether or not the time in the timezone is in DST.
     def dst?(reference)
-      rule_for_reference(reference)['dst']
+      rule_for_reference(reference)[DST_BIT]
     end
 
     # Get the current UTC offset in seconds for this timezone.
     #
     #   timezone.utc_offset(reference)
     def utc_offset reference=Time.now
-      rule_for_reference(reference)['offset']
+      rule_for_reference(reference)[OFFSET_BIT]
     end
 
     def <=> zone #:nodoc:
@@ -73,21 +88,10 @@ module Timezone
     end
 
     class << self
-
-      # Retrieve the data from a particular time zone
-      def get_zone_data(zone)
-        file = File.join(ZONE_FILE_PATH, "#{zone}.json")
-        begin
-          return JSON.parse(open(file).read)
-        rescue
-          raise Timezone::Error::InvalidZone, "'#{zone}' is not a valid zone."
-        end
-      end
-
       # Instantly grab all possible time zone names.
       def names
-        @@names ||= Dir[File.join(ZONE_FILE_PATH, "**/**/*.json")].collect do |file|
-          file.gsub("#{ZONE_FILE_PATH}/", '').gsub(".json", '')
+        @@names ||= Dir[File.join(ZONE_FILE_PATH, "**/**/*")].collect do |file|
+          file.gsub("#{ZONE_FILE_PATH}/", '')
         end
       end
 
@@ -122,26 +126,24 @@ module Timezone
 
   private
 
-    def rule_for_reference reference
-      reference = reference.utc
-      @rules.detect do |rule|
-        if rule['from'] && rule['to']
-          from = _read_timestamp(rule['from'])
-          to = _read_timestamp(rule['to'])
-        else
-          from = _parsetime(rule['_from'])
-          to = _parsetime(rule['_to'])
-        end
-        from <= reference && to > reference
-      end
+  # Retrieve the data from a particular time zone
+  def get_zone_data(zone)
+    file = File.join(ZONE_FILE_PATH, zone)
+
+    if !File.exists?(file)
+      raise Timezone::Error::InvalidZone, "'#{zone}' is not a valid zone."
     end
 
-    def _read_timestamp timestamp #:nodoc:
-      begin
-        Time.at(timestamp.to_i / 1000.0)
-      rescue Exception => e
-        raise Timezone::Error::ParseTime, e.message
+    File.read(file)
+  end
+
+    def rule_for_reference reference
+      reference = reference.utc.to_i
+      @rules.each do |rule|
+        return rule if reference <= rule[SOURCE_BIT]
       end
+
+      @rules.last if !@rules.empty? && reference >= @rules.last[SOURCE_BIT]
     end
 
     def timezone_id lat, lon #:nodoc:
@@ -158,14 +160,6 @@ module Timezone
         return data['timezoneId']
       rescue => e
         raise Timezone::Error::GeoNames, e.message
-      end
-    end
-
-    def _parsetime time #:nodoc:
-      begin
-        Time.strptime(time, "%Y-%m-%dT%H:%M:%S%Z")
-      rescue Exception => e
-        raise Timezone::Error::ParseTime, e.message
       end
     end
 

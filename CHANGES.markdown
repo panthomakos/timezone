@@ -1,3 +1,9 @@
+# 0.3.3
+
+* Updated parsing code. (panthomakos)
+* Updated storage scheme so that it requires less space. (panthomakos)
+* Update timezones to tzdata-2014i-1. (panthomakos)
+
 # 0.3.2
 
 * Added `Timezone::Configure::http_client` for configuring alternative http
