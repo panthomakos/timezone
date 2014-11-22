@@ -28,7 +28,12 @@ module Timezone::Parser::Zone
       private
 
       def update(zone, set = [], limit = nil)
-        additions = [first_addition(zone, set)]
+        first_add = first_addition(zone, set)
+        # This happens in Rule only zones, so we create a placeholder.
+        first_add ||= Timezone::Parser.from_zone(nil, zone)
+
+        additions = [first_add]
+
 
         zone.rules.each do |rule|
           data = additions.last

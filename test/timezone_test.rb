@@ -218,19 +218,6 @@ class TimezoneTest < Test::Unit::TestCase
     assert_equal timezone.utc_offset(utc), 10800
   end
 
-  def test_utc_offset_without_timestamps
-    File.open(File.join(File.dirname(__FILE__),"data/Helsinki_rules_without_timestamps.json")) do |f|
-      rules = JSON.parse(f.read)
-      timezone = Timezone::Zone.new :zone => 'Europe/Helsinki'
-      # TODO [panthomakos] Resolve this using a stub.
-      timezone.instance_variable_set(:@rules, rules)
-      utc = Time.utc(2012, 3, 25, 0, 59, 59)
-      assert_equal timezone.utc_offset(utc), 7200
-      utc = Time.utc(2012, 3, 25, 1, 0, 0)
-      assert_equal timezone.utc_offset(utc), 10800
-    end
-  end
-
   def test_active_support_timezone
     timezone = Timezone::Zone.new(:zone => 'Australia/Adelaide')
     assert_equal 'Australia/Adelaide', timezone.zone

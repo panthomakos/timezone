@@ -98,4 +98,72 @@ describe Timezone::Parser::Zone::DataGenerator do
 
     assert_equal 154, zones.count
   end
+
+  it 'properly parses negative times' do
+    Timezone::Parser.zones.clear
+    Timezone::Parser.rules.clear
+
+    Timezone::Parser.zone('Zone	Africa/Abidjan	-0:16:08 -	LMT	1912')
+    Timezone::Parser.zone('0:00	-	GMT')
+
+    zones = Timezone::Parser::Zone.generate('Africa/Abidjan')
+
+    assert_equal zones.count, 2
+
+    assert_equal zones[0].name, 'LMT'
+    assert_equal zones[0].offset, -968
+    assert_equal zones[0].dst, false
+    assert_equal zones[0].end_date, -1830383032000
+
+    assert_equal zones[1].name, 'GMT'
+    assert_equal zones[1].offset, 0
+    assert_equal zones[1].dst, false
+  end
+
+  it 'properly parses GMT' do
+    Timezone::Parser.zones.clear
+    Timezone::Parser.rules.clear
+
+    Timezone::Parser.zone('Zone  Etc/GMT+12  -12 - GMT+12')
+
+    zones = Timezone::Parser::Zone.generate('Etc/GMT+12')
+
+    assert_equal zones[0].offset, -43200
+    assert_equal zones[0].name, 'GMT+12'
+  end
+
+  it 'properly parses rule only zones' do
+    Timezone::Parser.zones.clear
+    Timezone::Parser.rules.clear
+
+    Timezone::Parser.rule('Rule	US	1918	1919	-	Mar	lastSun	2:00	1:00	D')
+    Timezone::Parser.rule('Rule	US	1918	1919	-	Oct	lastSun	2:00	0	S')
+    Timezone::Parser.rule('Rule	US	1942	only	-	Feb	9	2:00	1:00	W # War')
+    Timezone::Parser.rule('Rule	US	1945	only	-	Aug	14	23:00u	1:00	P # Peace')
+    Timezone::Parser.rule('Rule	US	1945	only	-	Sep	30	2:00	0	S')
+    Timezone::Parser.rule('Rule	US	1967	2006	-	Oct	lastSun	2:00	0	S')
+    Timezone::Parser.rule('Rule	US	1967	1973	-	Apr	lastSun	2:00	1:00	D')
+    Timezone::Parser.rule('Rule	US	1974	only	-	Jan	6	2:00	1:00	D')
+    Timezone::Parser.rule('Rule	US	1975	only	-	Feb	23	2:00	1:00	D')
+    Timezone::Parser.rule('Rule	US	1976	1986	-	Apr	lastSun	2:00	1:00	D')
+    Timezone::Parser.rule('Rule	US	1987	2006	-	Apr	Sun>=1	2:00	1:00	D')
+    Timezone::Parser.rule('Rule	US	2007	max	-	Mar	Sun>=8	2:00	1:00	D')
+    Timezone::Parser.rule('Rule	US	2007	max	-	Nov	Sun>=1	2:00	0	S')
+
+    Timezone::Parser.zone('Zone	PST8PDT		 -8:00	US	P%sT')
+
+    zones = Timezone::Parser::Zone.generate('PST8PDT')
+
+    assert_equal zones[0].offset, -28800
+    assert_equal zones[0].name, 'PT'
+
+    assert_equal zones[1].offset, -25200
+    assert_equal zones[1].name, 'PDT'
+  end
+
+  it 'parses morocco rules' do
+    Timezone::Parser.zones.clear
+    Timezone::Parser.rules.clear
+    Timezone::Parser.rule('Rule	Morocco	2011	only	-	Jul	31	 0	0	-')
+  end
 end

@@ -1,6 +1,7 @@
 require 'timezone/parser/zone'
 require 'timezone/parser/zone/until'
 require 'timezone/parser/rule'
+require 'timezone/parser/offset'
 require 'time'
 
 # The data object that represents a zone entry in the TZData file.
@@ -9,12 +10,24 @@ module Timezone::Parser::Zone
   class Entry
     attr_reader :name, :format, :offset, :end_date, :rules
 
-    def initialize(name, offset, rule, format, end_date)
-      @name, @format = name, format
+    # name, offset, rule, format, until...
+    def initialize(name, offset, *args)
+      params = {}
 
-      @end_date = parse_end_date(end_date)
+      [:rule, :format, :until].each do |attr|
+        if attr == :until
+          params[attr] = args.join(' ')
+        else
+          params[attr] = args.shift
+        end
+      end
+
+      @name = name
+      @format = params[:format]
+
+      @end_date = parse_end_date(params[:until])
       @offset   = parse_offset(offset)
-      @rules    = parse_rules(rule, @end_date)
+      @rules    = parse_rules(params[:rule], @end_date)
     end
 
     private
@@ -30,10 +43,9 @@ module Timezone::Parser::Zone
       Until.parse(end_date)
     end
 
-    # The offset is calculated in minutes.
+    # The offset is calculated in seconds.
     def parse_offset(offset)
-      offset = Time.parse(offset)
-      offset.hour*60*60 + offset.min*60 + offset.sec
+      ::Timezone::Parser::Offset.parse(offset)
     end
   end
 end

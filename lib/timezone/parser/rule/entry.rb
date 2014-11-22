@@ -1,5 +1,6 @@
 require 'timezone/parser/rule'
 require 'timezone/parser/rule/on_rules'
+require 'timezone/parser/offset'
 
 module Timezone::Parser::Rule
   class Entry
@@ -8,7 +9,10 @@ module Timezone::Parser::Rule
 
     UTIME = /^.*u$/
     STIME = /^.*s$/
-    START_DATE = '%Y %b %d %H:%M %Z'
+    START_DATE_FORMATS = [
+      '%Y %b %d %H:%M %Z',
+      '%Y %b %d %H %Z',
+    ]
 
     def initialize(name, year, type, month, day, time, save, letter)
       @name, @offset, @letter = name, offset, letter
@@ -51,10 +55,9 @@ module Timezone::Parser::Rule
       time =~ STIME
     end
 
-    # Offset is calculated in seconds.
-    def parse_offset(save)
-      offset = Time.parse(save == '0' ? '0:00' : save)
-      offset.hour*60*60 + offset.min*60 + offset.sec
+    # The offset is calculated in seconds.
+    def parse_offset(offset)
+      ::Timezone::Parser::Offset.parse(offset)
     end
 
     # Check special rules that modify the month and day depending on the year.
@@ -64,7 +67,17 @@ module Timezone::Parser::Rule
 
     # The UTC time on which the rule beings to apply in milliseconds.
     def parse_start_date(y, m, d, t)
-      Time.strptime([y, m, d, t, 'UTC'].join(' '), START_DATE).to_i * 1_000
+      time = [y, m, d, t, 'UTC'].join(' ')
+
+      START_DATE_FORMATS.each do |format|
+        begin
+          return Time.strptime(time, format).to_i * 1_000
+        rescue ArgumentError
+          next
+        end
+      end
+
+      raise "Invalid start date format: '#{time}'."
     end
 
     def parse_dst(save)

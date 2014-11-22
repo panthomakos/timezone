@@ -11,6 +11,7 @@ module Timezone
     ZONE_REGEXP    = /^Zone/
 
     def self.parse(file)
+      generated = nil
       IO.readlines(file).map(&:strip).each do |line|
         if line =~ COMMENT_REGEXP
           next
@@ -20,7 +21,8 @@ module Timezone
           # TODO [panthomakos] Need to add linking.
         elsif line =~ ZONE_REGEXP || (line != '' && !line.nil?)
           zone(line)
-        else
+        elsif generated != Timezone::Parser::Zone.last
+          generated = Timezone::Parser::Zone.last
           Timezone::Parser::Zone.generate(Timezone::Parser::Zone.last)
         end
       end

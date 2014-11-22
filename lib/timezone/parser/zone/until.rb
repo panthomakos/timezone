@@ -5,8 +5,10 @@ require 'time'
 module Timezone::Parser::Zone
   module Until
     FORMATS = [
-      '%Y %b', # 1900 Oct
+      '%Y %b %e %H:%M:%S', # 1883 Nov 18 12:07:02
       '%Y %b %e', # 1948 May 15
+      '%Y %b', # 1900 Oct
+      '%Y', # 1944
     ]
 
     # Tries to parse the date using FORMATS. If parsing of one format fails
@@ -14,6 +16,8 @@ module Timezone::Parser::Zone
     #
     # Returns the millisecond value of date.
     def self.parse(date)
+      return nil if date.nil? || date == ''
+
       FORMATS.each do |format|
         begin
           return Time.strptime(date+' UTC', format+' %Z').to_i * 1_000

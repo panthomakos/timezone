@@ -9,13 +9,15 @@ module Timezone
     def self.zones ; Zone.zones ; end
 
     module Zone
-      # Each entry follows this format.
+      # HH:MM:SS Entries follow this format.
       # GMT-OFFSET RULES FORMAT [UNTIL]
-      ENTRY = /(\d+?:\d+?:*\d*?)\s+(.+?)\s([^\s]+)\s*(.*?)$/
+
+      # +/- HH Entries follow this format
+      # GMT-OFFSET RULES [FORMAT] [UNTIL]
 
       # The header entry also includes the Zone name.
       # Zone ZONE-NAME GMT-OFFSET RULES FORMAT [UNTIL]
-      HEADER = /Zone\s+(.+?)\s+/
+      HEADER = /^\s*Zone\s+(.+?)\s+/
 
       # Zones are stored in a hash of arrays that are referenced by name.
       @@zones = Hash.new{ |h, k| h[k] = [] }
@@ -26,9 +28,21 @@ module Timezone
       class << self ; attr_accessor :last ; end
 
       def self.parse(line)
-        self.last = $~[1] if line.match(HEADER)
+        if match = line.match(HEADER)
+          self.last = match[1]
+        end
 
-        @@zones[last] << Entry.new(last, *line.match(ENTRY)[1..-1])
+        # match = line.match(TIME_ENTRY)
+        # match ||= line.match(INT_ENTRY)
+        # raise "INVALID" if match.nil?
+
+        parts = line.split(' ')
+        parts.delete(/^\s+$/)
+        if match
+          parts = parts[2..-1]
+        end
+
+        @@zones[last] << Entry.new(last, *parts)
       end
     end
   end
