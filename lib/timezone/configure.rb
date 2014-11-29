@@ -40,7 +40,7 @@ module Timezone
     # @return [String]
     #   the Google API URL ('maps.googleapis.com/maps/api/timezone/json')
     def self.google_url
-      @@google_url ||= 'maps.googleapis.com/maps/api/timezone/json'
+      @@google_url ||= 'maps.googleapis.com'
     end
 
     # The Google API URL
@@ -115,7 +115,7 @@ module Timezone
     # Google API Console
     #
     # Either allow all referers or make sure webserver is included in list
-    def self.google_api_key= api_key
+    def self.google_api_key=(api_key)
       @@google_api_key = api_key
     end
 
