@@ -146,12 +146,12 @@ module Timezone
 
     def timezone_id lat, lon #:nodoc:
       begin
-        if defined? @@google_api_key
-          timestamp   = Time.zone.now.to_i
+        if Timezone::Configure.use_google?
+          timestamp   = Time.now.to_i
           lookupUrl   = "/maps/api/timezone/json?location=#{lat},#{lon}&timestamp=#{timestamp}&key=#{Timezone::Configure.google_api_key}"
-          timezoneId  = 'timeZoneId' # lowercase 'Z'
+          timezoneId  = 'timeZoneId' # uppercase 'Z'
         else
-          lookupUrl = "/timezoneJSON?lat=#{lat}&lng=#{lon}&username=#{Timezone::Configure.username}"
+          lookupUrl   = "/timezoneJSON?lat=#{lat}&lng=#{lon}&username=#{Timezone::Configure.username}"
           timezoneId  = 'timezoneId' # lowercase 'z'
         end
 
@@ -161,9 +161,9 @@ module Timezone
           data = JSON.parse(response.body)
 
           # check response
-          if defined? @@google_api_key
+          if Timezone::Configure.use_google?
             if data['status'] != 'OK'
-              raise Timezone::Error::Google, data['status']
+              raise Timezone::Error::Google, data['errorMessage']
             end
           else
             if data['status'] && data['status']['value'] == 18
@@ -174,7 +174,7 @@ module Timezone
           return data[timezoneId]
         end
       rescue => e
-        if defined? @@google_api_key
+        if Timezone::Configure.use_google?
           raise Timezone::Error::Google, e.message
         else
           raise Timezone::Error::GeoNames, e.message
@@ -193,14 +193,8 @@ module Timezone
     private
 
     def http_client #:nodoc:
-      if defined? @@google_api_key
-        protocol  = Timezone::Configure.google_protocol
-        url       = Timezone::Configure.google_url
-      else
-        protocol  = Timezone::Configure.protocol
-        url       = Timezone::Configure.url
-      end
-      @http_client ||= Timezone::Configure.http_client.new(protocol, url)
+      @http_client ||= Timezone::Configure.http_client.new(
+        Timezone::Configure.protocol, Timezone::Configure.url)
     end
   end
 end
