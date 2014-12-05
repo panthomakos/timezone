@@ -1,3 +1,7 @@
+# 0.3.4
+
+* Added support for Google Timezone API. (amnesia7)
+
 # 0.3.3
 
 * Updated parsing code. (panthomakos)

@@ -62,6 +62,10 @@ module Timezone
       @@geonames_url = url
     end
 
+    class << self
+      alias :url= :geonames_url=
+    end
+
     # The Google API URL
     #
     # @return [String]

@@ -224,12 +224,12 @@ class TimezoneTest < Test::Unit::TestCase
   end
 
   def test_configure_url_default
-    assert_equal 'api.geonames.org', Timezone::Configure.geonames_url
+    assert_equal 'api.geonames.org', Timezone::Configure.url
   end
 
   def test_configure_url_custom
     Timezone::Configure.begin { |c| c.geonames_url = 'www.newtimezoneserver.com' }
-    assert_equal 'www.newtimezoneserver.com', Timezone::Configure.geonames_url
+    assert_equal 'www.newtimezoneserver.com', Timezone::Configure.url
     # clean up url after test
     Timezone::Configure.begin { |c| c.geonames_url = nil }
   end
