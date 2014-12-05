@@ -1,0 +1,8 @@
+{
+   "dstOffset" : 3600,
+   "rawOffset" : 34200,
+   "status" : "OK",
+   "timeZoneId" : "Australia/Adelaide",
+   "timeZoneName" : "Australian Central Daylight Time"
+}
+

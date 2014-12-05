@@ -47,7 +47,15 @@ Second, add the following to your application.rb file, or before you perform a c
       c.username = 'your_geonames_username_goes_here'
     end
 
-Finally, pass the coordinates to your timezone initialization function.
+Alternatively, timezone can be used with a Google api key, which you can get [here](https://code.google.com/apis/console/).
+
+Next, add the following to your application.rb file, or before you perform a coordinate lookup.
+
+    Timezone::Configure.begin do |c|
+      c.google_api_key = 'your_google_api_key_goes_here'
+    end
+
+Finally, for either geonames or Google implementation, pass the coordinates to your timezone initialization function.
 
     timezone = Timezone::Zone.new :latlon => [-34.92771808058, 138.477041423321]
     timezone.zone
@@ -74,7 +82,7 @@ If you need information from a specific set of timezones rather than a complete 
 
     zone_list = Timezone::Zone.list "America/Chicago", "America/New_York", "America/Boise"
     # This will return an array of information hashes in the following format:
-    # { 
+    # {
     #   :zone => "America/Chicago",
     #   :title => "America/Chicago", # this can be customized to your needs
     #   :offset => -18000, # UTC offset in seconds
@@ -98,14 +106,13 @@ Finally, by default the **Zone#list** method will order the results by the timez
 
     Timezone::Configure.begin do |c|
       # this can equal any hash key returned by the Zone#list method
-      c.order_list_by = :title 
+      c.order_list_by = :title
     end
 
 ## Using Your Own HTTP Client
 
-If you have non-standard http request needs or want to have more control over
-API calls to Geonames, you can write your own very simple http client wrapper
-instead of using the built-in default.
+If you have non-standard http request needs or want to have more control over API calls to Geonames and Google, you can write your own very simple http client wrapper instead of using the built-in default.
+Be aware that the Google timezone API uses `https` protocol.
 
     class MyHTTPClient
       def initialize(protocol, host)
