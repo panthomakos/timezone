@@ -1,3 +1,7 @@
+# 0.3.5+
+
+* `0.3.5` - Updated with tzdata-2014j-1. (panthomakos)
+
 # 0.3.4
 
 * Added support for Google Timezone API. (amnesia7)

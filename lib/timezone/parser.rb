@@ -3,7 +3,6 @@ require 'time'
 module Timezone
   class Parser
     LINE = /\s*(.+)\s*=\s*(.+)\s*isdst=(\d+)\s*gmtoff=([\+\-]*\d+)/
-    FORMAT = '%a %b %e %H:%M:%S %Y %Z'
 
     ZONEINFO_DIR = '/usr/share/zoneinfo'
 
@@ -22,6 +21,27 @@ module Timezone
 
     private
 
+    class Line
+      attr_accessor :source, :name, :dst, :offset
+
+      SOURCE_FORMAT = '%a %b %e %H:%M:%S %Y %Z'
+
+      def initialize(match)
+        self.source = Time.strptime(match[1]+'C', SOURCE_FORMAT).to_i
+        self.name = match[2].split(' ').last
+        self.dst = match[3].to_i
+        self.offset = match[4].to_i
+      end
+
+      def ==(other)
+        name == other.name && dst == other.dst && offset == other.offset
+      end
+
+      def to_s
+        [source, name, dst, offset].join(':')
+      end
+    end
+
     def parse(file)
       zone = file.gsub("#{zoneinfo}/right/",'')
       print "Parsing #{zone}... "
@@ -29,30 +49,25 @@ module Timezone
 
       last = 0
       result = []
+
       data.split("\n").each do |line|
         match = line.gsub('right/'+zone+' ','').match(LINE)
         next if match.nil?
 
-        source = Time.strptime(match[1]+'C', FORMAT).to_i
-        name = match[2].split(' ').last
-        dst = match[3].to_i
-        offset = match[4].to_i
+        line = Line.new(match)
 
         # If we're just repeating info, pop the last one and
         # add an inclusive rule.
-        if result.last &&
-          result.last[1] == name &&
-          result.last[2] == dst &&
-          result.last[3] == offset
-            last -= result.last[0]
-            result.pop
+        if result.last && result.last == line
+          last -= result.last.source
+          result.pop
         end
 
-        temp = source
-        source = source - last
+        temp = line.source
+        line.source = line.source - last
         last = temp
 
-        result << [source, name, dst, offset]
+        result << line
       end
 
       write(zone, result)
@@ -60,13 +75,13 @@ module Timezone
     end
 
     def zdump(zone)
-      return `zdump -v right/#{zone}`
+      `zdump -v right/#{zone}`
     end
 
     def write(zone, data)
       system("mkdir -p data/#{File.dirname(zone)}")
       f = File.open("data/#{zone}", 'w')
-      f.write(data.map{ |k| k.join(':') }.join("\n"))
+      f.write(data.map(&:to_s).join("\n"))
       f.close
     end
   end
