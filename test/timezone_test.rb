@@ -166,75 +166,6 @@ class TimezoneTest < Test::Unit::TestCase
     assert_equal local.to_s, zone.time_with_offset(utc).to_s
   end
 
-  class HTTPTestClient
-    class << self ; attr_accessor :body ; end
-
-    Response = Struct.new(:body) do
-      def code ; '200' ; end
-    end
-
-    def initialize(protocol, host)
-    end
-
-    def get(url)
-      HTTPTestClient::Response.new(self.class.body)
-    end
-  end
-
-  def test_geonames_using_lat_lon_coordinates
-    mock_path = File.expand_path(File.join(File.dirname(__FILE__), 'mocks'))
-    HTTPTestClient.body = File.open(mock_path + '/lat_lon_coords.txt').read
-
-    Timezone::Configure.begin do |c|
-      c.http_client = HTTPTestClient
-      c.username = 'timezone'
-    end
-
-    timezone = Timezone::Zone.new :latlon => [-34.92771808058, 138.477041423321]
-    assert_equal 'Australia/Adelaide', timezone.zone
-  end
-
-  def test_api_limit_read_lat_lon_coordinates
-    mock_path = File.expand_path(File.join(File.dirname(__FILE__), 'mocks'))
-    HTTPTestClient.body = File.open(mock_path + '/api_limit_reached.txt').read
-
-    Timezone::Configure.begin do |c|
-      c.http_client = HTTPTestClient
-      c.username = 'timezone'
-    end
-
-    assert_raise Timezone::Error::GeoNames, 'api limit reached' do
-      Timezone::Zone.new :latlon => [-34.92771808058, 138.477041423321]
-    end
-  end
-
-  def test_google_using_lat_lon_coordinates
-    mock_path = File.expand_path(File.join(File.dirname(__FILE__), 'mocks'))
-    HTTPTestClient.body = File.open(mock_path + '/google_lat_lon_coords.txt').read
-
-    Timezone::Configure.begin do |c|
-      c.http_client = HTTPTestClient
-      c.google_api_key = '123abc'
-    end
-
-    timezone = Timezone::Zone.new :latlon => [-34.92771808058, 138.477041423321]
-    assert_equal 'Australia/Adelaide', timezone.zone
-  end
-
-  def test_google_request_denied_read_lat_lon_coordinates
-    mock_path = File.expand_path(File.join(File.dirname(__FILE__), 'mocks'))
-    HTTPTestClient.body = File.open(mock_path + '/google_request_denied.txt').read
-
-    Timezone::Configure.begin do |c|
-      c.http_client = HTTPTestClient
-      c.google_api_key = 'invalid-api-key'
-    end
-
-    assert_raise Timezone::Error::Google, 'The provided API key is invalid.' do
-      Timezone::Zone.new :latlon => [-34.92771808058, 138.477041423321]
-    end
-  end
-
   def test_australian_timezone_with_dst
     timezone = Timezone::Zone.new :zone => 'Australia/Adelaide'
     utc = Time.utc(2010, 12, 23, 19, 37, 15)
@@ -247,6 +178,7 @@ class TimezoneTest < Test::Unit::TestCase
   end
 
   def test_configure_url_custom
+    Timezone::Configure.begin { |c| c.google_api_key = nil }
     Timezone::Configure.begin { |c| c.geonames_url = 'www.newtimezoneserver.com' }
     assert_equal 'www.newtimezoneserver.com', Timezone::Configure.url
     # clean up url after test

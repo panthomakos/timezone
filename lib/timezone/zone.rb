@@ -164,48 +164,7 @@ module Timezone
     end
 
     def timezone_id lat, lon #:nodoc:
-      begin
-        if Timezone::Configure.use_google?
-          timestamp   = Time.now.to_i
-          lookupUrl   = "/maps/api/timezone/json?location=#{lat},#{lon}&timestamp=#{timestamp}&key=#{Timezone::Configure.google_api_key}"
-          timezoneId  = 'timeZoneId' # uppercase 'Z'
-        else
-          lookupUrl   = "/timezoneJSON?lat=#{lat}&lng=#{lon}&username=#{Timezone::Configure.username}"
-          timezoneId  = 'timezoneId' # lowercase 'z'
-        end
-
-        response = http_client.get(lookupUrl)
-
-        if response.code =~ /^2\d\d$/
-          data = JSON.parse(response.body)
-
-          # check response
-          if Timezone::Configure.use_google?
-            if data['status'] != 'OK'
-              raise Timezone::Error::Google, data['errorMessage']
-            end
-          else
-            if data['status'] && data['status']['value'] == 18
-              raise Timezone::Error::GeoNames, 'api limit reached'
-            end
-          end
-
-          return data[timezoneId]
-        end
-      rescue => e
-        if Timezone::Configure.use_google?
-          raise Timezone::Error::Google, e.message
-        else
-          raise Timezone::Error::GeoNames, e.message
-        end
-      end
-    end
-
-    private
-
-    def http_client #:nodoc:
-      @http_client ||= Timezone::Configure.http_client.new(
-        Timezone::Configure.protocol, Timezone::Configure.url)
+      Timezone::Configure.lookup.lookup(lat,lon)
     end
   end
 end
