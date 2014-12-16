@@ -1,3 +1,7 @@
+# 0.3.7
+
+* Added `Timezone::Zone#local_to_utc` function. (panthomakos)
+
 # 0.3.6
 
 * Added `Timezone::Zone#time_with_offset` functionality. (panthomakos)

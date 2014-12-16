@@ -31,7 +31,7 @@ class TimezoneTest < Test::Unit::TestCase
     assert list.first[:zone] == "Australia/Sydney"
   end
 
-  def test_timezone_list
+  def test_timezone_list_current_time
     Timecop.freeze(Time.new(2012,2,2,0,0,0)) do
       assert !Timezone::Zone.list('EST5EDT').first[:dst]
     end
@@ -171,6 +171,31 @@ class TimezoneTest < Test::Unit::TestCase
     utc = Time.utc(2010, 12, 23, 19, 37, 15)
     local = Time.utc(2010, 12, 24, 6, 7, 15)
     assert_equal local.to_i, timezone.time(utc).to_i
+  end
+
+  def test_local_to_utc
+    timezone = Timezone::Zone.new(:zone => 'America/Los_Angeles')
+
+    # Time maps to two rules - we pick the first
+    local = Time.utc(2015,11,1,1,50,0)
+    utc = Time.utc(2015,11,1,8,50,0)
+    puts utc.to_s
+    assert_equal(utc.to_s, timezone.local_to_utc(local).to_s)
+
+    # Time is above the maximum - we pick the last rule
+    local = Time.utc(3000,1,1,0,0,0)
+    utc = Time.utc(3000,1,1,8,0,0)
+    assert_equal(utc.to_s, timezone.local_to_utc(local).to_s)
+
+    # Time maps to a single rule - we pick that rule
+    local = Time.utc(2015,11,1,0,1,0)
+    utc = Time.utc(2015,11,1,7,1,0)
+    assert_equal(utc.to_s, timezone.local_to_utc(local).to_s)
+
+    # Time is missing - we pick the first closest rule
+    local = Time.utc(2015,3,8,2,50,0)
+    utc = Time.utc(2015,3,8,9,50,0)
+    assert_equal(utc.to_s, timezone.local_to_utc(local).to_s)
   end
 
   def test_configure_url_default

@@ -43,6 +43,16 @@ historical changes in timezone, which can alter the offset. If you want a time
 with the appropriate offset at the given time, then use the `time_with_offset`
 function as shown above.
 
+You can use the timezone object to convert local times into the best UTC
+estimate. The reason this is an estimate is that some local times do not
+actually map to UTC times (for example when time jumps forward) and some
+local times map to multiple UTC times (for example when time falls back).
+
+    timezone = Timezone::Zone.new :zone => 'America/Los_Angeles'
+
+    timezone.local_to_utc(Time.utc(2015,11,1,1,50,0))
+    => 2015-11-01 08:50:00 UTC
+
 You can also query a `Timezone::Zone` object to determine if it was in Daylight
 Savings Time:
 
