@@ -67,8 +67,25 @@ module Timezone
     # The reference is converted to a UTC equivalent. That UTC equivalent is then used to lookup the appropriate
     # offset in the timezone rules. Once the offset has been found that offset is added to the reference UTC time
     # to calculate the reference time in the timezone.
-    def time reference
-      reference.utc + rule_for_reference(reference)[OFFSET_BIT]
+    def time(reference)
+      reference.utc + utc_offset(reference)
+    end
+
+    # Determine the time in the timezone w/ the appropriate offset.
+    #
+    #     timezone.time_with_offset(reference)
+    #
+    # reference - the `Time` you want to convert.
+    #
+    # The reference is converted to a UTC equivalent. That UTC equivalent is
+    # then used to lookup the appropriate offset in the timezone rules. Once the
+    # offset has been found, that offset is added to the reference UTC time
+    # to calculate the reference time in the timezone. The offset is then
+    # appended to put the time object into the proper offset.
+    def time_with_offset(reference)
+      utc = time(reference)
+      offset = utc_offset(reference)
+      Time.new(utc.year, utc.month, utc.day, utc.hour, utc.min, utc.sec, offset)
     end
 
     # Whether or not the time in the timezone is in DST.
@@ -79,11 +96,11 @@ module Timezone
     # Get the current UTC offset in seconds for this timezone.
     #
     #   timezone.utc_offset(reference)
-    def utc_offset reference=Time.now
+    def utc_offset(reference=Time.now)
       rule_for_reference(reference)[OFFSET_BIT]
     end
 
-    def <=> zone #:nodoc:
+    def <=>(zone) #:nodoc:
       utc_offset <=> zone.utc_offset
     end
 

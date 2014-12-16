@@ -147,6 +147,25 @@ class TimezoneTest < Test::Unit::TestCase
     assert_equal local.to_i, timezone.time(utc).to_i
   end
 
+  # Testing is done with strings since two times can be equivalent even if
+  # their offsets do not match, and we want to test that the time and offsets
+  # are equivalent.
+  def test_time_with_offset
+    timezone = Timezone::Zone.new :zone => 'Asia/Kathmandu'
+    utc = Time.utc(2011, 1, 4, 3, 51, 29)
+    local = Time.new(2011, 1, 4, 9, 36, 29, 20700)
+    assert_equal local.to_s, timezone.time_with_offset(utc).to_s
+
+    zone = Timezone::Zone.new(:zone => 'America/Los_Angeles')
+    utc = Time.utc(2014,12,15,22,00,00)
+    local = Time.new(2014,12,15,14,00,00,'-08:00')
+    assert_equal local.to_s, zone.time_with_offset(utc).to_s
+
+    utc = Time.utc(2014,4,5,22,00,00)
+    local = Time.new(2014,4,5,15,00,00,'-07:00')
+    assert_equal local.to_s, zone.time_with_offset(utc).to_s
+  end
+
   class HTTPTestClient
     class << self ; attr_accessor :body ; end
 

@@ -26,15 +26,22 @@ Getting the current time or any historical time in any timezone, with daylight
 savings time taken into consideration, is easy:
 
     timezone = Timezone::Zone.new :zone => 'America/Los_Angeles'
-    timezone.time Time.now
+
+    timezone.time(Time.now)
     => 2011-02-11 17:29:05 UTC
-    timezone.time Time.utc(2010, 1, 1, 0, 0, 0)
+
+    timezone.time(Time.utc(2010, 1, 1, 0, 0, 0))
     => 2009-12-31 16:00:00 UTC
 
-Time is always returned in the UTC timezone, but it accurately reflects the
-actual time in the specified timezone. The reason for this is that this function
-also takes into account daylight savings time, which can alter the timezone
-offset and hence put Ruby in the wrong timezone.
+    timezone.time_with_offset(Time.utc(2010,1,1,0,0,0))
+    => 2009-12-31 16:00:00 -0800
+
+Time is always returned in the UTC timezone when using the `time` function, but
+it accurately reflects the actual time in the specified timezone. The reason for
+this is that this function also takes into account daylight savings time and
+historical changes in timezone, which can alter the offset. If you want a time
+with the appropriate offset at the given time, then use the `time_with_offset`
+function as shown above.
 
 You can also query a `Timezone::Zone` object to determine if it was in Daylight
 Savings Time:

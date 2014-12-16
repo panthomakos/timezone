@@ -1,6 +1,10 @@
-# 0.3.5+
+# 0.3.6
 
-* `0.3.5` - Updated with tzdata-2014j-1. (panthomakos)
+* Added `Timezone::Zone#time_with_offset` functionality. (panthomakos)
+
+# 0.3.5
+
+* Updated with tzdata-2014j-1. (panthomakos)
 
 # 0.3.4
 
