@@ -71,6 +71,20 @@ module Timezone
       reference.utc + utc_offset(reference)
     end
 
+    alias :utc_to_local :time
+
+    # Determine the UTC time for a given time in the timezone.
+    #
+    #     timezone.local_to_utc(time)
+    #
+    # The UTC equivalent is a "best guess". There are cases where local times do not map to UTC
+    # at all (during a time skip forward). There are also cases where local times map to two
+    # separate UTC times (during a fall back). All of these cases are ignored here and the best
+    # (first) guess is used instead.
+    def local_to_utc(time)
+      time.utc - rule_for_local(time).rules.first[OFFSET_BIT]
+    end
+
     # Determine the time in the timezone w/ the appropriate offset.
     #
     #     timezone.time_with_offset(reference)
@@ -90,14 +104,14 @@ module Timezone
 
     # Whether or not the time in the timezone is in DST.
     def dst?(reference)
-      rule_for_reference(reference)[DST_BIT]
+      rule_for_utc(reference)[DST_BIT]
     end
 
     # Get the current UTC offset in seconds for this timezone.
     #
     #   timezone.utc_offset(reference)
     def utc_offset(reference=Time.now)
-      rule_for_reference(reference)[OFFSET_BIT]
+      rule_for_utc(reference)[OFFSET_BIT]
     end
 
     def <=>(zone) #:nodoc:
@@ -141,26 +155,85 @@ module Timezone
       end
     end
 
-  private
+    private
 
-  # Retrieve the data from a particular time zone
-  def get_zone_data(zone)
-    file = File.join(ZONE_FILE_PATH, zone)
-
-    if !File.exists?(file)
-      raise Timezone::Error::InvalidZone, "'#{zone}' is not a valid zone."
+    # Does the given time (in seconds) match this rule?
+    #
+    # Each rule has a SOURCE bit which is the number of seconds, since the
+    # Epoch, up to which the rule is valid.
+    def match?(seconds, rule) #:nodoc:
+      seconds <= rule[SOURCE_BIT]
     end
 
-    File.read(file)
-  end
+    # Retrieve the data from a particular time zone
+    def get_zone_data(zone)
+      file = File.join(ZONE_FILE_PATH, zone)
 
-    def rule_for_reference reference
-      reference = reference.utc.to_i
-      @rules.each do |rule|
-        return rule if reference <= rule[SOURCE_BIT]
+      if !File.exists?(file)
+        raise Timezone::Error::InvalidZone, "'#{zone}' is not a valid zone."
       end
 
-      @rules.last if !@rules.empty? && reference >= @rules.last[SOURCE_BIT]
+      File.read(file)
+    end
+
+    RuleSet = Struct.new(:type, :rules)
+
+    def rule_for_local(local)
+      local = local.utc if local.respond_to?(:utc)
+      local = local.to_i
+
+      # For each rule, convert the local time into the UTC equivalent for
+      # that rule offset, and then check if the UTC time matches the rule.
+      match, index = @rules.each_with_index.detect do |rule, i|
+        match?(local-rule[OFFSET_BIT], rule)
+      end
+
+      # If we did not find any matches, return the last rule.
+      return RuleSet.new(:single, [@rules.last]) unless match
+
+      utc = local-match[OFFSET_BIT]
+
+      # If the UTC rule for the calculated UTC time does not map back to the
+      # same rule, then we have a skip in time and there is no applicable rule.
+      return RuleSet.new(:missing, [match]) if rule_for_utc(utc) != match
+
+      # If the match is the last rule, then return it.
+      return RuleSet.new(:single, [match]) if index == @rules.length-1
+
+      # If the UTC equivalent time falls within the last hour(s) of the time
+      # change which were replayed during a fall-back in time, then return
+      # the matched rule and the next one.
+      #
+      # Example:
+      #
+      #     rules = [
+      #       [ 8:00 UTC, -1 ], # UTC-1 up to and including 8:00 UTC
+      #       [ 14:00 UTC, -2 ], # UTC-2 up to and including 14:00 UTC
+      #     ]
+      #
+      #     6:50 local (7:50 UTC) by the first rule
+      #     6:50 local (8:50 UTC) by the second rule
+      #
+      #     Since both rules provide valid mappings for the local time,
+      #     we need to return both values.
+      if utc > match[SOURCE_BIT] - match[OFFSET_BIT] + @rules[index+1][OFFSET_BIT]
+        RuleSet.new(:double, @rules[index..(index+1)])
+      else
+        RuleSet.new(:single, [match])
+      end
+    end
+
+    def rule_for_utc(time) #:nodoc:
+      time = time.utc if time.respond_to?(:utc)
+      time = time.to_i
+
+      # Return the first rule that matches.
+      @rules.each do |rule|
+        return rule if time <= rule[SOURCE_BIT]
+      end
+
+      # If no rule was found, return the last rule.
+      @rules.last
     end
 
     def timezone_id lat, lon #:nodoc:
