@@ -1,4 +1,5 @@
 require 'timezone/net_http_client'
+require 'timezone/lookup'
 
 module Timezone
   # Configuration class for the Timezone gem.
@@ -44,6 +45,18 @@ module Timezone
     # @return [Boolean]
     def self.use_google?
       !!google_api_key
+    end
+
+    def self.lookup
+      use_google? ? google_lookup : geonames_lookup
+    end
+
+    def self.google_lookup
+      @google_lookup ||= Timezone::Lookup::Google.new(self)
+    end
+
+    def self.geonames_lookup
+      @geonames_lookup ||= Timezone::Lookup::Geonames.new(self)
     end
 
     # The Geonames API URL
