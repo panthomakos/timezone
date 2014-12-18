@@ -1,6 +1,7 @@
 # 0.3.6
 
 * Added `Timezone::Zone#time_with_offset` functionality. (panthomakos)
+* Fixed `Timezone::Zone#names`. (panthomakos)
 
 # 0.3.5
 
