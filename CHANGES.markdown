@@ -1,10 +1,7 @@
-# Next
+# 0.3.7
 
 * Cache timezone data in memory for performance. (panthomakos)
 * Find timezone rule using binary search for performance. (panthomakos)
-
-# 0.3.7
-
 * Added `Timezone::Zone#local_to_utc` function. (panthomakos)
 
 # 0.3.6
