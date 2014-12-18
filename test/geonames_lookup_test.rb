@@ -6,6 +6,7 @@ require_relative 'http_test_client'
 class GeonamesLookupTest < ::Test::Unit::TestCase
   def setup
     Timezone::Configure.begin do |c|
+      c.google_api_key = nil
       c.http_client = HTTPTestClient
       c.username = 'timezone'
     end

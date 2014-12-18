@@ -108,8 +108,9 @@ module Timezone
       # Instantly grab all possible time zone names.
       def names
         @@names ||= Dir[File.join(ZONE_FILE_PATH, "**/**/*")].collect do |file|
+          next if File.directory?(file)
           file.gsub("#{ZONE_FILE_PATH}/", '')
-        end
+        end.compact
       end
 
       # Get a list of specified timezones and the basic information accompanying that zone
