@@ -2,9 +2,10 @@ require 'json'
 require 'date'
 require 'time'
 
-require File.expand_path(File.dirname(__FILE__) + '/error')
-require File.expand_path(File.dirname(__FILE__) + '/configure')
-require File.expand_path(File.dirname(__FILE__) + '/active_support')
+require 'timezone/loader'
+require 'timezone/error'
+require 'timezone/configure'
+require 'timezone/active_support'
 
 module Timezone
   class Zone
@@ -15,8 +16,6 @@ module Timezone
     NAME_BIT = 1
     DST_BIT = 2
     OFFSET_BIT = 3
-
-    ZONE_FILE_PATH = File.expand_path(File.dirname(__FILE__)+'/../../data')
 
     # Create a new Timezone object.
     #
@@ -38,20 +37,8 @@ module Timezone
 
       raise Timezone::Error::NilZone, 'No zone was found. Please specify a zone.' if options[:zone].nil?
 
-      data = get_zone_data(options[:zone])
-
-      @rules = []
-
-      data.split("\n").each do |line|
-        source, name, dst, offset = line.split(':')
-        source = source.to_i
-        dst = dst == '1'
-        offset = offset.to_i
-        source = @rules.last[SOURCE_BIT]+source if @rules.last
-        @rules << [source, name, dst, offset]
-      end
-
       @zone = options[:zone]
+      @rules = Timezone::Loader.load(@zone)
     end
 
     def active_support_time_zone
@@ -121,10 +108,7 @@ module Timezone
     class << self
       # Instantly grab all possible time zone names.
       def names
-        @@names ||= Dir[File.join(ZONE_FILE_PATH, "**/**/*")].collect do |file|
-          next if File.directory?(file)
-          file.gsub("#{ZONE_FILE_PATH}/", '')
-        end.compact
+        Timezone::Loader.names
       end
 
       # Get a list of specified timezones and the basic information accompanying that zone
@@ -166,17 +150,6 @@ module Timezone
       seconds <= rule[SOURCE_BIT]
     end
 
-    # Retrieve the data from a particular time zone
-    def get_zone_data(zone)
-      file = File.join(ZONE_FILE_PATH, zone)
-
-      if !File.exists?(file)
-        raise Timezone::Error::InvalidZone, "'#{zone}' is not a valid zone."
-      end
-
-      File.read(file)
-    end
-
     RuleSet = Struct.new(:type, :rules)
 
     def rule_for_local(local)
@@ -185,12 +158,8 @@ module Timezone
 
       # For each rule, convert the local time into the UTC equivalent for
       # that rule offset, and then check if the UTC time matches the rule.
-      match, index = @rules.each_with_index.detect do |rule, i|
-        match?(local-rule[OFFSET_BIT], rule)
-      end
-
-      # If we did not find any matches, return the last rule.
-      return RuleSet.new(:single, [@rules.last]) unless match
+      index = binary_search(local){ |t,r| match?(t-r[OFFSET_BIT], r) }
+      match = @rules[index]
 
       utc = local-match[OFFSET_BIT]
 
@@ -228,13 +197,28 @@ module Timezone
       time = time.utc if time.respond_to?(:utc)
       time = time.to_i
 
-      # Return the first rule that matches.
-      @rules.each do |rule|
-        return rule if time <= rule[SOURCE_BIT]
-      end
+      return @rules[binary_search(time){ |t,r| match?(t,r) }]
+    end
 
-      # If no rule was found, return the last rule.
-      @rules.last
+    # Find the first rule that matches using binary search.
+    def binary_search(time, from=0, to=nil, &block)
+      to = @rules.length-1 if to.nil?
+
+      return from if from == to
+
+      mid = (from + to) / 2
+
+      if block.call(time, @rules[mid])
+        return mid if mid == 0
+
+        if !block.call(time, @rules[mid-1])
+          return mid
+        else
+          return binary_search(time, from, mid-1, &block)
+        end
+      else
+        return binary_search(time, mid + 1, to, &block)
+      end
     end
 
     def timezone_id lat, lon #:nodoc:

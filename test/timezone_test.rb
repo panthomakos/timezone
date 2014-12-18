@@ -179,7 +179,6 @@ class TimezoneTest < Test::Unit::TestCase
     # Time maps to two rules - we pick the first
     local = Time.utc(2015,11,1,1,50,0)
     utc = Time.utc(2015,11,1,8,50,0)
-    puts utc.to_s
     assert_equal(utc.to_s, timezone.local_to_utc(local).to_s)
 
     # Time is above the maximum - we pick the last rule
