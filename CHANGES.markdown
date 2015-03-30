@@ -1,3 +1,7 @@
+# 0.3.9
+
+* Updated with tzdata-2015b-1. (panthomakos)
+
 # 0.3.8
 
 * Updated with tzdata-2015a-1. (panthomakos)
