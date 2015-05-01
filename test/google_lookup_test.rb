@@ -1,9 +1,9 @@
 require 'timezone/configure'
 require 'timezone/lookup/google'
-require 'test/unit'
+require 'minitest/autorun'
 require_relative 'http_test_client'
 
-class GoogleLookupTest < ::Test::Unit::TestCase
+class GoogleLookupTest < ::Minitest::Unit::TestCase
   def setup
     Timezone::Configure.begin do |c|
       c.google_api_key = nil
@@ -27,7 +27,8 @@ class GoogleLookupTest < ::Test::Unit::TestCase
   end
 
   def test_google_request_denied_read_lat_lon_coordinates
-    assert_raise Timezone::Error::Google, 'The provided API key is invalid.' do
+    HTTPTestClient.body = nil
+    assert_raises Timezone::Error::Google, 'The provided API key is invalid.' do
       lookup.lookup(*coordinates)
     end
   end

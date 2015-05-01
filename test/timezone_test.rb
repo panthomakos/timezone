@@ -1,24 +1,22 @@
 require 'timezone'
 require 'timezone/zone'
-require 'test/unit'
+require 'minitest/autorun'
 require "mocha/setup"
 require 'timecop'
 
-class TimezoneTest < Test::Unit::TestCase
+class TimezoneTest < ::Minitest::Unit::TestCase
   def test_valid_timezone
-    assert_nothing_raised do
-      Timezone::Zone.new :zone => 'Australia/Sydney'
-    end
+    refute_nil(Timezone::Zone.new(:zone => 'Australia/Sydney'))
   end
 
   def test_nil_timezone
-    assert_raise Timezone::Error::NilZone do
+    assert_raises Timezone::Error::NilZone do
       Timezone::Zone.new :zone => nil
     end
   end
 
   def test_invalid_timezone
-    assert_raise Timezone::Error::InvalidZone do
+    assert_raises Timezone::Error::InvalidZone do
       Timezone::Zone.new :zone => 'Foo/Bar'
     end
   end
@@ -28,7 +26,7 @@ class TimezoneTest < Test::Unit::TestCase
     assert list.is_a?(Array)
     assert list.count == 2
     assert list.first.is_a?(Hash)
-    assert list.first[:zone] == "Australia/Sydney"
+    assert(list.any?{ |l| l[:zone] == 'Australia/Sydney' })
   end
 
   def test_timezone_list_current_time
@@ -53,7 +51,7 @@ class TimezoneTest < Test::Unit::TestCase
     Timezone::Configure.default_for_list = "America/Chicago", "Australia/Sydney"
     list = Timezone::Zone.list
     assert list.count == 2
-    assert list.first.has_value? "Australia/Sydney"
+    assert(list.any?{ |l| l.has_value?("Australia/Sydney") })
   end
 
   def test_timezone_names
@@ -198,6 +196,7 @@ class TimezoneTest < Test::Unit::TestCase
   end
 
   def test_configure_url_default
+    Timezone::Configure.begin{ |c| c.google_api_key = nil }
     assert_equal 'api.geonames.org', Timezone::Configure.url
   end
 

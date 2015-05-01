@@ -1,9 +1,9 @@
 require 'timezone/configure'
 require 'timezone/lookup/geonames'
-require 'test/unit'
+require 'minitest/autorun'
 require_relative 'http_test_client'
 
-class GeonamesLookupTest < ::Test::Unit::TestCase
+class GeonamesLookupTest < ::Minitest::Unit::TestCase
   def setup
     Timezone::Configure.begin do |c|
       c.google_api_key = nil
@@ -29,7 +29,7 @@ class GeonamesLookupTest < ::Test::Unit::TestCase
   def test_api_limit
     HTTPTestClient.body = File.open(mock_path + '/api_limit_reached.txt').read
 
-    assert_raise Timezone::Error::GeoNames, 'api limit reached' do
+    assert_raises Timezone::Error::GeoNames, 'api limit reached' do
       lookup.lookup(*coordinates)
     end
   end
