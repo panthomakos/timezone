@@ -1,3 +1,8 @@
+# 0.3.10
+
+* Added clearer error messages for invalid configurations. (panthomakos)
+* Updated with tzdata-2015d-1. (panthomakos)
+
 # 0.3.9
 
 * Updated with tzdata-2015b-1. (panthomakos)

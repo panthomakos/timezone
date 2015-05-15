@@ -29,7 +29,7 @@ module Timezone
     # @return [String]
     #   the Google API key ('abc123')
     def self.google_api_key
-      @google_api_key
+      @google_api_key ||= nil
     end
 
     # Google API key
@@ -165,7 +165,7 @@ module Timezone
     # @return [String]
     #   the Geonames API username ('foo-bar')
     def self.username
-      @@username
+      @@username ||= nil
     end
 
     # The Geonames API username

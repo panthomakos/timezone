@@ -6,6 +6,13 @@ require 'uri'
 module Timezone
   module Lookup
     class Google < ::Timezone::Lookup::Basic
+      def initialize(config)
+        if config.google_api_key.nil?
+          raise(::Timezone::Error::InvalidConfig, 'missing api key')
+        end
+        super
+      end
+
       def lookup(lat,lng)
         response = client.get(url(lat,lng))
 

@@ -6,6 +6,14 @@ require 'uri'
 module Timezone
   module Lookup
     class Geonames < ::Timezone::Lookup::Basic
+      def initialize(config)
+        if config.username.nil?
+          raise(::Timezone::Error::InvalidConfig, 'missing username')
+        end
+
+        super
+      end
+
       def lookup(lat, lng)
         response = client.get(url(lat, lng))
 

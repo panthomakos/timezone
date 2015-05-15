@@ -20,6 +20,13 @@ class GeonamesLookupTest < ::Minitest::Unit::TestCase
     ::Timezone::Lookup::Geonames.new(Timezone::Configure)
   end
 
+  def test_missing_username
+    Timezone::Configure.begin{ |c| c.username = nil }
+    assert_raises(::Timezone::Error::InvalidConfig){ lookup }
+  ensure
+    Timezone::Configure.begin{ |c| c.username = 'timezone' }
+  end
+
   def test_lookup
     HTTPTestClient.body = File.open(mock_path + '/lat_lon_coords.txt').read
 

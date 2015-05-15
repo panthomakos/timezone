@@ -6,7 +6,6 @@ require_relative 'http_test_client'
 class GoogleLookupTest < ::Minitest::Unit::TestCase
   def setup
     Timezone::Configure.begin do |c|
-      c.google_api_key = nil
       c.http_client = HTTPTestClient
       c.google_api_key = '123abc'
     end
@@ -18,6 +17,13 @@ class GoogleLookupTest < ::Minitest::Unit::TestCase
 
   def lookup
     ::Timezone::Lookup::Google.new(Timezone::Configure)
+  end
+
+  def test_missing_api_key
+    Timezone::Configure.begin{ |c| c.google_api_key = nil }
+    assert_raises(::Timezone::Error::InvalidConfig){ lookup }
+  ensure
+    Timezone::Configure.begin{ |c| c.google_api_key = '123abc' }
   end
 
   def test_google_using_lat_lon_coordinates
