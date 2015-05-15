@@ -22,8 +22,8 @@ Gem::Specification.new do |s|
   s.rdoc_options = ['--charset=UTF-8']
   s.require_paths = ["lib"]
 
-  s.add_development_dependency('rake')
+  s.add_development_dependency('rake', '~> 10.4.0')
   s.add_development_dependency('minitest', '~> 4.0')
-  s.add_development_dependency('timecop')
-  s.add_development_dependency('mocha')
+  s.add_development_dependency('timecop', '~> 0.7.3')
+  s.add_development_dependency('mocha', '~> 1.1.0')
 end
