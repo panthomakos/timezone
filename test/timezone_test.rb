@@ -232,5 +232,13 @@ class TimezoneTest < ::Minitest::Unit::TestCase
     timezone = Timezone::Zone.new(:zone => 'Australia/Adelaide')
     assert_equal 'Australia/Adelaide', timezone.zone
     assert_equal 'Adelaide', timezone.active_support_time_zone
+
+    timezone = Timezone::Zone.new(:zone => 'America/Phoenix')
+    assert_equal 'America/Phoenix', timezone.zone
+    assert_equal 'Arizona', timezone.active_support_time_zone
+
+    timezone = Timezone::Zone.new(:zone => 'America/Anchorage')
+    assert_equal 'America/Anchorage', timezone.zone
+    assert_equal 'America/Anchorage', timezone.active_support_time_zone
   end
 end

@@ -1,3 +1,8 @@
+# 0.3.11
+
+* Fixed `active_support_time_zone` to only include the 149 `ActiveSupport`
+  timezones. Eventually this method will be removed entirely. (panthomakos)
+
 # 0.3.10
 
 * Added clearer error messages for invalid configurations. (panthomakos)
