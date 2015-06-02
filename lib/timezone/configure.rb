@@ -40,11 +40,34 @@ module Timezone
       @google_api_key = api_key
     end
 
+    # The Google Client ID (for enterprise)
+    #
+    # @return [String]
+    #   the Google Client ('abc123')
+    def self.google_client_id
+      @google_client_id ||= nil
+    end
+
+    # Google Client ID (for enterprise)
+    #
+    # @param [String] client
+    #   the Google Client
+    def self.google_client_id=(client)
+      @google_client_id = client
+    end
+
     # Use Google API if key has been set
     #
     # @return [Boolean]
     def self.use_google?
       !!google_api_key
+    end
+
+    # Sign Google API request if client given (for enterprise)
+    #
+    # @return [Boolean]
+    def self.use_google_enterprise?
+      use_google? && !!google_client_id
     end
 
     def self.lookup

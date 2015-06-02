@@ -78,6 +78,7 @@ Next, add the following to your application.rb file, or before you perform a coo
 
     Timezone::Configure.begin do |c|
       c.google_api_key = 'your_google_api_key_goes_here'
+      c.google_client_id = 'your_google_client_id' # only if using 'Google for Work'
     end
 
 Finally, for either geonames or Google implementation, pass the coordinates to your timezone initialization function.
