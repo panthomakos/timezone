@@ -1,3 +1,7 @@
+# 0.4.0
+
+* Added Google Maps for Work signing support. (appfolio)
+
 # 0.3.11
 
 * Fixed `active_support_time_zone` to only include the 149 `ActiveSupport`
