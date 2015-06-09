@@ -12,13 +12,20 @@ module Timezone
       end
 
       def names
-        @@names ||= Dir[File.join(ZONE_FILE_PATH, "**/*")].map{ |file|
-          next if File.directory?(file)
-          file.gsub("#{ZONE_FILE_PATH}/", '')
-        }.compact
+        @@names ||= parse_zone_names
       end
 
       private
+
+      def parse_zone_names
+        files = Dir[File.join(ZONE_FILE_PATH, "**/*")].map do |file|
+          next if File.directory?(file)
+
+          file.gsub("#{ZONE_FILE_PATH}/", '')
+        end
+
+        files.compact
+      end
 
       def parse_zone_data(data)
         rules = []
