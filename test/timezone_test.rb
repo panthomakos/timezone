@@ -69,22 +69,29 @@ class TimezoneTest < ::Minitest::Unit::TestCase
     assert gmt < australia
   end
 
-  def test_getting_utc_offset
-    assert_equal 36000, Timezone::Zone.new(:zone => 'Australia/Sydney').utc_offset(Time.parse('2011-06-05'))
-    assert_equal -25200, Timezone::Zone.new(:zone => 'America/Los_Angeles').utc_offset(Time.parse('2011-06-05'))
-    assert_equal 20700, Timezone::Zone.new(:zone => 'Asia/Kathmandu').utc_offset(Time.parse('2011-06-05'))
+  def utc_offset(zone, year, month, day)
+    Timezone::Zone.new(:zone => zone).utc_offset(Time.new(year, month, day))
+  end
 
-    assert_equal -18000, Timezone::Zone.new(:zone => 'America/New_York').utc_offset(Time.parse('2011-01-11'))
-    assert_equal -14400, Timezone::Zone.new(:zone => 'America/New_York').utc_offset(Time.parse('2011-06-11'))
+  def test_getting_utc_offset
+    assert_equal(36000, utc_offset('Australia/Sydney', 2011, 06, 05))
+    assert_equal(-25200, utc_offset('America/Los_Angeles', 2011, 06, 05))
+    assert_equal(20700, utc_offset('Asia/Kathmandu', 2011, 06, 05))
+    assert_equal(-18000, utc_offset('America/New_York', 2011, 01, 11))
+    assert_equal(-14400, utc_offset('America/New_York', 2011, 06, 11))
+  end
+
+  def dst?(zone, year, month, day)
+    Timezone::Zone.new(:zone => zone).dst?(Time.new(year, month, day))
   end
 
   def test_getting_dst
-    assert !Timezone::Zone.new(:zone => 'Australia/Sydney').dst?(Time.parse('2011-06-05'))
-    assert Timezone::Zone.new(:zone => 'America/Los_Angeles').dst?(Time.parse('2011-06-05'))
-    assert !Timezone::Zone.new(:zone => 'Asia/Kathmandu').dst?(Time.parse('2011-06-05'))
+    refute dst?('Australia/Sydney', 2011, 06, 05)
+    assert dst?('America/Los_Angeles', 2011, 06, 05)
+    refute dst?('Asia/Kathmandu', 2011, 06, 05)
 
-    assert !Timezone::Zone.new(:zone => 'America/New_York').dst?(Time.parse('2011-01-11'))
-    assert Timezone::Zone.new(:zone => 'America/New_York').dst?(Time.parse('2011-06-11'))
+    refute dst?('America/New_York', 2011, 01, 11)
+    assert dst?('America/New_York', 2011, 06, 11)
   end
 
   def test_loading_GMT_timezone

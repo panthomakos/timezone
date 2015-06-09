@@ -32,7 +32,7 @@ module Timezone
       if options.has_key?(:lat) && options.has_key?(:lon)
         options[:zone] = timezone_id options[:lat], options[:lon]
       elsif options.has_key?(:latlon)
-        options[:zone] = timezone_id *options[:latlon]
+        options[:zone] = timezone_id(*options[:latlon])
       end
 
       raise Timezone::Error::NilZone, 'No zone was found. Please specify a zone.' if options[:zone].nil?
@@ -221,7 +221,7 @@ module Timezone
       end
     end
 
-    def timezone_id lat, lon #:nodoc:
+    def timezone_id(lat, lon) #:nodoc:
       Timezone::Configure.lookup.lookup(lat,lon)
     end
   end
