@@ -15,10 +15,6 @@ Lint/DeprecatedClassMethods:
 Lint/UnusedMethodArgument:
   Enabled: false
 
-# Offense count: 1
-Lint/UselessComparison:
-  Enabled: false
-
 # Offense count: 17
 Metrics/AbcSize:
   Max: 30

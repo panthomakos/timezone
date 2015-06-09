@@ -64,7 +64,8 @@ class TimezoneTest < ::Minitest::Unit::TestCase
   def time_timezone_equivalence
     gmt = Timezone::Zone.new :zone => 'GMT'
     australia = Timezone::Zone.new :zone => 'Australia/Sydney'
-    assert gmt == gmt
+
+    assert_equal(gmt, Timezone::Zone.new(:zone => 'GMT'))
     assert gmt <= australia
     assert gmt < australia
   end
