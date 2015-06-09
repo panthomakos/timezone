@@ -58,7 +58,7 @@ module Timezone
       reference.utc + utc_offset(reference)
     end
 
-    alias :utc_to_local :time
+    alias_method :utc_to_local, :time
 
     # Determine the UTC time for a given time in the timezone.
     #
