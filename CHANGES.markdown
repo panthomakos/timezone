@@ -1,3 +1,7 @@
+# 0.4.1
+
+* Updated with tzdata-2015e-1. (panthomakos)
+
 # 0.4.0
 
 * Added Google Maps for Work signing support. (appfolio)
