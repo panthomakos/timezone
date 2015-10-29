@@ -249,4 +249,44 @@ class TimezoneTest < ::Minitest::Unit::TestCase
     assert_equal 'America/Anchorage', timezone.zone
     assert_equal 'America/Anchorage', timezone.active_support_time_zone
   end
+
+  EQUIVALENCE_METHODS = [
+    :time,
+    :local_to_utc,
+    :time_with_offset,
+    :dst?,
+    :utc_offset
+  ]
+
+  def check_equivalence(zone, time, other)
+    tz = Timezone::Zone.new(:zone => zone)
+
+    EQUIVALENCE_METHODS.each do |m|
+      assert_equal(tz.public_send(m, time), tz.public_send(m, other))
+    end
+  end
+
+  def test_date_equivalence
+    time = Time.new(2011, 2, 3, 0, 0, 0)
+    date = Date.new(2011, 2, 3)
+
+    check_equivalence('America/Los_Angeles', time, date)
+
+    time = Time.new(2011, 6, 3, 0, 0, 0)
+    date = Date.new(2011, 6, 3)
+
+    check_equivalence('America/Los_Angeles', time, date)
+  end
+
+  def test_datetime_equivalence
+    time = Time.new(2011, 2, 3, 13, 5, 0)
+    datetime = DateTime.new(2011, 2, 3, 13, 5, 0)
+
+    check_equivalence('America/Los_Angeles', time, datetime)
+
+    time = Time.new(2011, 6, 3, 13, 5, 0)
+    datetime = DateTime.new(2011, 6, 3, 13, 5, 0)
+
+    check_equivalence('America/Los_Angeles', time, datetime)
+  end
 end
