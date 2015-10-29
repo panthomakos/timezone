@@ -1,3 +1,7 @@
+# Unreleased (master)
+
+* Added support for `DateTime` and `Date` objects. (panthomakos)
+
 # 0.4.3
 
 * Updated with tzdata-2015g-1. (panthomakos)

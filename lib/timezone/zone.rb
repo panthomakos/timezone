@@ -55,6 +55,8 @@ module Timezone
     # offset in the timezone rules. Once the offset has been found that offset is added to the reference UTC time
     # to calculate the reference time in the timezone.
     def time(reference)
+      reference = sanitize(reference)
+
       reference.utc + utc_offset(reference)
     end
 
@@ -69,6 +71,8 @@ module Timezone
     # separate UTC times (during a fall back). All of these cases are ignored here and the best
     # (first) guess is used instead.
     def local_to_utc(time)
+      time = sanitize(time)
+
       time.utc - rule_for_local(time).rules.first[OFFSET_BIT]
     end
 
@@ -84,6 +88,8 @@ module Timezone
     # to calculate the reference time in the timezone. The offset is then
     # appended to put the time object into the proper offset.
     def time_with_offset(reference)
+      reference = sanitize(reference)
+
       utc = time(reference)
       offset = utc_offset(reference)
       Time.new(utc.year, utc.month, utc.day, utc.hour, utc.min, utc.sec, offset)
@@ -91,6 +97,8 @@ module Timezone
 
     # Whether or not the time in the timezone is in DST.
     def dst?(reference)
+      reference = sanitize(reference)
+
       rule_for_utc(reference)[DST_BIT]
     end
 
@@ -98,6 +106,8 @@ module Timezone
     #
     #   timezone.utc_offset(reference)
     def utc_offset(reference=Time.now)
+      reference = sanitize(reference)
+
       rule_for_utc(reference)[OFFSET_BIT]
     end
 
@@ -141,6 +151,10 @@ module Timezone
     end
 
     private
+
+    def sanitize(reference)
+      reference.to_time
+    end
 
     # Does the given time (in seconds) match this rule?
     #
