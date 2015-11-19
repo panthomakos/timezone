@@ -1,5 +1,7 @@
 # Unreleased (master)
 
+# 0.5.0
+
 * Added support for `DateTime` and `Date` objects. (panthomakos)
 
 # 0.4.3
