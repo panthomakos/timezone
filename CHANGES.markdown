@@ -1,5 +1,7 @@
 # Unreleased (master)
 
+* Added `::Timezone::Lookup::Test`, which provides lookup stubs for testing frameworks. (panthomakos)
+
 # 0.5.0
 
 * Added support for `DateTime` and `Date` objects. (panthomakos)

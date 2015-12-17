@@ -155,6 +155,19 @@ Be aware that the Google timezone API uses `https` protocol.
 
 For an example, see `Timezone::NetHTTPClient` which uses the standard `Net::HTTP` library to perform API calls.
 
+## Testing Timezone Lookups
+
+You can provide your own lookup stubs using the built in `::Timezone::Lookup::Test` class.
+
+    require 'timezone/lookup/test'
+
+    ::Timezone::Configure.begin{ |c| c.lookup = ::Timezone::Lookup::Test }
+
+    ::Timezone::Configure.lookup.stub(-10, 10, 'America/Los_Angeles')
+
+    ::Timezone::Zone.new(lat: -10, lon: 10).zone #=> 'America/Los_Angeles'
+    ::Timezone::Zone.new(lat: -11, lon: 11) #=> raises ::Timezone::Error::Test
+
 ## Build Status [![Build Status](https://secure.travis-ci.org/panthomakos/timezone.png?branch=master)](http://travis-ci.org/panthomakos/timezone)
 
 ## Code Quality [![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/panthomakos/timezone)

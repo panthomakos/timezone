@@ -13,6 +13,7 @@ module Timezone
     class GeoNames < Base; end
     class Google < Base; end
     class ParseTime < Base; end
+    class Test < Base ; end
     class InvalidConfig < Base ; end
   end
 end

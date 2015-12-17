@@ -70,7 +70,13 @@ module Timezone
       use_google? && !!google_client_id
     end
 
+    def self.lookup=(lookup)
+      @lookup = lookup && lookup.new(self)
+    end
+
     def self.lookup
+      return @lookup if @lookup
+
       use_google? ? google_lookup : geonames_lookup
     end
 
