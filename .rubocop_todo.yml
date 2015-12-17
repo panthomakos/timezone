@@ -19,11 +19,6 @@ Lint/UnusedMethodArgument:
 Metrics/AbcSize:
   Max: 30
 
-# Offense count: 3
-# Configuration parameters: CountComments.
-Metrics/ClassLength:
-  Max: 219
-
 # Offense count: 32
 # Configuration parameters: AllowURI, URISchemes.
 Metrics/LineLength:

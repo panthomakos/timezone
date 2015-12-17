@@ -279,14 +279,18 @@ class TimezoneTest < ::Minitest::Unit::TestCase
   end
 
   def test_datetime_equivalence
+    zone = ENV['TZ']
+    ENV['TZ'] = 'UTC'
     time = Time.new(2011, 2, 3, 13, 5, 0)
-    datetime = DateTime.new(2011, 2, 3, 13, 5, 0)
+    datetime = DateTime.new(2011, 2, 3, 13, 5, 0, 0)
 
     check_equivalence('America/Los_Angeles', time, datetime)
 
     time = Time.new(2011, 6, 3, 13, 5, 0)
-    datetime = DateTime.new(2011, 6, 3, 13, 5, 0)
+    datetime = DateTime.new(2011, 6, 3, 13, 5, 0, 0)
 
     check_equivalence('America/Los_Angeles', time, datetime)
+  ensure
+    ENV['TZ'] = zone
   end
 end
