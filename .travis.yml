@@ -3,7 +3,6 @@ script:
   - bundle exec rake test
   - bundle exec rubocop
 rvm:
-  - 1.9.3
-  - 2.0.0
-  - 2.1.6
-  - 2.2.2
+  - 2.0.0-p648
+  - 2.1.7
+  - 2.2.4
