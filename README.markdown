@@ -64,7 +64,7 @@ Savings Time:
 
 ## Getting the timezone for a specific latitude and longitude
 
-First, make sure you have a geonames username. It's free and easy to setup, you can do so [here](http://www.geonames.org/login).
+First, make sure you have a geonames username. It's free and easy to setup, you can do so [here](http://www.geonames.org/login). Once you have created an account, make sure that you have enabled web services [here](http://www.geonames.org/enablefreewebservice).
 
 Second, add the following to your application.rb file, or before you perform a coordinate lookup.
 
