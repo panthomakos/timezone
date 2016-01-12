@@ -74,6 +74,8 @@ Second, add the following to your application.rb file, or before you perform a c
 
 Alternatively, timezone can be used with a Google api key, which you can get [here](https://code.google.com/apis/console/).
 
+Enable the Google Maps Time Zone API to do this.
+
 Next, add the following to your application.rb file, or before you perform a coordinate lookup.
 
     Timezone::Configure.begin do |c|
