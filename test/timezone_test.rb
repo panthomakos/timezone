@@ -256,7 +256,7 @@ class TimezoneTest < ::Minitest::Unit::TestCase
     :time_with_offset,
     :dst?,
     :utc_offset
-  ]
+  ].freeze
 
   def check_equivalence(zone, time, other)
     tz = Timezone::Zone.new(:zone => zone)

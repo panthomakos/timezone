@@ -134,7 +134,7 @@ module Timezone
       "Pacific/Fakaofo"=>"Tokelau Is.",
       "Pacific/Chatham"=>"Chatham Is.",
       "Pacific/Apia"=>"Samoa"
-    }
+    }.freeze
 
     def self.format(zone)
       TIMEZONE_MAPPING[zone] || zone

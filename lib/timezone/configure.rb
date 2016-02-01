@@ -105,7 +105,7 @@ module Timezone
     end
 
     class << self
-      alias_method :url=, :geonames_url=
+      alias url= geonames_url=
     end
 
     # The Google API URL
