@@ -1,6 +1,7 @@
-# Unreleased (master)
+# 0.6.0
 
 * Added `::Timezone::Lookup::Test`, which provides lookup stubs for testing frameworks. (panthomakos)
+* Updated with tzdata-2016a-1. (panthomakos)
 
 # 0.5.0
 
