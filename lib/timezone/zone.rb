@@ -41,6 +41,12 @@ module Timezone
       @rules = Timezone::Loader.load(@zone)
     end
 
+    alias to_s zone
+
+    def inspect
+      "#<Timezone::Zone zone: \"#{zone}\", rules: [...]>"
+    end
+
     def active_support_time_zone
       @active_support_time_zone ||= Timezone::ActiveSupport.format(@zone)
     end

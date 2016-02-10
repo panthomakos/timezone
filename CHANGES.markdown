@@ -1,3 +1,7 @@
+# master (unreleased)
+
+* Added nice `to_s` and `inspect` methods for `::Timezone::Zone`. (panthomakos)
+
 # 0.6.0
 
 * Added `::Timezone::Lookup::Test`, which provides lookup stubs for testing frameworks. (panthomakos)
