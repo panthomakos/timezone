@@ -12,19 +12,24 @@ class TestZone < ::Minitest::Test
     @paris ||= Timezone::Zone.new(zone: 'Europe/Paris')
   end
 
+  def test_name
+    assert_equal 'America/Los_Angeles', la.name
+    assert_equal 'Europe/Paris', paris.name
+  end
+
   def test_to_s
-    assert_equal('America/Los_Angeles', la.to_s)
-    assert_equal('Europe/Paris', paris.to_s)
+    assert_equal 'America/Los_Angeles', la.to_s
+    assert_equal 'Europe/Paris', paris.to_s
   end
 
   def test_inspect
     assert_equal(
-      '#<Timezone::Zone zone: "America/Los_Angeles", rules: [...]>',
+      '#<Timezone::Zone name: "America/Los_Angeles">',
       la.inspect
     )
 
     assert_equal(
-      '#<Timezone::Zone zone: "Europe/Paris", rules: [...]>',
+      '#<Timezone::Zone name: "Europe/Paris">',
       paris.inspect
     )
   end

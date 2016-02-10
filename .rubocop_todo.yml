@@ -21,10 +21,6 @@ Lint/UnusedMethodArgument:
     - 'lib/timezone/lookup/test.rb'
     - 'test/http_test_client.rb'
 
-# Offense count: 13
-Metrics/AbcSize:
-  Max: 30
-
 # Offense count: 22
 # Configuration parameters: AllowHeredoc, AllowURI, URISchemes.
 # URISchemes: http, https

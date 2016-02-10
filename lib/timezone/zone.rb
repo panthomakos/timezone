@@ -11,25 +11,51 @@ require 'timezone/loader'
 module Timezone
   class Zone
     include Comparable
-    attr_reader :rules, :zone
+
+    attr_reader :name
+
+    alias to_s name
+
+    def inspect
+      "#<Timezone::Zone name: \"#{name}\">"
+    end
 
     SOURCE_BIT = 0
     NAME_BIT = 1
     DST_BIT = 2
     OFFSET_BIT = 3
 
-    # Create a new Timezone object.
-    #
-    #   Timezone.new(options)
-    #
-    # :zone       - The actual name of the zone. For example, Australia/Sydney or Americas/Los_Angeles.
-    # :lat, :lon  - The latitude and longitude of the location.
-    # :latlon     - The array of latitude and longitude of the location.
-    #
-    # If a latitude and longitude is passed in, the Timezone object will do a lookup for the actual zone
-    # name and then use that as a reference. It will then load the appropriate json timezone information
-    # for that zone, and compile a list of the timezone rules.
-    def initialize options
+    def initialize(name)
+      if name.is_a?(Hash)
+        legacy_initialize(name)
+      else
+        @name = name
+      end
+    end
+
+    # @deprecated This method will be removed in the next release.
+    def zone
+      warn '[DEPRECATED] `Zone#zone` will not be available in ' \
+        'the next release of the `timezone` gem. Use `Zone#name` ' \
+        'instead.'.freeze
+
+      name
+    end
+
+    # @deprecated This method will be removed in the next release.
+    def rules
+      warn '[DEPRECATED] `Zone#rules` will not be available in ' \
+        'the next release of the `timezone` gem.'.freeze
+
+      private_rules
+    end
+
+    def legacy_initialize(options)
+      warn '[DEPRECATED] Creating Zone objects using an options hash ' \
+        'will be deprecated in the next release of the `timezone` gem. ' \
+        'Use `Timezone::[]`, `Timezone::fetch` or `Timezone::lookup` ' \
+        'instead.'.freeze
+
       if options.has_key?(:lat) && options.has_key?(:lon)
         options[:zone] = timezone_id options[:lat], options[:lon]
       elsif options.has_key?(:latlon)
@@ -38,14 +64,8 @@ module Timezone
 
       raise Timezone::Error::NilZone, 'No zone was found. Please specify a zone.' if options[:zone].nil?
 
-      @zone = options[:zone]
-      @rules = Loader.load(@zone)
-    end
-
-    alias to_s zone
-
-    def inspect
-      "#<Timezone::Zone zone: \"#{zone}\", rules: [...]>"
+      @name = options[:zone]
+      private_rules
     end
 
     # @deprecated This functionality will be removed in the next release.
@@ -54,7 +74,7 @@ module Timezone
         'in the next release of the `timezone` gem. There will be no ' \
         'replacement.'.freeze
 
-      @active_support_time_zone ||= Timezone::ActiveSupport.format(@zone)
+      @active_support_time_zone ||= Timezone::ActiveSupport.format(name)
     end
 
     # Determine the time in the timezone.
@@ -148,11 +168,11 @@ module Timezone
 
         @zones = []
         now = Time.now
-        list.each do |zone|
-          item = Zone.new(zone: zone)
+        list.each do |name|
+          item = new(name)
           @zones << {
-            :zone => item.zone,
-            :title => Configure.replacements[item.zone] || item.zone,
+            :zone => item.name,
+            :title => Configure.replacements[item.name] || item.name,
             :offset => item.utc_offset,
             :utc_offset => (item.utc_offset/(60*60)),
             :dst => item.dst?(now)
@@ -163,6 +183,10 @@ module Timezone
     end
 
     private
+
+    def private_rules
+      @rules ||= Loader.load(name)
+    end
 
     def sanitize(reference)
       reference.to_time
@@ -185,7 +209,7 @@ module Timezone
       # For each rule, convert the local time into the UTC equivalent for
       # that rule offset, and then check if the UTC time matches the rule.
       index = binary_search(local){ |t,r| match?(t-r[OFFSET_BIT], r) }
-      match = @rules[index]
+      match = private_rules[index]
 
       utc = local-match[OFFSET_BIT]
 
@@ -194,7 +218,7 @@ module Timezone
       return RuleSet.new(:missing, [match]) if rule_for_utc(utc) != match
 
       # If the match is the last rule, then return it.
-      return RuleSet.new(:single, [match]) if index == @rules.length-1
+      return RuleSet.new(:single, [match]) if index == private_rules.length-1
 
       # If the UTC equivalent time falls within the last hour(s) of the time
       # change which were replayed during a fall-back in time, then return
@@ -212,8 +236,8 @@ module Timezone
       #
       #     Since both rules provide valid mappings for the local time,
       #     we need to return both values.
-      if utc > match[SOURCE_BIT] - match[OFFSET_BIT] + @rules[index+1][OFFSET_BIT]
-        RuleSet.new(:double, @rules[index..(index+1)])
+      if utc > match[SOURCE_BIT] - match[OFFSET_BIT] + private_rules[index+1][OFFSET_BIT]
+        RuleSet.new(:double, private_rules[index..(index+1)])
       else
         RuleSet.new(:single, [match])
       end
@@ -223,21 +247,21 @@ module Timezone
       time = time.utc if time.respond_to?(:utc)
       time = time.to_i
 
-      return @rules[binary_search(time){ |t,r| match?(t,r) }]
+      return private_rules[binary_search(time){ |t,r| match?(t,r) }]
     end
 
     # Find the first rule that matches using binary search.
     def binary_search(time, from=0, to=nil, &block)
-      to = @rules.length-1 if to.nil?
+      to = private_rules.length-1 if to.nil?
 
       return from if from == to
 
       mid = (from + to) / 2
 
-      if block.call(time, @rules[mid])
+      if block.call(time, private_rules[mid])
         return mid if mid == 0
 
-        if !block.call(time, @rules[mid-1])
+        if !block.call(time, private_rules[mid-1])
           return mid
         else
           return binary_search(time, from, mid-1, &block)
