@@ -47,7 +47,12 @@ module Timezone
       "#<Timezone::Zone zone: \"#{zone}\", rules: [...]>"
     end
 
+    # @deprecated This functionality will be removed in the next release.
     def active_support_time_zone
+      warn '[DEPRECATED] `Zone#active_support_time_zone` will be deprecated ' \
+        'in the next release of the `timezone` gem. There will be no ' \
+        'replacement.'.freeze
+
       @active_support_time_zone ||= Timezone::ActiveSupport.format(@zone)
     end
 
