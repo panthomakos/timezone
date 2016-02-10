@@ -6,9 +6,11 @@ module Timezone
     SOURCE_BIT = 0
 
     class << self
-      def load(zone)
+      def load(name)
+        raise ::Timezone::Error::InvalidZone unless valid?(name)
+
         @rules ||= {}
-        @rules[zone] ||= parse_zone_data(get_zone_data(zone))
+        @rules[name] ||= parse_zone_data(get_zone_data(name))
       end
 
       def names
@@ -47,14 +49,8 @@ module Timezone
       end
 
       # Retrieve the data from a particular time zone
-      def get_zone_data(zone)
-        file = File.join(ZONE_FILE_PATH, zone)
-
-        if !File.exists?(file)
-          raise Timezone::Error::InvalidZone, "'#{zone}' is not a valid zone."
-        end
-
-        File.read(file)
+      def get_zone_data(name)
+        File.read(File.join(ZONE_FILE_PATH, name))
       end
     end
   end

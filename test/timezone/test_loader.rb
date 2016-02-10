@@ -5,6 +5,23 @@ module Timezone
   class TestLoader < ::Minitest::Test
     parallelize_me!
 
+    def test_load
+      assert_equal(
+        [[1435708800, 'GMT', false, 0]],
+        Loader.load('GMT')
+      )
+
+      assert_raises ::Timezone::Error::InvalidZone do
+        Loader.load('foo/bar')
+      end
+    end
+
+    def test_names
+      assert Loader.names.include?('GMT')
+      assert Loader.names.include?('Europe/Paris')
+      refute Loader.names.include?('foo/bar')
+    end
+
     def test_valid?
       assert Loader.valid?('America/Los_Angeles')
       assert Loader.valid?('Europe/Paris')
