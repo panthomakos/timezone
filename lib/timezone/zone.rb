@@ -6,6 +6,7 @@ require 'timezone/loader'
 require 'timezone/error'
 require 'timezone/configure'
 require 'timezone/active_support'
+require 'timezone/loader'
 
 module Timezone
   class Zone
@@ -38,7 +39,7 @@ module Timezone
       raise Timezone::Error::NilZone, 'No zone was found. Please specify a zone.' if options[:zone].nil?
 
       @zone = options[:zone]
-      @rules = Timezone::Loader.load(@zone)
+      @rules = Loader.load(@zone)
     end
 
     alias to_s zone
@@ -129,7 +130,7 @@ module Timezone
     class << self
       # Instantly grab all possible time zone names.
       def names
-        Timezone::Loader.names
+        Loader.names
       end
 
       # Get a list of specified timezones and the basic information accompanying that zone
