@@ -7,6 +7,7 @@ require 'timezone/error'
 require 'timezone/configure'
 require 'timezone/active_support'
 require 'timezone/loader'
+require 'timezone/deprecate'
 
 module Timezone
   class Zone
@@ -44,26 +45,38 @@ module Timezone
     # @deprecated This method will be replaced with `Zone#name` in
     #   future versions of this gem.
     def zone
-      warn '[DEPRECATED] `Zone#zone` will not be available in ' \
-        'the next release of the `timezone` gem. Use `Zone#name` ' \
-        'instead.'.freeze
+      Deprecate.call(
+        self.class,
+        :zone,
+        '[DEPRECATED] `Zone#zone` will not be available in ' \
+          'the next release of the `timezone` gem. Use `Zone#name` ' \
+          'instead.'.freeze
+      )
 
       name
     end
 
     # @deprecated This method will be removed in the next release.
     def rules
-      warn '[DEPRECATED] `Zone#rules` will not be available in ' \
-        'the next release of the `timezone` gem.'.freeze
+      Deprecate.call(
+        self.class,
+        :rules,
+        '[DEPRECATED] `Zone#rules` will not be available in ' \
+          'the next release of the `timezone` gem.'.freeze
+      )
 
       private_rules
     end
 
     def legacy_initialize(options)
-      warn '[DEPRECATED] Creating Zone objects using an options hash ' \
-        'will be deprecated in the next release of the `timezone` gem. ' \
-        'Use `Timezone::[]`, `Timezone::fetch` or `Timezone::lookup` ' \
-        'instead.'.freeze
+      Deprecate.call(
+        self.class,
+        :initialize,
+        '[DEPRECATED] Creating Zone objects using an options hash ' \
+          'will be deprecated in the next release of the `timezone` ' \
+          'gem. Use `Timezone::[]`, `Timezone::fetch` or ' \
+          '`Timezone::lookup` instead.'.freeze
+      )
 
       if options.has_key?(:lat) && options.has_key?(:lon)
         options[:zone] = timezone_id options[:lat], options[:lon]
@@ -79,9 +92,13 @@ module Timezone
 
     # @deprecated This functionality will be removed in the next release.
     def active_support_time_zone
-      warn '[DEPRECATED] `Zone#active_support_time_zone` will be deprecated ' \
-        'in the next release of the `timezone` gem. There will be no ' \
-        'replacement.'.freeze
+      Deprecate.call(
+        self.class,
+        :active_support_time_zone,
+        '[DEPRECATED] `Zone#active_support_time_zone` will be ' \
+          'deprecated in the next release of the `timezone` gem. There ' \
+          'will be no replacement.'.freeze
+      )
 
       @active_support_time_zone ||= Timezone::ActiveSupport.format(name)
     end
@@ -163,17 +180,25 @@ module Timezone
       # @deprecated This method will be replaced with `Timezone.names`
       #   in future versions of this gem.
       def names
-        warn '[DEPRECATED] `::Timezone::Zone.names` will be removed in ' \
-          'the next gem release. Use `::Timezone.names` instead.'.freeze
+        Deprecate.call(
+          self,
+          :names,
+          '[DEPRECATED] `::Timezone::Zone.names` will be removed in ' \
+            'the next gem release. Use `::Timezone.names` instead.'.freeze
+        )
 
         Loader.names
       end
 
       # @deprecated This functionality will be removed in the next release.
       def list(*args)
-        warn '[DEPRECATED] `Zone::list` will be deprecated in the ' \
-          'next release of the `timezone` gem. There will be no ' \
-          'replacement.'.freeze
+        Deprecate.call(
+          self,
+          :list,
+          '[DEPRECATED] `Zone::list` will be deprecated in the ' \
+            'next release of the `timezone` gem. There will be no ' \
+            'replacement.'.freeze
+        )
 
         args = nil if args.empty? # set to nil if no args are provided
         zones = args || Configure.default_for_list || self.names # get default list

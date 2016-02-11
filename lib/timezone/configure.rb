@@ -1,5 +1,6 @@
 require 'timezone/net_http_client'
 require 'timezone/lookup'
+require 'timezone/deprecate'
 
 module Timezone
   # @deprecated `Timezone::Configure` will be removed in the release
@@ -193,7 +194,7 @@ module Timezone
     # @deprecated `Timezone::Configure` will be removed in the release
     #   of the `timezone gem. Use `Timezone::Config` instead.
     def self.begin
-      warn DEPRECATE
+      Deprecate.call(self, :begin, DEPRECATE)
       yield self
     end
 

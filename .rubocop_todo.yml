@@ -22,11 +22,6 @@ Lint/UnusedMethodArgument:
 Metrics/LineLength:
   Max: 470
 
-# Offense count: 9
-# Configuration parameters: CountComments.
-Metrics/MethodLength:
-  Max: 20
-
 # Offense count: 1
 Metrics/PerceivedComplexity:
   Max: 8
