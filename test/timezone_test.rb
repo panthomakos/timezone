@@ -1,7 +1,6 @@
 require 'timezone'
 require 'timezone/zone'
 require 'minitest/autorun'
-require "mocha/setup"
 require 'timecop'
 
 class TimezoneTest < ::Minitest::Unit::TestCase
