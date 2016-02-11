@@ -169,15 +169,12 @@ module Timezone
         Loader.names
       end
 
-      # Get a list of specified timezones and the basic information accompanying that zone
-      #
-      #   zones = Timezone::Zone.list(*zones)
-      #
-      # zones - An array of timezone names. (i.e. Timezone::Zones.list("America/Chicago", "Australia/Sydney"))
-      #
-      # The result is a Hash of timezones with their title, offset in seconds, UTC offset, and if it uses DST.
-      #
+      # @deprecated This functionality will be removed in the next release.
       def list(*args)
+        warn '[DEPRECATED] `Zone::list` will be deprecated in the ' \
+          'next release of the `timezone` gem. There will be no ' \
+          'replacement.'.freeze
+
         args = nil if args.empty? # set to nil if no args are provided
         zones = args || Configure.default_for_list || self.names # get default list
         list = self.names.select { |name| zones.include? name } # only select zones if they exist
