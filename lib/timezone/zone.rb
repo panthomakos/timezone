@@ -25,9 +25,13 @@ module Timezone
     end
 
     SOURCE_BIT = 0
+    private_constant :SOURCE_BIT
     NAME_BIT = 1
+    private_constant :NAME_BIT
     DST_BIT = 2
+    private_constant :DST_BIT
     OFFSET_BIT = 3
+    private_constant :OFFSET_BIT
 
     def initialize(name)
       if name.is_a?(Hash)
