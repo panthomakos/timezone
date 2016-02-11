@@ -5,11 +5,11 @@ class TestZone < ::Minitest::Test
   parallelize_me!
 
   def la
-    @la ||= Timezone::Zone.new(zone: 'America/Los_Angeles')
+    @la ||= Timezone::Zone.new('America/Los_Angeles')
   end
 
   def paris
-    @paris ||= Timezone::Zone.new(zone: 'Europe/Paris')
+    @paris ||= Timezone::Zone.new('Europe/Paris')
   end
 
   def test_name
