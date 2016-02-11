@@ -20,6 +20,10 @@ module Timezone
       "#<Timezone::Zone name: \"#{name}\">"
     end
 
+    def exists?
+      true
+    end
+
     SOURCE_BIT = 0
     NAME_BIT = 1
     DST_BIT = 2

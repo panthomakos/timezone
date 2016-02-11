@@ -17,6 +17,11 @@ class TestZone < ::Minitest::Test
     assert_equal 'Europe/Paris', paris.name
   end
 
+  def test_exists?
+    assert la.exists?
+    assert paris.exists?
+  end
+
   def test_to_s
     assert_equal 'America/Los_Angeles', la.to_s
     assert_equal 'Europe/Paris', paris.to_s
