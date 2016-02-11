@@ -1,0 +1,39 @@
+require 'timezone'
+require 'timezone/lookup/test'
+require 'minitest/autorun'
+
+class TestTimezone < ::Minitest::Test
+  parallelize_me!
+
+  def setup
+    Timezone::Configure.begin do |c|
+      c.lookup = ::Timezone::Lookup::Test
+    end
+  end
+
+  def test_names
+    assert Timezone.names.is_a?(Array)
+    refute Timezone.names.empty?
+    assert Timezone.names.include?('Australia/Sydney')
+    assert Timezone.names.include?('America/Los_Angeles')
+  end
+
+  def test_get
+    assert Timezone['Australia/Sydney'].exists?
+    refute Timezone['foo/bar'].exists?
+  end
+
+  def test_fetch
+    assert Timezone.fetch('Australia/Sydney').exists?
+    assert_equal 'foo', Timezone.fetch('foo/bar'){ 'foo' }
+    assert_raises Timezone::Error::InvalidZone do
+      Timezone.fetch('foo/bar')
+    end
+  end
+
+  def test_lookup
+    Timezone::Configure.lookup.stub(-10, 10, 'America/Los_Angeles')
+
+    assert_equal Timezone.lookup(-10, 10), Timezone['America/Los_Angeles']
+  end
+end
