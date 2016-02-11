@@ -37,7 +37,8 @@ module Timezone
       end
     end
 
-    # @deprecated This method will be removed in the next release.
+    # @deprecated This method will be replaced with `Zone#name` in
+    #   future versions of this gem.
     def zone
       warn '[DEPRECATED] `Zone#zone` will not be available in ' \
         'the next release of the `timezone` gem. Use `Zone#name` ' \
@@ -152,8 +153,12 @@ module Timezone
     end
 
     class << self
-      # Instantly grab all possible time zone names.
+      # @deprecated This method will be replaced with `Timezone.names`
+      #   in future versions of this gem.
       def names
+        warn '[DEPRECATED] `::Timezone::Zone.names` will be removed in ' \
+          'the next gem release. Use `::Timezone.names` instead.'.freeze
+
         Loader.names
       end
 
