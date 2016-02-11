@@ -182,13 +182,6 @@ Style/SpaceAroundOperators:
     - 'lib/timezone/parser.rb'
     - 'lib/timezone/zone.rb'
 
-# Offense count: 27
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: space, no_space
-Style/SpaceBeforeBlockBraces:
-  Enabled: false
-
 # Offense count: 6
 # Cop supports --auto-correct.
 Style/SpaceBeforeSemicolon:

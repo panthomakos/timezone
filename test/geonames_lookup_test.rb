@@ -21,10 +21,10 @@ class GeonamesLookupTest < ::Minitest::Unit::TestCase
   end
 
   def test_missing_username
-    Timezone::Configure.begin{ |c| c.username = nil }
-    assert_raises(::Timezone::Error::InvalidConfig){ lookup }
+    Timezone::Configure.begin { |c| c.username = nil }
+    assert_raises(::Timezone::Error::InvalidConfig) { lookup }
   ensure
-    Timezone::Configure.begin{ |c| c.username = 'timezone' }
+    Timezone::Configure.begin { |c| c.username = 'timezone' }
   end
 
   def test_lookup

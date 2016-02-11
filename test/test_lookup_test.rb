@@ -34,6 +34,6 @@ class TestLookupTest < ::Minitest::Unit::TestCase
   end
 
   def teardown
-    Timezone::Configure.begin{ |c| c.lookup = nil }
+    Timezone::Configure.begin { |c| c.lookup = nil }
   end
 end

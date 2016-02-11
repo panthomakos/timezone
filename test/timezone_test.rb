@@ -25,7 +25,7 @@ class TimezoneTest < ::Minitest::Unit::TestCase
     assert list.is_a?(Array)
     assert list.count == 2
     assert list.first.is_a?(Hash)
-    assert(list.any?{ |l| l[:zone] == 'Australia/Sydney' })
+    assert(list.any? { |l| l[:zone] == 'Australia/Sydney' })
   end
 
   def test_timezone_list_current_time
@@ -50,7 +50,7 @@ class TimezoneTest < ::Minitest::Unit::TestCase
     Timezone::Configure.default_for_list = "America/Chicago", "Australia/Sydney"
     list = Timezone::Zone.list
     assert list.count == 2
-    assert(list.any?{ |l| l.has_value?("Australia/Sydney") })
+    assert(list.any? { |l| l.has_value?("Australia/Sydney") })
   end
 
   def test_timezone_names
@@ -203,7 +203,7 @@ class TimezoneTest < ::Minitest::Unit::TestCase
   end
 
   def test_configure_url_default
-    Timezone::Configure.begin{ |c| c.google_api_key = nil }
+    Timezone::Configure.begin { |c| c.google_api_key = nil }
     assert_equal 'api.geonames.org', Timezone::Configure.url
   end
 

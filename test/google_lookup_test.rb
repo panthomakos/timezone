@@ -21,10 +21,10 @@ class GoogleLookupTest < ::Minitest::Unit::TestCase
   end
 
   def test_missing_api_key
-    Timezone::Configure.begin{ |c| c.google_api_key = nil }
-    assert_raises(::Timezone::Error::InvalidConfig){ lookup }
+    Timezone::Configure.begin { |c| c.google_api_key = nil }
+    assert_raises(::Timezone::Error::InvalidConfig) { lookup }
   ensure
-    Timezone::Configure.begin{ |c| c.google_api_key = 'MTIzYWJj' }
+    Timezone::Configure.begin { |c| c.google_api_key = 'MTIzYWJj' }
   end
 
   def test_google_using_lat_lon_coordinates

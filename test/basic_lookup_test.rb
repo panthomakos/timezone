@@ -12,12 +12,12 @@ class BasicLookupTest < ::Minitest::Unit::TestCase
 
   def test_missing_protocol
     config.protocol = nil
-    assert_raises(::Timezone::Error::InvalidConfig){ lookup }
+    assert_raises(::Timezone::Error::InvalidConfig) { lookup }
   end
 
   def test_missing_url
     config.url = nil
-    assert_raises(::Timezone::Error::InvalidConfig){ lookup }
+    assert_raises(::Timezone::Error::InvalidConfig) { lookup }
   end
 
   def test_initialization

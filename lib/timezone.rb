@@ -9,7 +9,7 @@ module Timezone
   end
 
   def self.[](name)
-    fetch(name){ ::Timezone::NilZone.new }
+    fetch(name) { ::Timezone::NilZone.new }
   end
 
   def self.fetch(name)

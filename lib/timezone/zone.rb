@@ -224,7 +224,7 @@ module Timezone
 
       # For each rule, convert the local time into the UTC equivalent for
       # that rule offset, and then check if the UTC time matches the rule.
-      index = binary_search(local){ |t,r| match?(t-r[OFFSET_BIT], r) }
+      index = binary_search(local) { |t,r| match?(t-r[OFFSET_BIT], r) }
       match = private_rules[index]
 
       utc = local-match[OFFSET_BIT]
@@ -263,7 +263,7 @@ module Timezone
       time = time.utc if time.respond_to?(:utc)
       time = time.to_i
 
-      return private_rules[binary_search(time){ |t,r| match?(t,r) }]
+      return private_rules[binary_search(time) { |t,r| match?(t,r) }]
     end
 
     # Find the first rule that matches using binary search.
