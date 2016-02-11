@@ -1,14 +1,11 @@
 require 'timezone'
-require 'timezone/lookup/test'
 require 'minitest/autorun'
 
 class TestTimezone < ::Minitest::Test
   parallelize_me!
 
   def setup
-    Timezone::Configure.begin do |c|
-      c.lookup = ::Timezone::Lookup::Test
-    end
+    Timezone::Config.config(:test)
   end
 
   def test_names
@@ -32,7 +29,7 @@ class TestTimezone < ::Minitest::Test
   end
 
   def test_lookup
-    Timezone::Configure.lookup.stub(-10, 10, 'America/Los_Angeles')
+    Timezone::Config.lookup.stub(-10, 10, 'America/Los_Angeles')
 
     assert_equal Timezone.lookup(-10, 10), Timezone['America/Los_Angeles']
   end

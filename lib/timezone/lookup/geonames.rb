@@ -8,8 +8,11 @@ module Timezone
     class Geonames < ::Timezone::Lookup::Basic
       def initialize(config)
         if config.username.nil?
-          raise(::Timezone::Error::InvalidConfig, 'missing username')
+          raise(::Timezone::Error::InvalidConfig, 'missing username'.freeze)
         end
+
+        config.protocol ||= 'http'.freeze
+        config.url ||= 'api.geonames.org'.freeze
 
         super
       end

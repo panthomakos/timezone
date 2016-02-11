@@ -17,10 +17,17 @@ class GeonamesLookupTest < ::Minitest::Unit::TestCase
   end
 
   def lookup
-    ::Timezone::Lookup::Geonames.new(Timezone::Configure)
+    ::Timezone::Configure.lookup
+  end
+
+  def clear
+    Timezone::Configure.instance_variable_set(:@lookup, nil)
+    Timezone::Configure.instance_variable_set(:@google_lookup, nil)
+    Timezone::Configure.instance_variable_set(:@geonames_lookup, nil)
   end
 
   def test_missing_username
+    clear
     Timezone::Configure.begin { |c| c.username = nil }
     assert_raises(::Timezone::Error::InvalidConfig) { lookup }
   ensure
@@ -28,13 +35,13 @@ class GeonamesLookupTest < ::Minitest::Unit::TestCase
   end
 
   def test_lookup
-    HTTPTestClient.body = File.open(mock_path + '/lat_lon_coords.txt').read
+    lookup.client.body = File.open(mock_path + '/lat_lon_coords.txt').read
 
     assert_equal 'Australia/Adelaide', lookup.lookup(*coordinates)
   end
 
   def test_api_limit
-    HTTPTestClient.body = File.open(mock_path + '/api_limit_reached.txt').read
+    lookup.client.body = File.open(mock_path + '/api_limit_reached.txt').read
 
     assert_raises Timezone::Error::GeoNames, 'api limit reached' do
       lookup.lookup(*coordinates)

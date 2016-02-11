@@ -2,234 +2,234 @@ require 'timezone/net_http_client'
 require 'timezone/lookup'
 
 module Timezone
-  # Configuration class for the Timezone gem.
-  #
-  # You'll want to sign up for a geonames username at
-  # {http://www.geonames.org/login Geonames}. Use the username to
-  # configure your application for latitude and longitude based
-  # timezone searches.
-  # Alternatively, you'll want to sign up for a Google api key at
-  # {https://code.google.com/apis/console/ Google}. Use the api key to
-  # configure your application for latitude and longitude based
-  # timezone searches.
-  #
-  # If you aren't going to initialize timezone objects based on lat,lng
-  # then this configuration is not necessary.
-  #
-  # @example
-  #     Timezone::Configure.begin do |c|
-  #       c.geonames_url = 'api.geonames.org'
-  #       c.username = 'foo-bar'
-  #       c.google_api_key = 'abc123'
-  #     end
-  #
+  # @deprecated `Timezone::Configure` will be removed in the release
+  #   of the `timezone gem. Use `Timezone::Config` instead.
   class Configure
-    # The Google API key
-    #
-    # @return [String]
-    #   the Google API key ('abc123')
+    DEPRECATE = '[DEPRECATED] `Timezone::Configure` will be removed ' \
+      'in the release of the `timezone gem. Use `Timezone::Config` ' \
+      'instead.'.freeze
+
+    # @deprecated `Timezone::Configure` will be removed in the release
+    #   of the `timezone gem. Use `Timezone::Config` instead.
     def self.google_api_key
       @google_api_key ||= nil
     end
 
-    # Google API key
-    #
-    # @param [String] api_key
-    #   the Google API key
+    # @deprecated `Timezone::Configure` will be removed in the release
+    #   of the `timezone gem. Use `Timezone::Config` instead.
     def self.google_api_key=(api_key)
       @google_api_key = api_key
     end
 
-    # The Google Client ID (for enterprise)
-    #
-    # @return [String]
-    #   the Google Client ('abc123')
+    # @deprecated `Timezone::Configure` will be removed in the release
+    #   of the `timezone gem. Use `Timezone::Config` instead.
     def self.google_client_id
       @google_client_id ||= nil
     end
 
-    # Google Client ID (for enterprise)
-    #
-    # @param [String] client
-    #   the Google Client
+    # @deprecated `Timezone::Configure` will be removed in the release
+    #   of the `timezone gem. Use `Timezone::Config` instead.
     def self.google_client_id=(client)
       @google_client_id = client
     end
 
-    # Use Google API if key has been set
-    #
-    # @return [Boolean]
+    # @deprecated `Timezone::Configure` will be removed in the release
+    #   of the `timezone gem. Use `Timezone::Config` instead.
     def self.use_google?
       !!google_api_key
     end
 
-    # Sign Google API request if client given (for enterprise)
-    #
-    # @return [Boolean]
+    # @deprecated `Timezone::Configure` will be removed in the release
+    #   of the `timezone gem. Use `Timezone::Config` instead.
     def self.use_google_enterprise?
       use_google? && !!google_client_id
     end
 
+    # @deprecated `Timezone::Configure` will be removed in the release
+    #   of the `timezone gem. Use `Timezone::Config` instead.
     def self.lookup=(lookup)
       @lookup = lookup && lookup.new(self)
     end
 
+    # @deprecated `Timezone::Configure` will be removed in the release
+    #   of the `timezone gem. Use `Timezone::Config` instead.
     def self.lookup
       return @lookup if @lookup
 
       use_google? ? google_lookup : geonames_lookup
     end
 
+    class GoogleConfigMapper
+      def initialize(config)
+        @config = config
+      end
+
+      def protocol ; @config.protocol ; end
+      def url ; @config.url ; end
+      def http_client ; @config.http_client ; end
+      def api_key ; @config.google_api_key ; end
+      def client_id ; @config.google_client_id ; end
+    end
+
+    private_constant :GoogleConfigMapper
+
+    # @deprecated `Timezone::Configure` will be removed in the release
+    #   of the `timezone gem. Use `Timezone::Config` instead.
     def self.google_lookup
-      @google_lookup ||= Timezone::Lookup::Google.new(self)
+      @google_lookup ||=
+        Timezone::Lookup::Google.new(GoogleConfigMapper.new(self))
     end
 
+    class GeonamesConfigMapper
+      def initialize(config)
+        @config = config
+      end
+
+      def protocol ; @config.protocol ; end
+      def url ; @config.url ; end
+      def username ; @config.username ; end
+      def http_client ; @config.http_client ; end
+    end
+
+    private_constant :GeonamesConfigMapper
+
+    # @deprecated `Timezone::Configure` will be removed in the release
+    #   of the `timezone gem. Use `Timezone::Config` instead.
     def self.geonames_lookup
-      @geonames_lookup ||= Timezone::Lookup::Geonames.new(self)
+      @geonames_lookup ||=
+        Timezone::Lookup::Geonames.new(GeonamesConfigMapper.new(self))
     end
 
-    # The Geonames API URL
-    #
-    # @return [String]
-    #   the Geonames API URL ('api.geonames.org')
+    # @deprecated `Timezone::Configure` will be removed in the release
+    #   of the `timezone gem. Use `Timezone::Config` instead.
     def self.geonames_url
       @@geonames_url ||= 'api.geonames.org'
     end
 
-    # The Geonames API URL
-    #
-    # @param [String] url
-    #   the Geonames API URL
+    # @deprecated `Timezone::Configure` will be removed in the release
+    #   of the `timezone gem. Use `Timezone::Config` instead.
     def self.geonames_url=(url)
       @@geonames_url = url
     end
 
-    class << self
-      alias url= geonames_url=
+    # @deprecated `Timezone::Configure` will be removed in the release
+    #   of the `timezone gem. Use `Timezone::Config` instead.
+    def self.url=(url)
+      self.geonames_url = url
     end
 
-    # The Google API URL
-    #
-    # @return [String]
-    #   the Google API URL ('maps.googleapis.com')
+    # @deprecated `Timezone::Configure` will be removed in the release
+    #   of the `timezone gem. Use `Timezone::Config` instead.
     def self.google_url
       @@google_url ||= 'maps.googleapis.com'
     end
 
-    # The Google API URL
-    #
-    # @param [String] url
-    #   the Google API URL
+    # @deprecated `Timezone::Configure` will be removed in the release
+    #   of the `timezone gem. Use `Timezone::Config` instead.
     def self.google_url=(url)
       @@google_url = url
     end
 
-    # Use Google URL if key has been set else use Geonames URL
-    #
-    # @return [String]
-    #   the Google or Geonames API URL
+    # @deprecated `Timezone::Configure` will be removed in the release
+    #   of the `timezone gem. Use `Timezone::Config` instead.
     def self.url
       use_google? ? google_url : geonames_url
     end
 
-    # The Geonames API HTTP protocol
-    #
-    # @param [String] protocol
-    #   the Geonames API HTTP procotol
+    # @deprecated `Timezone::Configure` will be removed in the release
+    #   of the `timezone gem. Use `Timezone::Config` instead.
     def self.geonames_protocol=(protocol)
       @@geonames_protocol = protocol
     end
 
-    # The Geonames API HTTP protocol
-    #
-    # @return [String]
-    #   the Geonames API HTTP protocol ('http')
+    # @deprecated `Timezone::Configure` will be removed in the release
+    #   of the `timezone gem. Use `Timezone::Config` instead.
     def self.geonames_protocol
       @@geonames_protocol ||= 'http'
     end
 
-    # The Google API HTTP protocol
-    #
-    # @param [String] protocol
-    #   the Google API HTTP procotol
+    # @deprecated `Timezone::Configure` will be removed in the release
+    #   of the `timezone gem. Use `Timezone::Config` instead.
     def self.google_protocol=(protocol)
       @@google_protocol = protocol
     end
 
-    # The Google API HTTP protocol
-    #
-    # @return [String]
-    #   the Google API HTTP protocol ('https')
+    # @deprecated `Timezone::Configure` will be removed in the release
+    #   of the `timezone gem. Use `Timezone::Config` instead.
     def self.google_protocol
       @@google_protocol ||= 'https'
     end
 
-    # Use Google protocol if key has been set else use Geonames protocol
-    #
-    # @return [String]
-    #   the Google or Geonames API protocol
+    # @deprecated `Timezone::Configure` will be removed in the release
+    #   of the `timezone gem. Use `Timezone::Config` instead.
     def self.protocol
       use_google? ? google_protocol : geonames_protocol
     end
 
-    # The HTTP client that handles requests to Geonames and Google
-    #
-    # @return [Object]
-    #   the HTTP client ({Timezone::NetHTTPClient Timezone::NetHTTPClient})
+    # @deprecated `Timezone::Configure` will be removed in the release
+    #   of the `timezone gem. Use `Timezone::Config` instead.
     def self.http_client
       @@http_client ||= Timezone::NetHTTPClient
     end
 
-    # The HTTP client that handles requests to Geonames and Google
-    #
-    # @param [Object] client
-    #   the HTTP client that handles requests to Geonames and Google
-    #
+    # @deprecated `Timezone::Configure` will be removed in the release
+    #   of the `timezone gem. Use `Timezone::Config` instead.
     def self.http_client=(client)
       @@http_client = client
     end
 
-    # The Geonames API username
-    #
-    # @return [String]
-    #   the Geonames API username ('foo-bar')
+    # @deprecated `Timezone::Configure` will be removed in the release
+    #   of the `timezone gem. Use `Timezone::Config` instead.
     def self.username
       @@username ||= nil
     end
 
-    # The Geonames API username
-    #
-    # @param [String] username
-    #   the Geonames API username
+    # @deprecated `Timezone::Configure` will be removed in the release
+    #   of the `timezone gem. Use `Timezone::Config` instead.
     def self.username=(username)
       @@username = username
     end
 
+    # @deprecated `Timezone::Configure` will be removed in the release
+    #   of the `timezone gem. Use `Timezone::Config` instead.
     def self.begin
+      warn DEPRECATE
       yield self
     end
 
+    # @deprecated `Timezone::Configure` will be removed in the release
+    #   of the `timezone gem. Use `Timezone::Config` instead.
     def self.replace(what, with = Hash.new)
       replacements # instantiate @@replacements
       @@replacements[what] = with[:with]
     end
 
+    # @deprecated `Timezone::Configure` will be removed in the release
+    #   of the `timezone gem. Use `Timezone::Config` instead.
     def self.replacements
       @@replacements ||= {}
     end
 
+    # @deprecated `Timezone::Configure` will be removed in the release
+    #   of the `timezone gem. Use `Timezone::Config` instead.
     def self.default_for_list
       @@default_list ||= nil
     end
 
+    # @deprecated `Timezone::Configure` will be removed in the release
+    #   of the `timezone gem. Use `Timezone::Config` instead.
     def self.default_for_list=(*list)
       @@default_list = list.flatten!
     end
 
+    # @deprecated `Timezone::Configure` will be removed in the release
+    #   of the `timezone gem. Use `Timezone::Config` instead.
     def self.order_list_by
       @@order_by ||= :utc_offset
     end
 
+    # @deprecated `Timezone::Configure` will be removed in the release
+    #   of the `timezone gem. Use `Timezone::Config` instead.
     def self.order_list_by=(order)
       @@order_by = order
     end

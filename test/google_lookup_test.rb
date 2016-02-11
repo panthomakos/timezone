@@ -6,10 +6,7 @@ require_relative 'http_test_client'
 
 class GoogleLookupTest < ::Minitest::Unit::TestCase
   def setup
-    Timezone::Configure.begin do |c|
-      c.http_client = HTTPTestClient
-      c.google_api_key = 'MTIzYWJj'
-    end
+    config { |c| c.google_api_key = 'MTIzYWJj' }
   end
 
   def coordinates
@@ -17,24 +14,28 @@ class GoogleLookupTest < ::Minitest::Unit::TestCase
   end
 
   def lookup
-    ::Timezone::Lookup::Google.new(Timezone::Configure)
+    ::Timezone::Configure.lookup
   end
 
-  def test_missing_api_key
-    Timezone::Configure.begin { |c| c.google_api_key = nil }
-    assert_raises(::Timezone::Error::InvalidConfig) { lookup }
-  ensure
-    Timezone::Configure.begin { |c| c.google_api_key = 'MTIzYWJj' }
+  def config(&block)
+    Timezone::Configure.instance_variable_set(:@lookup, nil)
+    Timezone::Configure.instance_variable_set(:@geonames_lookup, nil)
+    Timezone::Configure.instance_variable_set(:@google_lookup, nil)
+
+    Timezone::Configure.begin do |c|
+      c.http_client = HTTPTestClient
+      block.call(c)
+    end
   end
 
   def test_google_using_lat_lon_coordinates
-    HTTPTestClient.body = File.open(mock_path + '/google_lat_lon_coords.txt').read
+    lookup.client.body = File.open(mock_path + '/google_lat_lon_coords.txt').read
 
     assert_equal 'Australia/Adelaide', lookup.lookup(*coordinates)
   end
 
   def test_google_request_denied_read_lat_lon_coordinates
-    HTTPTestClient.body = nil
+    lookup.client.body = nil
     assert_raises Timezone::Error::Google, 'The provided API key is invalid.' do
       lookup.lookup(*coordinates)
     end
@@ -48,19 +49,14 @@ class GoogleLookupTest < ::Minitest::Unit::TestCase
   end
 
   def test_url_enterprise
-    Timezone::Configure.begin do |c|
-      c.google_client_id = '123&asdf'
-    end
+    config { |c| c.google_client_id = '123&asdf' }
 
     Timecop.freeze(Time.at(1433347661)) do
       result = lookup.send(:url, '123', '123')
       assert_equal '/maps/api/timezone/json?location=123%2C123&timestamp=1433347661&client=123%26asdf&signature=B1TNSSvIw9Wvf_ZjjW5uRzGm4F4=', result
     end
-
   ensure
-    Timezone::Configure.begin do |c|
-      c.google_client_id = nil
-    end
+    config { |c| c.google_client_id = nil }
   end
 
   private

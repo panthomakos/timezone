@@ -10,45 +10,53 @@ module Timezone
   module Lookup
     class Google < ::Timezone::Lookup::Basic
       def initialize(config)
-        if config.google_api_key.nil?
-          raise(::Timezone::Error::InvalidConfig, 'missing api key')
+        if config.api_key.nil?
+          raise(::Timezone::Error::InvalidConfig, 'missing api key'.freeze)
         end
+
+        config.protocol ||= 'https'.freeze
+        config.url ||= 'maps.googleapis.com'.freeze
+
         super
       end
 
       def lookup(lat,lng)
         response = client.get(url(lat,lng))
 
-        if response.code == '403'
-          raise(Timezone::Error::Google, '403 Forbidden')
+        if response.code == '403'.freeze
+          raise(Timezone::Error::Google, '403 Forbidden'.freeze)
         end
 
         return unless response.code =~ /^2\d\d$/
         data = JSON.parse(response.body)
 
-        if data['status'] != 'OK'
+        if data['status'.freeze] != 'OK'.freeze
           raise(Timezone::Error::Google, data['errorMessage'])
         end
 
-        data['timeZoneId']
+        data['timeZoneId'.freeze]
       rescue => e
         raise(Timezone::Error::Google, e.message)
       end
 
       private
 
+      def use_google_enterprise?
+        !!config.client_id
+      end
+
       def authorize(url)
-        if config.use_google_enterprise?
-          url += "&client=#{CGI.escape(config.google_client_id)}"
+        if use_google_enterprise?
+          url += "&client=#{CGI.escape(config.client_id)}"
 
           sha1 = OpenSSL::Digest.new('sha1')
-          binary_key = Base64.decode64(config.google_api_key.tr('-_','+/'))
+          binary_key = Base64.decode64(config.api_key.tr('-_','+/'))
           binary_signature = OpenSSL::HMAC.digest(sha1, binary_key, url)
           signature = Base64.encode64(binary_signature).tr('+/','-_').strip
 
           url + "&signature=#{signature}"
         else
-          url + "&key=#{config.google_api_key}"
+          url + "&key=#{config.api_key}"
         end
       end
 

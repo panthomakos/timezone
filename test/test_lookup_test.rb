@@ -34,6 +34,8 @@ class TestLookupTest < ::Minitest::Unit::TestCase
   end
 
   def teardown
-    Timezone::Configure.begin { |c| c.lookup = nil }
+    Timezone::Configure.instance_variable_set(:@lookup, nil)
+    Timezone::Configure.instance_variable_set(:@google_lookup, nil)
+    Timezone::Configure.instance_variable_set(:@geonames_lookup, nil)
   end
 end
