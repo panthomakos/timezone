@@ -9,20 +9,20 @@ module Timezone
         # Regular config w/ protocol and URL checks does not apply for stubs.
       end
 
-      def stub(lat, lng, timezone)
-        @stubs[key(lat, lng)] = timezone
+      def stub(lat, long, timezone)
+        @stubs[key(lat, long)] = timezone
       end
 
-      def lookup(lat, lng)
-        @stubs.fetch(key(lat, lng)) do
+      def lookup(lat, long)
+        @stubs.fetch(key(lat, long)) do
           raise ::Timezone::Error::Test, 'missing stub'
         end
       end
 
       private
 
-      def key(lat, lng)
-        "#{lat},#{lng}"
+      def key(lat, long)
+        "#{lat},#{long}"
       end
     end
   end

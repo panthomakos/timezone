@@ -21,7 +21,7 @@ module Timezone
         @client ||= config.http_client.new(config.protocol, config.url)
       end
 
-      def lookup(lat, lng)
+      def lookup(lat, long)
         raise NoMethodError, 'lookup is not implemented'
       end
     end

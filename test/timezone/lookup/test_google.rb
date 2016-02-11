@@ -32,14 +32,14 @@ class TestGoogle < ::Minitest::Test
     end
   end
 
-  def test_google_using_lat_lon_coordinates
+  def test_google_using_lat_long_coordinates
     mine = lookup
     mine.client.body = File.open(mock_path + '/google_lat_lon_coords.txt').read
 
     assert_equal 'Australia/Adelaide', mine.lookup(*coordinates)
   end
 
-  def test_google_request_denied_read_lat_lon_coordinates
+  def test_google_request_denied_read_lat_long_coordinates
     mine = lookup
     mine.client.body = nil
     assert_raises Timezone::Error::Google, 'The provided API key is invalid.' do

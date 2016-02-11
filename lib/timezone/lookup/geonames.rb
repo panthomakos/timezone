@@ -17,8 +17,8 @@ module Timezone
         super
       end
 
-      def lookup(lat, lng)
-        response = client.get(url(lat, lng))
+      def lookup(lat, long)
+        response = client.get(url(lat, long))
 
         return unless response.code =~ /^2\d\d$/
 
@@ -35,10 +35,10 @@ module Timezone
 
       private
 
-      def url(lat, lng)
+      def url(lat, long)
         query = URI.encode_www_form(
           'lat' => lat,
-          'lng' => lng,
+          'lng' => long,
           'username' => config.username)
         "/timezoneJSON?#{query}"
       end
