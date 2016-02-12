@@ -14,15 +14,17 @@ module Timezone
     class InvalidZone < Base; end
     # @deprecated this class will be removed in the next release of the gem.
     class NilZone < Base; end
+    # Indicates a lookup failure.
+    class Lookup < Base; end
     # Indicates an error during lookup using the geonames API.
-    class GeoNames < Base; end
+    class GeoNames < Lookup; end
     # Indicates an error during lookup using the google API.
-    class Google < Base; end
+    class Google < Lookup; end
     # @deprecated this class will be removed in the next release of the gem.
     class ParseTime < Base; end
     # Indicates a missing stub during a test lookup.
-    class Test < Base ; end
+    class Test < Lookup; end
     # Indicates an invalid configuration.
-    class InvalidConfig < Base ; end
+    class InvalidConfig < Base; end
   end
 end
