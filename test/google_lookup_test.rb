@@ -29,14 +29,15 @@ class GoogleLookupTest < ::Minitest::Unit::TestCase
   end
 
   def test_google_using_lat_lon_coordinates
-    lookup.client.body = File.open(mock_path + '/google_lat_lon_coords.txt').read
+    lookup.client.body =
+      File.open(mock_path + '/google_lat_lon_coords.txt').read
 
     assert_equal 'Australia/Adelaide', lookup.lookup(*coordinates)
   end
 
   def test_google_request_denied_read_lat_lon_coordinates
     lookup.client.body = nil
-    assert_raises Timezone::Error::Google, 'The provided API key is invalid.' do
+    assert_raises Timezone::Error::Google do
       lookup.lookup(*coordinates)
     end
   end
@@ -44,7 +45,13 @@ class GoogleLookupTest < ::Minitest::Unit::TestCase
   def test_url_non_enterprise
     Timecop.freeze(Time.at(1433347661)) do
       result = lookup.send(:url, '123', '123')
-      assert_equal "/maps/api/timezone/json?location=123%2C123&timestamp=1433347661&key=MTIzYWJj", result
+      params = {
+        'location' => '123%2C123',
+        'timestamp' => '1433347661',
+        'key' => 'MTIzYWJj'
+      }.map { |k,v| "#{k}=#{v}" }
+
+      assert_equal "/maps/api/timezone/json?#{params.join('&')}", result
     end
   end
 
@@ -53,7 +60,14 @@ class GoogleLookupTest < ::Minitest::Unit::TestCase
 
     Timecop.freeze(Time.at(1433347661)) do
       result = lookup.send(:url, '123', '123')
-      assert_equal '/maps/api/timezone/json?location=123%2C123&timestamp=1433347661&client=123%26asdf&signature=B1TNSSvIw9Wvf_ZjjW5uRzGm4F4=', result
+      params = {
+        'location' => '123%2C123',
+        'timestamp' => '1433347661',
+        'client' => '123%26asdf',
+        'signature' => 'B1TNSSvIw9Wvf_ZjjW5uRzGm4F4='
+      }.map { |k,v| "#{k}=#{v}" }
+
+      assert_equal "/maps/api/timezone/json?#{params.join('&')}", result
     end
   ensure
     config { |c| c.google_client_id = nil }

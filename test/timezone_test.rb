@@ -209,7 +209,9 @@ class TimezoneTest < ::Minitest::Unit::TestCase
 
   def test_configure_url_custom
     Timezone::Configure.begin { |c| c.google_api_key = nil }
-    Timezone::Configure.begin { |c| c.geonames_url = 'www.newtimezoneserver.com' }
+    Timezone::Configure.begin do |c|
+      c.geonames_url = 'www.newtimezoneserver.com'
+    end
     assert_equal 'www.newtimezoneserver.com', Timezone::Configure.url
     # clean up url after test
     Timezone::Configure.begin { |c| c.geonames_url = nil }

@@ -97,7 +97,10 @@ module Timezone
         options[:zone] = timezone_id(*options[:latlon])
       end
 
-      raise Timezone::Error::NilZone, 'No zone was found. Please specify a zone.' if options[:zone].nil?
+      if options[:zone].nil?
+        raise Timezone::Error::NilZone,
+          'No zone was found. Please specify a zone.'.freeze
+      end
 
       @name = options[:zone]
       private_rules
@@ -249,8 +252,8 @@ module Timezone
         )
 
         args = nil if args.empty? # set to nil if no args are provided
-        zones = args || Configure.default_for_list || self.names # get default list
-        list = self.names.select { |name| zones.include? name } # only select zones if they exist
+        zones = args || Configure.default_for_list || self.names
+        list = self.names.select { |name| zones.include? name }
 
         @zones = []
         now = Time.now
@@ -323,7 +326,12 @@ module Timezone
       #
       #     Since both rules provide valid mappings for the local time,
       #     we need to return both values.
-      if utc > match[SOURCE_BIT] - match[OFFSET_BIT] + private_rules[index+1][OFFSET_BIT]
+      last_hour =
+        match[SOURCE_BIT] -
+        match[OFFSET_BIT] +
+        private_rules[index+1][OFFSET_BIT]
+
+      if utc > last_hour
         RuleSet.new(:double, private_rules[index..(index+1)])
       else
         RuleSet.new(:single, [match])

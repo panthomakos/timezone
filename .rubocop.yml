@@ -13,8 +13,18 @@ Metrics/AbcSize:
 Metrics/ClassLength:
   Enabled: false
 
+# Offense count: 13
+# Configuration parameters: AllowHeredoc, AllowURI, URISchemes.
+# URISchemes: http, https
+Metrics/LineLength:
+  Max: 80
+
 Metrics/MethodLength:
   Enabled: false
+
+# Offense count: 1
+Metrics/PerceivedComplexity:
+  Max: 8
 
 
 Style/AlignParameters:
@@ -22,3 +32,6 @@ Style/AlignParameters:
 
 Style/Documentation:
   Enabled: true
+
+Style/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
