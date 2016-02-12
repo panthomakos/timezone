@@ -17,9 +17,9 @@ class TestZone < ::Minitest::Test
     assert_equal 'Europe/Paris', paris.name
   end
 
-  def test_exists?
-    assert la.exists?
-    assert paris.exists?
+  def test_valid?
+    assert la.valid?
+    assert paris.valid?
   end
 
   def test_to_s
@@ -37,5 +37,13 @@ class TestZone < ::Minitest::Test
       '#<Timezone::Zone name: "Europe/Paris">',
       paris.inspect
     )
+  end
+
+  def test_comparable
+    assert paris > la
+    assert la < paris
+    assert la == Timezone::Zone.new('America/Los_Angeles')
+
+    assert_equal nil, paris <=> 8
   end
 end

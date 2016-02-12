@@ -10,18 +10,26 @@ require 'timezone/loader'
 require 'timezone/deprecate'
 
 module Timezone
+  # This object represents a real-world timezone. Each instance provides
+  # methods for converting UTC times to the local timezone and local
+  # times to UTC for any historical, present or future times.
   class Zone
     include Comparable
 
+    # @return [String] the timezone name
     attr_reader :name
 
     alias to_s name
 
+    # @return [String] a developer friendly representation of the object
     def inspect
       "#<Timezone::Zone name: \"#{name}\">"
     end
 
-    def exists?
+    # If this is a valid timezone.
+    #
+    # @return [true] if this is a valid timezone
+    def valid?
       true
     end
 
@@ -34,6 +42,10 @@ module Timezone
     OFFSET_BIT = 3
     private_constant :OFFSET_BIT
 
+    # Create a new timezone object using the timezone name.
+    #
+    # @param name [String] the timezone name
+    # @return [Timezone::Zone]
     def initialize(name)
       if name.is_a?(Hash)
         legacy_initialize(name)
@@ -68,6 +80,7 @@ module Timezone
       private_rules
     end
 
+    # @deprecated This functionality only exists for migration purposes.
     def legacy_initialize(options)
       Deprecate.call(
         self.class,
@@ -103,76 +116,110 @@ module Timezone
       @active_support_time_zone ||= Timezone::ActiveSupport.format(name)
     end
 
-    # Returns the reference time in the timezone as a UTC time.
+    # Converts the given time to the local timezone and does not include
+    # a UTC offset in the result.
     #
-    # @param reference [#to_time] the reference time
+    # @param time [#to_time] the source time
     # @return [Time] the time in the local timezone
     #
     # @note The resulting time is always a UTC time. If you would  like
     #       a time with the appropriate offset, use `#time_with_offset`
     #       instead.
-    def time(reference)
-      reference = sanitize(reference)
+    def utc_to_local(time)
+      time = sanitize(time)
 
-      reference.utc + utc_offset(reference)
+      time.utc + utc_offset(time)
     end
 
-    alias utc_to_local time
+    alias time utc_to_local
 
-    # Returns the UTC time for a given reference time in the timezone.
+    # Converts the given local time to the UTC equivalent.
     #
-    # @param reference [#to_time] the reference time
+    # @param time [#to_time] the local time
     # @return [Time] the time in UTC
     #
     # @note The UTC equivalent is a "best guess". There are cases where
-    #       local times do not map to UTC at all (during a time skip
-    #       forward). There are also cases where local times map to two
-    #       separate UTC times (during a fall back). All of these cases
-    #       are ignored here and the best (first) guess is used instead.
-    def local_to_utc(reference)
-      reference = sanitize(reference)
+    #   local times do not map to UTC at all (during a time skip forward).
+    #   There are also cases where local times map to two distinct UTC
+    #   times (during a fall back). All of these cases are approximated
+    #   in this method and the first possible result is used instead.
+    #
+    # @note A note about the handling of time arguments.
+    #
+    #   Because the UTC offset of a `Time` object in Ruby is not
+    #   equivalent to a single timezone, the `time` argument in this
+    #   method is first converted to a UTC equivalent before being
+    #   used as a local time.
+    #
+    #   This prevents confusion between historical UTC offsets and the UTC
+    #   offset that the `Time` object provides. For instance, if I pass
+    #   a "local" time with offset `+8` but the timezone actually had
+    #   an offset of `+9` at the given historical time, there is an
+    #   inconsistency that must be resolved.
+    #
+    #   Did the user make a mistake; or is the offset intentional?
+    #
+    #   One approach to solving this problem would be to raise an error,
+    #   but this means that the user then needs to calculate the
+    #   appropriate local offset and append that to a UTC time to satisfy
+    #   the function. This is impractical because the offset can already
+    #   be calculated by this library. The user should only need to
+    #   provide a time without an offset!
+    #
+    #   To resolve this inconsistency, the solution I chose was to scrub
+    #   the offset. In the case where an offset is provided, the time is
+    #   just converted to the UTC equivalent (without an offset). The
+    #   resulting time is used as the local reference time.
+    #
+    #   For example, if the time `08:00 +2` is passed to this function,
+    #   the local time is assumed to be `06:00`.
+    def local_to_utc(time)
+      time = sanitize(time)
 
-      reference.utc - rule_for_local(reference).rules.first[OFFSET_BIT]
+      time.utc - rule_for_local(time).rules.first[OFFSET_BIT]
     end
 
-    # Returns the reference time in the timezone with the appropriate
-    # offset.
+    # Converts the given time to the local timezone and includes the UTC
+    # offset in the result.
     #
-    # @param reference [#to_time] the reference time
-    # @return [Time] the time in the local timezone with the appropriate
-    #                offset
-    def time_with_offset(reference)
-      reference = sanitize(reference)
+    # @param time [#to_time] the source time
+    # @return [Time] the time in the local timezone with the UTC offset
+    def time_with_offset(time)
+      time = sanitize(time)
 
-      utc = time(reference)
-      offset = utc_offset(reference)
+      utc = utc_to_local(time)
+      offset = utc_offset(time)
       Time.new(utc.year, utc.month, utc.day, utc.hour, utc.min, utc.sec, offset)
     end
 
-    # Whether or not the reference time in the timezone is in Daylight Savings
-    # Time.
+    # If, at the given time, the timezone was observing Daylight Savings.
     #
-    # @param reference [#to_time] the reference time
-    # @return [Boolean] whether the timezone, at the given reference time, was
+    # @param time [#to_time] the source time
+    # @return [Boolean] whether the timezone, at the given time, was
     #                   observing Daylight Savings Time
-    def dst?(reference)
-      reference = sanitize(reference)
+    def dst?(time)
+      time = sanitize(time)
 
-      rule_for_utc(reference)[DST_BIT]
+      rule_for_utc(time)[DST_BIT]
     end
 
-    # Return the UTC offset (in seconds) for the reference time in the
-    # timezone.
+    # Return the UTC offset (in seconds) for the given time.
     #
-    # @param reference [#to_time] the reference time
+    # @param time [#to_time] (Time.now) the source time
     # @return [Integer] the UTC offset (in seconds) in the local timezone
-    def utc_offset(reference=Time.now)
-      reference = sanitize(reference)
+    def utc_offset(time=nil)
+      time ||= Time.now
+      time = sanitize(time)
 
-      rule_for_utc(reference)[OFFSET_BIT]
+      rule_for_utc(time)[OFFSET_BIT]
     end
 
+    # Compare one timezone with another based on current UTC offset.
+    #
+    # @return [-1, 0, 1, nil] comparison based on current `utc_offset`.
     def <=>(zone)
+      return nil unless zone.respond_to?(:utc_offset)
+
       utc_offset <=> zone.utc_offset
     end
 
@@ -226,8 +273,8 @@ module Timezone
       @rules ||= Loader.load(name)
     end
 
-    def sanitize(reference)
-      reference.to_time
+    def sanitize(time)
+      time.to_time
     end
 
     # Does the given time (in seconds) match this rule?
@@ -239,6 +286,7 @@ module Timezone
     end
 
     RuleSet = Struct.new(:type, :rules)
+    private_constant :RuleSet
 
     def rule_for_local(local)
       local = local.utc if local.respond_to?(:utc)
@@ -309,7 +357,7 @@ module Timezone
       end
     end
 
-    def timezone_id(lat, lon) #:nodoc:
+    def timezone_id(lat, lon)
       Timezone::Configure.lookup.lookup(lat,lon)
     end
   end

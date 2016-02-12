@@ -22,10 +22,10 @@ module Timezone
       '#<Timezone::NilZone>'.freeze
     end
 
-    # Whether or not this timezone exists.
+    # If this is a valid timezone.
     #
     # @return [false]
-    def exists?
+    def valid?
       false
     end
   end

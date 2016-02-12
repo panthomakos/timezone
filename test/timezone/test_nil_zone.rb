@@ -20,7 +20,7 @@ class TestNilZone < ::Minitest::Test
     assert '#<Timezone::NilZone>', @zone.inspect
   end
 
-  def test_exists?
-    refute @zone.exists?
+  def test_valid?
+    refute @zone.valid?
   end
 end

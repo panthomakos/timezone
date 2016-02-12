@@ -16,12 +16,12 @@ class TestTimezone < ::Minitest::Test
   end
 
   def test_get
-    assert Timezone['Australia/Sydney'].exists?
-    refute Timezone['foo/bar'].exists?
+    assert Timezone['Australia/Sydney'].valid?
+    refute Timezone['foo/bar'].valid?
   end
 
   def test_fetch
-    assert Timezone.fetch('Australia/Sydney').exists?
+    assert Timezone.fetch('Australia/Sydney').valid?
     assert_equal 'foo', Timezone.fetch('foo/bar') { 'foo' }
     assert_raises Timezone::Error::InvalidZone do
       Timezone.fetch('foo/bar')
