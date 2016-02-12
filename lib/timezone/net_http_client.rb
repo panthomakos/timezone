@@ -2,6 +2,7 @@ require 'uri'
 require 'net/http'
 
 module Timezone
+  # @!visibility private
   # A basic HTTP Client that handles requests to Geonames and Google.
   #
   # You can create your own version of this class if you want to use
