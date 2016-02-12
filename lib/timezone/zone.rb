@@ -113,7 +113,8 @@ module Timezone
           'will be no replacement.'.freeze
       )
 
-      @active_support_time_zone ||= Timezone::ActiveSupport.format(name)
+      @active_support_time_zone ||=
+        Timezone::ActiveSupport.format(name, :internal)
     end
 
     # Converts the given time to the local timezone and does not include

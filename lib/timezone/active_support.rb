@@ -1,5 +1,7 @@
+require 'timezone/deprecate'
+
 module Timezone
-  # ActiveSupport class for mapping tz info identifiers to rails identifiers
+  # @deprecated Will be removed in the next release of `timezone` gem.
   class ActiveSupport
     TIMEZONE_MAPPING = {
       "Pacific/Midway"=>"Midway Island",
@@ -136,7 +138,18 @@ module Timezone
       "Pacific/Apia"=>"Samoa"
     }.freeze
 
-    def self.format(zone)
+    # @deprecated Will be removed in the next release of `timezone gem.
+    def self.format(zone, internal = false)
+      unless internal
+        Deprecate.call(
+          self,
+          :format,
+          '[DEPRECATE] `Timezone::ActiveSupport::format` will be ' \
+          'removed in the next release of the `timezone` gem. There ' \
+          'will be no replacement.'.freeze
+        )
+      end
+
       TIMEZONE_MAPPING[zone] || zone
     end
   end
