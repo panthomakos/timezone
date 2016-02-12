@@ -1,7 +1,8 @@
-require 'bundler'
+require 'bundler/setup'
 Bundler::GemHelper.install_tasks
 
 require 'rake/testtask'
+require 'rubocop/rake_task'
 
 Rake::TestTask.new do |t|
   t.libs << 'test'
@@ -9,7 +10,9 @@ Rake::TestTask.new do |t|
   t.verbose = true
 end
 
-task default: :test
+RuboCop::RakeTask.new
+
+task default: [:test, :rubocop]
 
 task :parse do
   require 'timezone/parser'
