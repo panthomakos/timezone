@@ -5,6 +5,7 @@ require 'uri'
 
 module Timezone
   module Lookup
+    # @!visibility private
     class Geonames < ::Timezone::Lookup::Basic
       def initialize(config)
         if config.username.nil?

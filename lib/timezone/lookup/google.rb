@@ -8,6 +8,7 @@ require 'cgi'
 
 module Timezone
   module Lookup
+    # @!visibility private
     class Google < ::Timezone::Lookup::Basic
       def initialize(config)
         if config.api_key.nil?

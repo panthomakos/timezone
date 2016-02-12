@@ -1,6 +1,7 @@
 require 'time'
 
 module Timezone
+  # @!visibility private
   class Parser
     LINE = /\s*(.+)\s*=\s*(.+)\s*isdst=(\d+)\s*gmtoff=([\+\-]*\d+)/
 
@@ -18,8 +19,6 @@ module Timezone
         parse(file)
       end
     end
-
-    private
 
     class Line
       attr_accessor :source, :name, :dst, :offset
@@ -41,6 +40,10 @@ module Timezone
         [source, name, dst, offset].join(':')
       end
     end
+
+    private_constant :Line
+
+    private
 
     def parse(file)
       zone = file.gsub("#{zoneinfo}/right/",'')
