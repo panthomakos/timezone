@@ -1,7 +1,6 @@
 require 'timezone/zone'
 require 'timezone/nil_zone'
-require 'timezone/config'
-require 'timezone/configure'
+require 'timezone/lookup'
 require 'timezone/loader'
 
 module Timezone
@@ -22,6 +21,6 @@ module Timezone
   end
 
   def self.lookup(lat, long, &block)
-    fetch(::Timezone::Config.lookup.lookup(lat, long), &block)
+    fetch(::Timezone::Lookup.lookup.lookup(lat, long), &block)
   end
 end

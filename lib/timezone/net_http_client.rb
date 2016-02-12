@@ -8,7 +8,7 @@ module Timezone
   # a proxy or a different http library such as faraday.
   #
   # @example
-  #     Timezone::Config.config(:google) do |c|
+  #     Timezone::Lookup.config(:google) do |c|
   #       c.api_key = 'foo'
   #       c.http_client = Timezone::NetHTTPClient
   #     end

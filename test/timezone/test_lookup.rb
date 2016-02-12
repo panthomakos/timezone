@@ -1,36 +1,36 @@
-require 'timezone/config'
+require 'timezone/lookup'
 require 'minitest/autorun'
 
-class TestConfig < ::Minitest::Test
+class TestLookup < ::Minitest::Test
   def test_test_config
-    Timezone::Config.config(:test)
+    Timezone::Lookup.config(:test)
 
     assert_equal Timezone::Lookup::Test,
-      Timezone::Config.lookup.class
+      Timezone::Lookup.lookup.class
   end
 
   def test_geonames_config
-    Timezone::Config.config(:geonames) do |c|
+    Timezone::Lookup.config(:geonames) do |c|
       c.username = 'foo'
     end
 
     assert_equal Timezone::Lookup::Geonames,
-      Timezone::Config.lookup.class
+      Timezone::Lookup.lookup.class
 
     assert_equal Timezone::NetHTTPClient,
-      Timezone::Config.lookup.config.http_client
+      Timezone::Lookup.lookup.config.http_client
   end
 
   def test_google_config
-    Timezone::Config.config(:google) do |c|
+    Timezone::Lookup.config(:google) do |c|
       c.api_key = 'foo'
     end
 
     assert_equal Timezone::Lookup::Google,
-      Timezone::Config.lookup.class
+      Timezone::Lookup.lookup.class
 
     assert_equal Timezone::NetHTTPClient,
-      Timezone::Config.lookup.config.http_client
+      Timezone::Lookup.lookup.config.http_client
   end
 
   def test_custom_config
@@ -38,16 +38,16 @@ class TestConfig < ::Minitest::Test
       def initialize(config) ; end
     end
 
-    Timezone::Config.config(custom_lookup)
+    Timezone::Lookup.config(custom_lookup)
 
-    assert_equal custom_lookup, Timezone::Config.lookup.class
+    assert_equal custom_lookup, Timezone::Lookup.lookup.class
   end
 
   def test_missing_config
-    Timezone::Config.instance_variable_set(:@lookup, nil)
+    Timezone::Lookup.instance_variable_set(:@lookup, nil)
 
     assert_raises Timezone::Error::InvalidConfig do
-      Timezone::Config.lookup
+      Timezone::Lookup.lookup
     end
   end
 end
