@@ -1,5 +1,3 @@
-inherit_from: .rubocop_todo.yml
-
 Lint/DuplicateMethods:
   Enabled: true
 
@@ -34,8 +32,71 @@ Performance/RedundantBlockCall:
 Style/AlignParameters:
   EnforcedStyle: with_fixed_indentation
 
+Style/ClassVars:
+  Enabled: true
+
+Style/DeprecatedHashMethods:
+  Enabled: true
+
 Style/Documentation:
+  Enabled: true
+
+Style/DoubleNegation:
+  Enabled: true
+
+Style/EmptyLineBetweenDefs:
+  Enabled: true
+
+Style/EmptyLiteral:
+  Enabled: true
+
+Style/GuardClause:
+  Enabled: true
+
+Style/HashSyntax:
+  Enabled: true
+
+Style/MethodName:
   Enabled: true
 
 Style/MultilineMethodCallIndentation:
   EnforcedStyle: indented
+
+Style/NumericLiterals:
+  MinDigits: 5
+
+Style/OpMethod:
+  Enabled: true
+
+Style/RedundantReturn:
+  Enabled: true
+
+Style/RedundantSelf:
+  Enabled: true
+
+Style/SingleLineMethods:
+  Enabled: false
+
+Style/SpaceAfterComma:
+  Enabled: true
+
+Style/SpaceAroundEqualsInParameterDefault:
+  Enabled: true
+
+Style/SpaceAroundOperators:
+  Enabled: true
+
+Style/SpaceBeforeSemicolon:
+  Enabled: true
+
+Style/SpecialGlobalVars:
+  EnforcedStyle: use_perl_names
+
+Style/StringLiterals:
+  Enabled: true
+
+Style/TrivialAccessors:
+  Enabled: true
+
+Style/UnneededPercentQ:
+  Enabled: true

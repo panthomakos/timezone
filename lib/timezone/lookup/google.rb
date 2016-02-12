@@ -43,7 +43,7 @@ module Timezone
       private
 
       def use_google_enterprise?
-        !!config.client_id
+        !config.client_id.nil?
       end
 
       def authorize(url)
@@ -51,9 +51,9 @@ module Timezone
           url += "&client=#{CGI.escape(config.client_id)}"
 
           sha1 = OpenSSL::Digest.new('sha1')
-          binary_key = Base64.decode64(config.api_key.tr('-_','+/'))
+          binary_key = Base64.decode64(config.api_key.tr('-_', '+/'))
           binary_signature = OpenSSL::HMAC.digest(sha1, binary_key, url)
-          signature = Base64.encode64(binary_signature).tr('+/','-_').strip
+          signature = Base64.encode64(binary_signature).tr('+/', '-_').strip
 
           url + "&signature=#{signature}"
         else

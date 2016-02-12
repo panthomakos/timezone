@@ -3,7 +3,7 @@ require 'timezone/error'
 module Timezone # rubocop:disable Style/Documentation
   # Responsible for loading and parsing timezone data from files.
   module Loader
-    ZONE_FILE_PATH = File.expand_path(File.dirname(__FILE__)+'/../../data')
+    ZONE_FILE_PATH = File.expand_path(File.dirname(__FILE__) + '/../../data')
     SOURCE_BIT = 0
 
     class << self
@@ -15,7 +15,7 @@ module Timezone # rubocop:disable Style/Documentation
       end
 
       def names
-        @@names ||= parse_zone_names
+        @names ||= parse_zone_names
       end
 
       def valid?(name)
@@ -25,7 +25,7 @@ module Timezone # rubocop:disable Style/Documentation
       private
 
       def parse_zone_names
-        files = Dir[File.join(ZONE_FILE_PATH, "**/*")].map do |file|
+        files = Dir[File.join(ZONE_FILE_PATH, '**/*')].map do |file|
           next if File.directory?(file)
 
           file.sub("#{ZONE_FILE_PATH}/", '')
@@ -42,7 +42,7 @@ module Timezone # rubocop:disable Style/Documentation
           source = source.to_i
           dst = dst == '1'
           offset = offset.to_i
-          source = rules.last[SOURCE_BIT]+source if rules.last
+          source = rules.last[SOURCE_BIT] + source if rules.last
           rules << [source, name, dst, offset]
         end
 

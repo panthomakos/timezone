@@ -7,6 +7,7 @@ module Timezone
   #   of the `timezone gem. Use `Timezone::Lookup::config` instead.
   #
   # The old way to configure this gem.
+  # rubocop:disable Style/ClassVars
   class Configure
     DEPRECATE = '[DEPRECATED] `Timezone::Configure` will be removed ' \
       'in the release of the `timezone gem. Use `Timezone::Lookup` ' \
@@ -15,37 +16,37 @@ module Timezone
     # @deprecated `Timezone::Configure` will be removed in the release
     #   of the `timezone gem. Use `Timezone::Lookup instead.
     def self.google_api_key
-      @google_api_key ||= nil
+      @@google_api_key ||= nil
     end
 
     # @deprecated `Timezone::Configure` will be removed in the release
     #   of the `timezone gem. Use `Timezone::Lookup instead.
     def self.google_api_key=(api_key)
-      @google_api_key = api_key
+      @@google_api_key = api_key
     end
 
     # @deprecated `Timezone::Configure` will be removed in the release
     #   of the `timezone gem. Use `Timezone::Lookup instead.
     def self.google_client_id
-      @google_client_id ||= nil
+      @@google_client_id ||= nil
     end
 
     # @deprecated `Timezone::Configure` will be removed in the release
     #   of the `timezone gem. Use `Timezone::Lookup instead.
     def self.google_client_id=(client)
-      @google_client_id = client
+      @@google_client_id = client
     end
 
     # @deprecated `Timezone::Configure` will be removed in the release
     #   of the `timezone gem. Use `Timezone::Lookup instead.
     def self.use_google?
-      !!google_api_key
+      !google_api_key.nil?
     end
 
     # @deprecated `Timezone::Configure` will be removed in the release
     #   of the `timezone gem. Use `Timezone::Lookup instead.
     def self.use_google_enterprise?
-      use_google? && !!google_client_id
+      use_google? && !google_client_id.nil?
     end
 
     # @deprecated `Timezone::Configure` will be removed in the release
@@ -70,11 +71,15 @@ module Timezone
         @config = config
       end
 
-      def protocol ; @config.protocol ; end
-      def url ; @config.url ; end
-      def http_client ; @config.http_client ; end
-      def api_key ; @config.google_api_key ; end
-      def client_id ; @config.google_client_id ; end
+      def protocol; @config.protocol; end
+
+      def url; @config.url; end
+
+      def http_client; @config.http_client; end
+
+      def api_key; @config.google_api_key; end
+
+      def client_id; @config.google_client_id; end
     end
 
     private_constant :GoogleConfigMapper
@@ -94,10 +99,13 @@ module Timezone
         @config = config
       end
 
-      def protocol ; @config.protocol ; end
-      def url ; @config.url ; end
-      def username ; @config.username ; end
-      def http_client ; @config.http_client ; end
+      def protocol; @config.protocol; end
+
+      def url; @config.url; end
+
+      def username; @config.username; end
+
+      def http_client; @config.http_client; end
     end
 
     private_constant :GeonamesConfigMapper
@@ -208,7 +216,7 @@ module Timezone
 
     # @deprecated `Timezone::Configure` will be removed in the release
     #   of the `timezone gem. Use `Timezone::Lookup instead.
-    def self.replace(what, with = Hash.new)
+    def self.replace(what, with = {})
       replacements # instantiate @@replacements
       @@replacements[what] = with[:with]
     end

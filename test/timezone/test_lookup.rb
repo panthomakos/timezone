@@ -35,7 +35,7 @@ class TestLookup < ::Minitest::Test
 
   def test_custom_config
     custom_lookup = Class.new do
-      def initialize(config) ; end
+      def initialize(config); end
     end
 
     Timezone::Lookup.config(custom_lookup)

@@ -91,9 +91,9 @@ module Timezone
           '`Timezone::lookup` instead.'.freeze
       )
 
-      if options.has_key?(:lat) && options.has_key?(:lon)
+      if options.key?(:lat) && options.key?(:lon)
         options[:zone] = timezone_id options[:lat], options[:lon]
-      elsif options.has_key?(:latlon)
+      elsif options.key?(:latlon)
         options[:zone] = timezone_id(*options[:latlon])
       end
 
@@ -211,7 +211,7 @@ module Timezone
     #
     # @param time [#to_time] (Time.now) the source time
     # @return [Integer] the UTC offset (in seconds) in the local timezone
-    def utc_offset(time=nil)
+    def utc_offset(time = nil)
       time ||= Time.now
       time = sanitize(time)
 
@@ -220,11 +220,13 @@ module Timezone
 
     # Compare one timezone with another based on current UTC offset.
     #
+    # @param other [Timezone::Zone] the other timezone
+    #
     # @return [-1, 0, 1, nil] comparison based on current `utc_offset`.
-    def <=>(zone)
-      return nil unless zone.respond_to?(:utc_offset)
+    def <=>(other)
+      return nil unless other.respond_to?(:utc_offset)
 
-      utc_offset <=> zone.utc_offset
+      utc_offset <=> other.utc_offset
     end
 
     class << self
@@ -252,19 +254,19 @@ module Timezone
         )
 
         args = nil if args.empty? # set to nil if no args are provided
-        zones = args || Configure.default_for_list || self.names
-        list = self.names.select { |name| zones.include? name }
+        zones = args || Configure.default_for_list || names
+        list = names.select { |name| zones.include? name }
 
         @zones = []
         now = Time.now
         list.each do |name|
           item = new(name)
           @zones << {
-            :zone => item.name,
-            :title => Configure.replacements[item.name] || item.name,
-            :offset => item.utc_offset,
-            :utc_offset => (item.utc_offset/(60*60)),
-            :dst => item.dst?(now)
+            zone: item.name,
+            title: Configure.replacements[item.name] || item.name,
+            offset: item.utc_offset,
+            utc_offset: (item.utc_offset / (60 * 60)),
+            dst: item.dst?(now)
           }
         end
         @zones.sort_by! { |zone| zone[Configure.order_list_by] }
@@ -298,17 +300,17 @@ module Timezone
 
       # For each rule, convert the local time into the UTC equivalent for
       # that rule offset, and then check if the UTC time matches the rule.
-      index = binary_search(local) { |t,r| match?(t-r[OFFSET_BIT], r) }
+      index = binary_search(local) { |t, r| match?(t - r[OFFSET_BIT], r) }
       match = private_rules[index]
 
-      utc = local-match[OFFSET_BIT]
+      utc = local - match[OFFSET_BIT]
 
       # If the UTC rule for the calculated UTC time does not map back to the
       # same rule, then we have a skip in time and there is no applicable rule.
       return RuleSet.new(:missing, [match]) if rule_for_utc(utc) != match
 
       # If the match is the last rule, then return it.
-      return RuleSet.new(:single, [match]) if index == private_rules.length-1
+      return RuleSet.new(:single, [match]) if index == private_rules.length - 1
 
       # If the UTC equivalent time falls within the last hour(s) of the time
       # change which were replayed during a fall-back in time, then return
@@ -329,25 +331,25 @@ module Timezone
       last_hour =
         match[SOURCE_BIT] -
         match[OFFSET_BIT] +
-        private_rules[index+1][OFFSET_BIT]
+        private_rules[index + 1][OFFSET_BIT]
 
       if utc > last_hour
-        RuleSet.new(:double, private_rules[index..(index+1)])
+        RuleSet.new(:double, private_rules[index..(index + 1)])
       else
         RuleSet.new(:single, [match])
       end
     end
 
-    def rule_for_utc(time) #:nodoc:
+    def rule_for_utc(time)
       time = time.utc if time.respond_to?(:utc)
       time = time.to_i
 
-      return private_rules[binary_search(time) { |t,r| match?(t,r) }]
+      private_rules[binary_search(time) { |t, r| match?(t, r) }]
     end
 
     # Find the first rule that matches using binary search.
-    def binary_search(time, from=0, to=nil, &block)
-      to = private_rules.length-1 if to.nil?
+    def binary_search(time, from = 0, to = nil, &block)
+      to = private_rules.length - 1 if to.nil?
 
       return from if from == to
 
@@ -356,18 +358,16 @@ module Timezone
       if yield(time, private_rules[mid])
         return mid if mid == 0
 
-        if !yield(time, private_rules[mid-1])
-          return mid
-        else
-          return binary_search(time, from, mid-1, &block)
-        end
+        return mid unless yield(time, private_rules[mid - 1])
+
+        binary_search(time, from, mid - 1, &block)
       else
         return binary_search(time, mid + 1, to, &block)
       end
     end
 
     def timezone_id(lat, lon)
-      Timezone::Configure.lookup.lookup(lat,lon)
+      Timezone::Configure.lookup.lookup(lat, lon)
     end
   end
 end

@@ -48,13 +48,13 @@ class TestGoogle < ::Minitest::Test
   end
 
   def test_url_non_enterprise
-    Timecop.freeze(Time.at(1433347661)) do
+    Timecop.freeze(Time.at(1_433_347_661)) do
       result = lookup.send(:url, '123', '123')
       params = {
         'location' => '123%2C123',
         'timestamp' => '1433347661',
         'key' => 'MTIzYWJj'
-      }.map { |k,v| "#{k}=#{v}" }
+      }.map { |k, v| "#{k}=#{v}" }
 
       assert_equal "/maps/api/timezone/json?#{params.join('&')}", result
     end
@@ -66,14 +66,14 @@ class TestGoogle < ::Minitest::Test
 
     enterprise = Timezone::Lookup::Google.new(econfig)
 
-    Timecop.freeze(Time.at(1433347661)) do
+    Timecop.freeze(Time.at(1_433_347_661)) do
       result = enterprise.send(:url, '123', '123')
       params = {
         'location' => '123%2C123',
         'timestamp' => '1433347661',
         'client' => '123%26asdf',
         'signature' => 'B1TNSSvIw9Wvf_ZjjW5uRzGm4F4='
-      }.map { |k,v| "#{k}=#{v}" }
+      }.map { |k, v| "#{k}=#{v}" }
 
       assert_equal "/maps/api/timezone/json?#{params.join('&')}", result
     end

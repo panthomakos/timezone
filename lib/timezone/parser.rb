@@ -28,7 +28,7 @@ module Timezone
       SOURCE_FORMAT = '%a %b %e %H:%M:%S %Y %Z'.freeze
 
       def initialize(match)
-        self.source = Time.strptime(match[1]+'C', SOURCE_FORMAT).to_i
+        self.source = Time.strptime(match[1] + 'C', SOURCE_FORMAT).to_i
         self.name = match[2].split(' ').last
         self.dst = match[3].to_i
         self.offset = match[4].to_i
@@ -48,7 +48,7 @@ module Timezone
     private
 
     def parse(file)
-      zone = file.gsub("#{zoneinfo}/right/",'')
+      zone = file.gsub("#{zoneinfo}/right/", '')
       print "Parsing #{zone}... "
       data = zdump(zone)
 
@@ -56,7 +56,7 @@ module Timezone
       result = []
 
       data.split("\n").each do |line|
-        match = line.gsub('right/'+zone+' ','').match(LINE)
+        match = line.gsub('right/' + zone + ' ', '').match(LINE)
         next if match.nil?
 
         line = Line.new(match)

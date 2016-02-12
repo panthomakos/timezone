@@ -1,6 +1,6 @@
 class HTTPTestClient
   Response = Struct.new(:body) do
-    def code ; '200' ; end
+    def code; '200'; end
   end
 
   attr_accessor :body

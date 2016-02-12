@@ -16,9 +16,7 @@ module Timezone
       #   Timezone::Deprecate.callback = lambda do |klass, method, msg|
       #     MyLogger.log("[#{klass} : #{method}] #{msg}")
       #   end
-      def callback=(callback)
-        @callback = callback
-      end
+      attr_writer :callback
 
       # @!visibility private
       def callback

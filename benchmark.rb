@@ -16,7 +16,7 @@ Benchmark.bm do |x|
 end
 
 def calc_local(timezone)
-  timezone.time(Time.utc(3000,1,1))
+  timezone.time(Time.utc(3000, 1, 1))
 end
 
 puts 'Calculating LOCAL'
@@ -30,7 +30,7 @@ Benchmark.bm do |x|
 end
 
 def calc_utc(timezone)
-  timezone.local_to_utc(Time.utc(3000,1,1))
+  timezone.local_to_utc(Time.utc(3000, 1, 1))
 end
 
 puts 'Calculating UTC'
