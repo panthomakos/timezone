@@ -8,7 +8,7 @@ class HTTPTestClient
   def initialize(protocol, host)
   end
 
-  def get(url)
+  def get(_url)
     HTTPTestClient::Response.new(body)
   end
 end

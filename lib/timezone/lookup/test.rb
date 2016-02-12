@@ -5,10 +5,8 @@ module Timezone
   module Lookup
     # @!visibility private
     class Test < ::Timezone::Lookup::Basic
-      def initialize(config)
+      def initialize(_config)
         @stubs = {}
-        # Regular config w/ protocol and URL checks does not apply
-        # for stubs.
       end
 
       def stub(lat, long, timezone)

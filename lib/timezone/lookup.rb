@@ -30,7 +30,7 @@ module Timezone
       def config(lookup)
         options = OptionSetter.new(lookup)
         yield(options.config) if block_given?
-        @lookup = options.lookup
+        @lookup = options.make_lookup
       end
 
       # Responsible for collecting options in the DSL and creating
@@ -58,7 +58,7 @@ module Timezone
           @config = OpenStruct.new
         end
 
-        def lookup
+        def make_lookup
           config.http_client ||= ::Timezone::NetHTTPClient
           @lookup.new(config)
         end

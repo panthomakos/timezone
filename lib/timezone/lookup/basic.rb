@@ -37,7 +37,7 @@ module Timezone
       #   actual timezone
       # @raise [Timezone::Error::Base] if an error occurred while
       #   while performing the lookup
-      def lookup(lat, long)
+      def lookup(_lat, _long)
         raise NoMethodError, 'lookup is not implemented'
       end
     end

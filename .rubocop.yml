@@ -1,17 +1,24 @@
 inherit_from: .rubocop_todo.yml
 
+Lint/DuplicateMethods:
+  Enabled: true
+
+Lint/UnusedMethodArgument:
+  Enabled: true
+
+
 Metrics/AbcSize:
   Enabled: false
-
-Style/AlignParameters:
-  EnforcedStyle: with_fixed_indentation
 
 Metrics/ClassLength:
   Enabled: false
 
-Style/Documentation:
-  Enabled: true
-
 Metrics/MethodLength:
   Enabled: false
 
+
+Style/AlignParameters:
+  EnforcedStyle: with_fixed_indentation
+
+Style/Documentation:
+  Enabled: true
