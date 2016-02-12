@@ -17,14 +17,14 @@ class GoogleLookupTest < ::Minitest::Unit::TestCase
     ::Timezone::Configure.lookup
   end
 
-  def config(&block)
+  def config
     Timezone::Configure.instance_variable_set(:@lookup, nil)
     Timezone::Configure.instance_variable_set(:@geonames_lookup, nil)
     Timezone::Configure.instance_variable_set(:@google_lookup, nil)
 
     Timezone::Configure.begin do |c|
       c.http_client = HTTPTestClient
-      block.call(c)
+      yield(c)
     end
   end
 

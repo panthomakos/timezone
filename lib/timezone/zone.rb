@@ -353,10 +353,10 @@ module Timezone
 
       mid = (from + to) / 2
 
-      if block.call(time, private_rules[mid])
+      if yield(time, private_rules[mid])
         return mid if mid == 0
 
-        if !block.call(time, private_rules[mid-1])
+        if !yield(time, private_rules[mid-1])
           return mid
         else
           return binary_search(time, from, mid-1, &block)

@@ -27,6 +27,10 @@ Metrics/PerceivedComplexity:
   Max: 8
 
 
+Performance/RedundantBlockCall:
+  Enabled: true
+
+
 Style/AlignParameters:
   EnforcedStyle: with_fixed_indentation
 
