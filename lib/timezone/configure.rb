@@ -5,6 +5,8 @@ require 'timezone/deprecate'
 module Timezone
   # @deprecated `Timezone::Configure` will be removed in the release
   #   of the `timezone gem. Use `Timezone::Lookup::config` instead.
+  #
+  # The old way to configure this gem.
   class Configure
     DEPRECATE = '[DEPRECATED] `Timezone::Configure` will be removed ' \
       'in the release of the `timezone gem. Use `Timezone::Lookup` ' \
@@ -60,6 +62,9 @@ module Timezone
       use_google? ? google_lookup : geonames_lookup
     end
 
+    # Responsible for mapping old configuration options to new
+    # configuration style for forwards-compatability with the
+    # updated Google lookup.
     class GoogleConfigMapper
       def initialize(config)
         @config = config
@@ -81,6 +86,9 @@ module Timezone
         Timezone::Lookup::Google.new(GoogleConfigMapper.new(self))
     end
 
+    # Responsible for mapping old configuration options to new
+    # configuration style for forwards-compatability with the
+    # updated Geonames lookup.
     class GeonamesConfigMapper
       def initialize(config)
         @config = config

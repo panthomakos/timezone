@@ -2,6 +2,7 @@ require 'time'
 
 module Timezone
   # @!visibility private
+  # Responsible for parsing timezone data into an exportable format.
   class Parser
     LINE = /\s*(.+)\s*=\s*(.+)\s*isdst=(\d+)\s*gmtoff=([\+\-]*\d+)/
 
@@ -20,6 +21,7 @@ module Timezone
       end
     end
 
+    # Represents a single timezone data file line.
     class Line
       attr_accessor :source, :name, :dst, :offset
 

@@ -1,13 +1,17 @@
 inherit_from: .rubocop_todo.yml
 
-Metrics/ClassLength:
-  Enabled: false
-
 Metrics/AbcSize:
-  Enabled: false
-
-Metrics/MethodLength:
   Enabled: false
 
 Style/AlignParameters:
   EnforcedStyle: with_fixed_indentation
+
+Metrics/ClassLength:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: true
+
+Metrics/MethodLength:
+  Enabled: false
+

@@ -1,6 +1,7 @@
 require 'timezone/error'
 
-module Timezone
+module Timezone # rubocop:disable Style/Documentation
+  # Responsible for loading and parsing timezone data from files.
   module Loader
     ZONE_FILE_PATH = File.expand_path(File.dirname(__FILE__)+'/../../data')
     SOURCE_BIT = 0

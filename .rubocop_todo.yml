@@ -40,10 +40,6 @@ Style/ClassVars:
 Style/DeprecatedHashMethods:
   Enabled: false
 
-# Offense count: 14
-Style/Documentation:
-  Enabled: false
-
 # Offense count: 3
 Style/DoubleNegation:
   Enabled: false

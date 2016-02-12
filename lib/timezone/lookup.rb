@@ -33,6 +33,8 @@ module Timezone
         @lookup = options.lookup
       end
 
+      # Responsible for collecting options in the DSL and creating
+      # lookup objects using those options.
       class OptionSetter
         LOOKUPS = {
           geonames: ::Timezone::Lookup::Geonames,
