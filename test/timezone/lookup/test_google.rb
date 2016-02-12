@@ -12,7 +12,7 @@ class TestGoogle < ::Minitest::Test
 
   def config
     config = OpenStruct.new
-    config.http_client = HTTPTestClient
+    config.request_handler = HTTPTestClient
     config.api_key = 'MTIzYWJj'
     config
   end

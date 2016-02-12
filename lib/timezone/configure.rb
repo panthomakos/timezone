@@ -80,6 +80,8 @@ module Timezone
       def api_key; @config.google_api_key; end
 
       def client_id; @config.google_client_id; end
+
+      def request_handler; nil; end
     end
 
     private_constant :GoogleConfigMapper
@@ -106,6 +108,8 @@ module Timezone
       def username; @config.username; end
 
       def http_client; @config.http_client; end
+
+      def request_handler; nil; end
     end
 
     private_constant :GeonamesConfigMapper

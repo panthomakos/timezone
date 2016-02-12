@@ -59,7 +59,7 @@ module Timezone
         end
 
         def make_lookup
-          config.http_client ||= ::Timezone::NetHTTPClient
+          config.request_handler ||= ::Timezone::NetHTTPClient
           @lookup.new(config)
         end
       end

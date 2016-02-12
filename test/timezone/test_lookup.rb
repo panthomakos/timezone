@@ -18,7 +18,7 @@ class TestLookup < ::Minitest::Test
       Timezone::Lookup.lookup.class
 
     assert_equal Timezone::NetHTTPClient,
-      Timezone::Lookup.lookup.config.http_client
+      Timezone::Lookup.lookup.config.request_handler
   end
 
   def test_google_config
@@ -30,7 +30,7 @@ class TestLookup < ::Minitest::Test
       Timezone::Lookup.lookup.class
 
     assert_equal Timezone::NetHTTPClient,
-      Timezone::Lookup.lookup.config.http_client
+      Timezone::Lookup.lookup.config.request_handler
   end
 
   def test_custom_config

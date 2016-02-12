@@ -7,7 +7,7 @@ module Timezone
     class Basic
       attr_reader :config
 
-      # @param config [#protocol, #url, @http_client] a configuration
+      # @param config [#protocol, #url, #request_handler] a configuration
       #   object
       def initialize(config)
         if config.protocol.nil?
@@ -25,7 +25,13 @@ module Timezone
       #
       # @return [#get] an instance of an http client
       def client
-        @client ||= config.http_client.new(config.protocol, config.url)
+        # TODO: Remove http_client once on 1.0.0
+        @client ||=
+          if !config.request_handler.nil?
+            config.request_handler.new(config)
+          else
+            config.http_client.new(config.protocol, config.url)
+          end
       end
 
       # Returns a timezone name for a given lat, long pair.

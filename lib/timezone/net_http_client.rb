@@ -11,14 +11,25 @@ module Timezone
   # @example
   #     Timezone::Lookup.config(:google) do |c|
   #       c.api_key = 'foo'
-  #       c.http_client = Timezone::NetHTTPClient
+  #       c.request_handler = Timezone::NetHTTPClient
   #     end
   #
   class NetHTTPClient
-    def initialize(protocol, host)
-      uri = URI.parse("#{protocol}://#{host}")
+    def initialize(protocol, url = nil)
+      # TODO: Remove once on 1.0.0 #initialize(config)
+      config = protocol
+
+      if url
+        config = OpenStruct.new
+        config.protocol = protocol
+        config.url = url
+      end
+
+      uri = URI.parse("#{config.protocol}://#{config.url}")
       @http = Net::HTTP.new(uri.host, uri.port)
-      @http.use_ssl = (protocol == 'https'.freeze)
+      @http.open_timeout = config.open_timeout || 5
+      @http.read_timeout = config.read_timeout || 5
+      @http.use_ssl = (config.protocol == 'https'.freeze)
     end
 
     def get(url)

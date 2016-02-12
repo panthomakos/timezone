@@ -12,7 +12,7 @@ class TestGeonames < ::Minitest::Test
   def lookup
     config = OpenStruct.new
     config.username = 'timezone'
-    config.http_client = HTTPTestClient
+    config.request_handler = HTTPTestClient
 
     Timezone::Lookup::Geonames.new(config)
   end
