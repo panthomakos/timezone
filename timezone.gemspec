@@ -11,15 +11,8 @@ Gem::Specification.new do |s|
   s.homepage    = 'http://github.com/panthomakos/timezone'
   s.summary     = "timezone-#{Timezone::VERSION}"
   s.license     = 'MIT'
-  s.description = <<-DESCRIPTION
-    A simple way to get accurate current and historical timezone
-    information based on zone or latitude and longitude coordinates. This
-    gem uses the tz database (http://www.twinsun.com/tz/tz-link.htm) for
-    historical timezone information. It also uses either the geonames API
-    (http://www.geonames.org/export/web-services.html) or Google timezone
-    API (https://developers.google.com/maps/documentation/timezone/) for
-    timezone latitude and longitude lookup.
-  DESCRIPTION
+  s.description = 'Accurate current and historical timezones for Ruby with ' \
+    'support for Geonames and Google latitude - longitude lookups.'
 
   s.rubyforge_project = 'timezone'
 
