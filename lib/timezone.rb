@@ -25,17 +25,27 @@ module Timezone
   # Fetch a timezone by name.
   #
   # @param name [String] the timezone name
-  #
-  # @return [Timezone::Zone] if the timezone is found
+  # @param default an object to return if timezone is
+  #   not found
   # @yield the block to run if the timezone is not found
   # @yieldparam name [String] the timezone name if the timezone is not
   #   found
+  #
+  # @return [Timezone::Zone] if the timezone is found
+  # @return [Object] if the timezone is not found and a default
+  #   value or block has been provided
+  #
   # @raise [Timezone::Error::InvalidZone] if the timezone is not found
-  #   and a block is not given
-  def self.fetch(name)
+  #   and a default value and block have not been provided
+  def self.fetch(name, default = :__block, &block)
     return ::Timezone::Zone.new(name) if Loader.valid?(name)
 
-    return yield(name) if block_given?
+    if block_given? && default != :__block
+      warn('warning: block supersedes default value argument'.freeze)
+    end
+
+    return block.call(name) if block_given?
+    return default unless default == :__block
 
     raise ::Timezone::Error::InvalidZone
   end
@@ -45,12 +55,23 @@ module Timezone
   #
   # @param lat [Double] the latitude coordinate
   # @param long [Double] the longitude coordinate
-  # @yield the block to run if the lookup succeeds and the timezone
-  #   is not found
-  # @yieldparam name [String] the timezone name if the timezone is not
-  #   found
-  # @raise [Timezone::Error::Lookup] if the lookup fails
-  def self.lookup(lat, long, &block)
-    fetch(::Timezone::Lookup.lookup.lookup(lat, long), &block)
+  # @param default an optional object to return if the remote lookup
+  #   succeeds but the timezone is not found
+  # @yield the block to run if the remote lookup succeeds and the
+  #   timezone is not found
+  # @yieldparam name [String] the timezone name if the remote lookup
+  #   succeeds and the timezone is not found
+  #
+  # @return [Timezone::Zone] if the remote lookup succeeds and the
+  #   timezone is found
+  # @return [Object] if the remote lookup succeeds, the timezone is
+  #   not found, and a default value or block has been provided
+  #
+  # @raise [Timezone::Error::InvalidZone] if the remote lookup
+  #   succeeds but the resulting timezone is not found and a default
+  #   value or block has not been provided
+  # @raise [Timezone::Error::Lookup] if the remote lookup fails
+  def self.lookup(lat, long, default = :__block, &block)
+    fetch(::Timezone::Lookup.lookup.lookup(lat, long), default, &block)
   end
 end
