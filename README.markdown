@@ -1,10 +1,9 @@
 # Timezone
 
-A simple way to get accurate current and historical timezone information based
-on zone or latitude and longitude coordinates. This gem uses the
-[tz database][tz-database] for historical timezone information. It also uses the
-[geonames API][geonames-api] or the [Google Timezone API][google-api] for
-timezone latitude and longitude lookup.
+Accurate current and history timezones for Ruby.
+
+* Uses [tz-database][tz-database] for up-to-date historical timezone calculations.
+* Uses the [geonames API][geonames-api] or the [Google Timezone API][google-api] for timezone latitude and longitude lookup.
 
 [tz-database]: http://www.twinsun.com/tz/tz-link.htm
 [geonames-api]: http://www.geonames.org/export/web-services.html
@@ -12,163 +11,204 @@ timezone latitude and longitude lookup.
 
 ## Installation
 
-Add the following to your Gemfile:
+Use the [`timezone`](https://rubygems.org/gems/timezone) gem - available on RubyGems. Semantic versioning is used, so if you would like to remain up-to-date and avoid any backwards-incompatible changes, use the following in your `Gemfile`:
 
-    gem 'timezone'
+    gem 'timezone', '~> 0.99'
 
-Then install your bundle.
+## NOTE: v1.0.0 Release and Upgrade
 
-    bundle install
+Version `1.0.0` of `timezone` will be released in the coming months. The `0.99.*` releases are backwards-forwards-compatible preparatory releases for `1.0.0`. Once `1.0.0` has been released, previous major versions will no longer be updated to include new timezone data. Any method that will be removed in `1.0.0` has been deprecated and warnings are included when deprecated methods are used. There have been some configuration changes - deprecation warnings and upgrade instructions are provided for those as well.
 
-## Getting Started
+Additionally, if you would like to provide your own deprecation logging, you can use `Timezone::Deprecate.callback`. For instance, to log to an external logger, you might use:
 
-Getting the current time or any historical time in any timezone, with daylight
-savings time taken into consideration, is easy:
+    Timezone::Deprecate.callback = lambda do |klass, method, message|
+      MyLogger.log("[#{klass} : #{method}] #{message}")
+    end
 
-    timezone = Timezone::Zone.new :zone => 'America/Los_Angeles'
+## RubyDocs
 
-    timezone.time(Time.now)
+Complete documentation for this gem can be found on [RubyDoc](http://www.rubydoc.info/gems/timezone).
+
+## Simple Timezone Queries
+
+Simple querying of time, in any timezone, is accomplished by first retrieving a `Timezone::Zone` object and then calling methods on that object.
+
+    timezone = Timezone['America/Los_Angeles']
+    => #<Timezone::Zone name: "America/Los_Angeles">
+
+    timezone.valid?
+    => true
+
+    timezone.utc_to_local(Time.now)
     => 2011-02-11 17:29:05 UTC
 
-    timezone.time(Time.utc(2010, 1, 1, 0, 0, 0))
+    timezone.utc_to_local(Time.utc(2010, 1, 1, 0, 0, 0))
     => 2009-12-31 16:00:00 UTC
 
-    timezone.time_with_offset(Time.utc(2010,1,1,0,0,0))
+    timezone.time_with_offset(Time.utc(2010, 1, 1, 0, 0, 0))
     => 2009-12-31 16:00:00 -0800
 
-Time is always returned in the UTC timezone when using the `time` function, but
-it accurately reflects the actual time in the specified timezone. The reason for
-this is that this function also takes into account daylight savings time and
-historical changes in timezone, which can alter the offset. If you want a time
-with the appropriate offset at the given time, then use the `time_with_offset`
-function as shown above.
+NOTE: time is always returned in the UTC timezone when using the `utc_to_local` function, but it accurately reflects the actual time in the specified timezone. The reason for this is that this function also takes into account daylight savings time and historical changes in timezone, which can alter the offset. If you want a time with the appropriate offset at the given time, then use the `time_with_offset` function as shown above.
 
 You can use the timezone object to convert local times into the best UTC
 estimate. The reason this is an estimate is that some local times do not
 actually map to UTC times (for example when time jumps forward) and some
 local times map to multiple UTC times (for example when time falls back).
 
-    timezone = Timezone::Zone.new :zone => 'America/Los_Angeles'
+    timezone = Timezone.fetch('America/Los_Angeles')
+    => #<Timezone::Zone name: "America/Los_Angeles">
 
     timezone.local_to_utc(Time.utc(2015,11,1,1,50,0))
     => 2015-11-01 08:50:00 UTC
 
 You can also query a `Timezone::Zone` object to determine if it was in Daylight
-Savings Time:
+Savings Time.
 
-    timezone = Timezone::Zone.new :zone => 'America/Los_Angeles'
+    timezone = Timezone['America/Los_Angeles']
+    => #<Timezone::Zone name: "America/Los_Angeles">
+
     timezone.dst?(Time.now)
     => true
+
     timezone.dst?(Time.utc(2010, 1, 1, 0, 0, 0))
     => false
 
-## Getting the timezone for a specific latitude and longitude
+For more information on the `::Timezone::Zone` object, see the [RubyDocs](http://www.rubydoc.info/gems/timezone/Timezone/Zone).
 
-First, make sure you have a geonames username. It's free and easy to setup, you can do so [here](http://www.geonames.org/login). Once you have created an account, make sure that you have enabled web services [here](http://www.geonames.org/enablefreewebservice).
+## Finding Timezones Based on Latitude and Longitude
 
-Second, add the following to your application.rb file, or before you perform a coordinate lookup.
+`timezone` has the capacity to query Geonames and Google for timezones based on latitude and longitude. Before querying a timezone API you'll need to configure the API you want to use.
 
-    Timezone::Configure.begin do |c|
-      c.username = 'your_geonames_username_goes_here'
-    end
+### Lookup Configuration with Geonames
 
-Alternatively, timezone can be used with a Google api key, which you can get [here](https://code.google.com/apis/console/).
+1. Ensure you have a Geonames username. It's free and easy to setup, you can do so [here](http://www.geonames.org/login).
+1. Ensure you have enabled web services [here](http://www.geonames.org/enablefreewebservice).
+1. Configure your lookup. NOTE: in Rails it is recommended that you add this code to an initializer.
 
-Enable the Google Maps Time Zone API to do this.
+        Timezone::Lookup.config(:geonames) do |c|
+          c.username = 'your_geonames_username_goes_here'
+        end
 
-Next, add the following to your application.rb file, or before you perform a coordinate lookup.
+### Lookup Configuration with Google
 
-    Timezone::Configure.begin do |c|
-      c.google_api_key = 'your_google_api_key_goes_here'
-      c.google_client_id = 'your_google_client_id' # only if using 'Google for Work'
-    end
+1. Ensure you have a Google API Key, which you can get [here](https://code.google.com/apis/console/).
+1. Enable the Google Maps Time Zone API.
+1. Configure your lookup. NOTE: in Rails it is recommended that you add this code to an initializer.
 
-Finally, for either geonames or Google implementation, pass the coordinates to your timezone initialization function.
+        Timezone::Lookup.config(:google) do |c|
+          c.api_key = 'your_google_api_key_goes_here'
+          c.client_id = 'your_google_client_id' # if using 'Google for Work'
+        end
 
-    timezone = Timezone::Zone.new :latlon => [-34.92771808058, 138.477041423321]
-    timezone.zone
+### Performing Latitude - Longitude Lookups
+
+After configuring the API of your choice, pass the lookup coordinates to `Timezone::lookup`.
+
+    timezone = Timezone.lookup(-34.92771808058, 138.477041423321)
+    => #<Timezone::Zone name: "Australia/Adelaide">
+
+    timezone.name
     => "Australia/Adelaide"
-    timezone.time Time.now
+
+    timezone.utc_to_local(Time.now)
     => 2011-02-12 12:02:13 UTC
 
-## Displaying a timezone's name in a Rails/ActiveSupport compatible format
+## Error States and Nil Objects
 
-    timezone = Timezone::Zone.new :latlon => [-34.92771808058, 138.477041423321]
-    timezone.active_support_time_zone
-    => "Eastern Time (US & Canada)"
+All exceptions raised by the `timezone` gem are subclasses of `::Timezone::Error::Base`. `timezone` also provides a default `nil` timezone object that behaves like a `Timezone::Zone` except that it is invalid.
 
-## Getting the complete list of timezones.
+    Timezone.fetch('foobar')
+    => Timezone::Error::InvalidZone
 
-Retrieving the complete list of timezones is quite simple:
+    Timezone::Error::InvalidZone < Timezone::Error::Base
+    => true
 
-    timezones = Timezone::Zone.names
-    => ["Africa/Abidjan", "Africa/Accra", "Africa/Addis_Ababa", "Africa/Algiers", ...]
+    Timezone.fetch('foobar', Timezone['America/Los_Angeles'])
+    => #<Timezone::Zone name: "America/Los_Angeles">
 
-## Listing current information from specific timezones
+    Timezone.fetch('foobar'){ |name| "#{name} is invalid" }
+    => "foobar is invalid"
 
-If you need information from a specific set of timezones rather than a complete list or one at a time, this can be accomplished with the following:
+    zone = Timezone['foo/bar']
+    => #<Timezone::NilZone>
 
-    zone_list = Timezone::Zone.list "America/Chicago", "America/New_York", "America/Boise"
-    # This will return an array of information hashes in the following format:
-    # {
-    #   :zone => "America/Chicago",
-    #   :title => "America/Chicago", # this can be customized to your needs
-    #   :offset => -18000, # UTC offset in seconds
-    #   :utc_offset => -5, # UTC offset in hours
-    #   :dst => false
-    # }
+    zone.valid?
+    => false
 
-You can customize what is placed in the `:title` key in the configuration block. This would be useful in the case of an HTML select list that you would like to display different values than the default name.  For example, the following configuration will set the `:title` key in the list hash to "Chicago" rather than "America/Chicago".
+For more information on errors, check [`::Timezone::Error`](http://www.rubydoc.info/gems/timezone/Timezone/Error).
 
-    Timezone::Configure.build do |c|
-      c.replace "America/Chicago", with: "Chicago"
-    end
+For more information on the `nil` object, check [`::Timezone::NilZone`](http://www.rubydoc.info/gems/timezone/Timezone/NilZone).
 
-Also, if you make numerous calls to the **Zone#list** method in your software, but you would like to avoid duplicating which timezones to retrieve, you can set a default in the configuration:
+Latitude - longitude lookups can raise `::Timezone::Error::Lookup` exceptions when issues occur with the remote API request. For example, if an API limit is reached. If the request is valid but the result does not return a valid timezone, then an `::Timezone::Error::InvalidZone` exception will be raised, or a default value will be returned if you have provided one.
 
-    Timezone::Configure.begin do |c|
-      c.default_for_list = "America/Chicago", "America/New_York", "Australia/Sydney"
-    end
+    Timezone.lookup(10, 10)
+    => Timezone::Error::Geonames: api limit reached
 
-Finally, by default the **Zone#list** method will order the results by the timezone's UTC offset. You can customize this behavior this way:
+    Timezone.lookup(10, 100000)
+    => Timezone::Error::InvalidZone
 
-    Timezone::Configure.begin do |c|
-      # this can equal any hash key returned by the Zone#list method
-      c.order_list_by = :title
-    end
+    Timezone.lookup(10, 100000, Timezone::NilZone.new)
+    => #<Timezone::NilZone>
 
-## Using Your Own HTTP Client
+    Timezone.lookup(10, 100000){ |name| "#{name} is invalid" }
+    => " is invalid"
 
-If you have non-standard http request needs or want to have more control over API calls to Geonames and Google, you can write your own very simple http client wrapper instead of using the built-in default.
-Be aware that the Google timezone API uses `https` protocol.
+## Listing Timezones
 
-    class MyHTTPClient
-      def initialize(protocol, host)
+Retrieving the complete list of timezones can be accomplished using the `::Timezone::names` function. NOTE: the list is not ordered.
+
+    Timezone.names
+    => ["EST", "Indian/Comoro", "Indian/Christmas", "Indian/Cocos", ...]
+
+
+## Using Your Own HTTP Request Handler
+
+If you have non-standard http request needs or want to have more control over API calls to Geonames and Google, you can write your own http request handler instead of using the built-in client.
+
+Here is a sample request handler that uses `open-uri` to perform requests.
+
+    require 'open-uri'
+
+    class MyRequestHandler
+      def initialize(config)
+        @protocol = config.protocol
+        @url = config.url
       end
+
+      Response = Struct.new(:body, :code)
 
       # Return a response object that responds to #body and #code
-      def get(url)
+      def get(path)
+        response = open("#{@protocol}://#{@url}#{path}")
+
+        Response.new(response.read, response.status.first)
+      rescue OpenURI::HTTPError
+        Response.new(nil, '500')
       end
     end
 
-    Timezone::Configure.begin do |c|
-      c.http_client = MyHTTPClient
-    end
+This custom request handler can be configured for Google or Geonames. For example, to configure with Geonames you would do the following:
 
-For an example, see `Timezone::NetHTTPClient` which uses the standard `Net::HTTP` library to perform API calls.
+    Timezone::Lookup.config(:geonames) do |c|
+      c.username = 'foobar'
+      c.request_handler = MyRequestHandler
+    end
 
 ## Testing Timezone Lookups
 
 You can provide your own lookup stubs using the built in `::Timezone::Lookup::Test` class.
 
-    require 'timezone/lookup/test'
+    ::Timezone::Lookup.config(:test)
+    => #<Timezone::Lookup::Test:... @stubs={}>
 
-    ::Timezone::Configure.begin{ |c| c.lookup = ::Timezone::Lookup::Test }
+    ::Timezone::Lookup.lookup.stub(-10, 10, 'America/Los_Angeles')
+    => "America/Los_Angeles"
 
-    ::Timezone::Configure.lookup.stub(-10, 10, 'America/Los_Angeles')
+    ::Timezone.lookup(-10, 10).name
+    => 'America/Los_Angeles'
 
-    ::Timezone::Zone.new(lat: -10, lon: 10).zone #=> 'America/Los_Angeles'
-    ::Timezone::Zone.new(lat: -11, lon: 11) #=> raises ::Timezone::Error::Test
+    ::Timezone.lookup(-11, 11)
+    => Timezone::Error::Test: missing stub
 
 ## Build Status [![Build Status](https://secure.travis-ci.org/panthomakos/timezone.png?branch=master)](http://travis-ci.org/panthomakos/timezone)
 
