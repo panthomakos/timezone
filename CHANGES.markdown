@@ -1,6 +1,10 @@
 # master (unreleased)
 
 * Added nice `to_s` and `inspect` methods for `::Timezone::Zone`. (panthomakos)
+* Added deprecation warnings for `0.99` and `1.0` release. (panthomakos)
+* Upgraded existing objects for `0.99` and `1.0` release. (panthomakos)
+* Upgraded configuration for `0.99` and `1.0` release. (panthomakos)
+* Added new objects for `0.99` and `1.0` release. (panthomakos)
 
 # 0.6.0
 
