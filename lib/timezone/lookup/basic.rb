@@ -21,9 +21,9 @@ module Timezone
         @config = config
       end
 
-      # Returns an instance of the http client.
+      # Returns an instance of the request handler.
       #
-      # @return [#get] an instance of an http client
+      # @return [#get] an instance of a request handler
       def client
         # TODO: Remove http_client once on 1.0.0
         @client ||=
