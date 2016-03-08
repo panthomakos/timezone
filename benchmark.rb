@@ -4,7 +4,7 @@ require 'benchmark'
 require 'timezone'
 
 def load_tz(timezone)
-  Timezone::Zone.new(zone: timezone)
+  Timezone.fetch(timezone)
 end
 
 puts 'Loading timezones'
@@ -23,9 +23,9 @@ puts 'Calculating LOCAL'
 
 LOCAL_ITERATIONS = 10_000
 Benchmark.bm do |x|
-  timezone = Timezone::Zone.new(zone: 'America/Los_Angeles')
+  timezone = Timezone.fetch('America/Los_Angeles')
   x.report('la') { LOCAL_ITERATIONS.times { calc_local(timezone) } }
-  timezone = Timezone::Zone.new(zone: 'Asia/Hong_Kong')
+  timezone = Timezone.fetch('Asia/Hong_Kong')
   x.report('hk') { LOCAL_ITERATIONS.times { calc_local(timezone) } }
 end
 
@@ -37,8 +37,8 @@ puts 'Calculating UTC'
 
 UTC_ITERATIONS = 10_000
 Benchmark.bm do |x|
-  timezone = Timezone::Zone.new(zone: 'America/Los_Angeles')
+  timezone = Timezone.fetch('America/Los_Angeles')
   x.report('la') { UTC_ITERATIONS.times { calc_utc(timezone) } }
-  timezone = Timezone::Zone.new(zone: 'Asia/Hong_Kong')
+  timezone = Timezone.fetch('Asia/Hong_Kong')
   x.report('hk') { UTC_ITERATIONS.times { calc_utc(timezone) } }
 end
