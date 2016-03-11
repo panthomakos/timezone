@@ -5,8 +5,7 @@ class HTTPTestClient
 
   attr_accessor :body
 
-  # TODO: Modify once on 1.0.0
-  def initialize(_protocol, _url = nil)
+  def initialize(_config)
   end
 
   def get(_url)

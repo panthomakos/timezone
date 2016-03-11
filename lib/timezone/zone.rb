@@ -4,10 +4,7 @@ require 'time'
 
 require 'timezone/loader'
 require 'timezone/error'
-require 'timezone/configure'
-require 'timezone/active_support'
 require 'timezone/loader'
-require 'timezone/deprecate'
 
 module Timezone
   # This object represents a real-world timezone. Each instance provides
@@ -47,77 +44,7 @@ module Timezone
     # @param name [String] the timezone name
     # @return [Timezone::Zone]
     def initialize(name)
-      if name.is_a?(Hash)
-        legacy_initialize(name)
-      else
-        @name = name
-      end
-    end
-
-    # @deprecated This method will be replaced with `Zone#name` in
-    #   future versions of this gem.
-    def zone
-      Deprecate.call(
-        self.class,
-        :zone,
-        '[DEPRECATED] `Zone#zone` will not be available in ' \
-          'the next release of the `timezone` gem. Use `Zone#name` ' \
-          'instead.'.freeze
-      )
-
-      name
-    end
-
-    # @deprecated This method will be removed in the next release.
-    def rules
-      Deprecate.call(
-        self.class,
-        :rules,
-        '[DEPRECATED] `Zone#rules` will not be available in ' \
-          'the next release of the `timezone` gem.'.freeze
-      )
-
-      private_rules
-    end
-
-    # @deprecated This functionality only exists for migration purposes.
-    def legacy_initialize(options)
-      Deprecate.call(
-        self.class,
-        :initialize,
-        '[DEPRECATED] Creating Zone objects using an options hash ' \
-          'will be deprecated in the next release of the `timezone` ' \
-          'gem. Use `Timezone::[]`, `Timezone::fetch` or ' \
-          '`Timezone::lookup` instead.'.freeze
-      )
-
-      if options.key?(:lat) && options.key?(:lon)
-        options[:zone] = timezone_id options[:lat], options[:lon]
-      elsif options.key?(:latlon)
-        options[:zone] = timezone_id(*options[:latlon])
-      end
-
-      if options[:zone].nil?
-        raise Timezone::Error::NilZone,
-          'No zone was found. Please specify a zone.'.freeze
-      end
-
-      @name = options[:zone]
-      private_rules
-    end
-
-    # @deprecated This functionality will be removed in the next release.
-    def active_support_time_zone
-      Deprecate.call(
-        self.class,
-        :active_support_time_zone,
-        '[DEPRECATED] `Zone#active_support_time_zone` will be ' \
-          'deprecated in the next release of the `timezone` gem. There ' \
-          'will be no replacement.'.freeze
-      )
-
-      @active_support_time_zone ||=
-        Timezone::ActiveSupport.format(name, :internal)
+      @name = name
     end
 
     # Converts the given time to the local timezone and does not include
@@ -229,50 +156,6 @@ module Timezone
       utc_offset <=> other.utc_offset
     end
 
-    class << self
-      # @deprecated This method will be replaced with `Timezone.names`
-      #   in future versions of this gem.
-      def names
-        Deprecate.call(
-          self,
-          :names,
-          '[DEPRECATED] `::Timezone::Zone.names` will be removed in ' \
-            'the next gem release. Use `::Timezone.names` instead.'.freeze
-        )
-
-        Loader.names
-      end
-
-      # @deprecated This functionality will be removed in the next release.
-      def list(*args)
-        Deprecate.call(
-          self,
-          :list,
-          '[DEPRECATED] `Zone::list` will be deprecated in the ' \
-            'next release of the `timezone` gem. There will be no ' \
-            'replacement.'.freeze
-        )
-
-        args = nil if args.empty? # set to nil if no args are provided
-        zones = args || Configure.default_for_list || names
-        list = names.select { |name| zones.include? name }
-
-        @zones = []
-        now = Time.now
-        list.each do |name|
-          item = new(name)
-          @zones << {
-            zone: item.name,
-            title: Configure.replacements[item.name] || item.name,
-            offset: item.utc_offset,
-            utc_offset: (item.utc_offset / (60 * 60)),
-            dst: item.dst?(now)
-          }
-        end
-        @zones.sort_by! { |zone| zone[Configure.order_list_by] }
-      end
-    end
-
     private
 
     def private_rules
@@ -364,10 +247,6 @@ module Timezone
       else
         return binary_search(time, mid + 1, to, &block)
       end
-    end
-
-    def timezone_id(lat, lon)
-      Timezone::Configure.lookup.lookup(lat, lon)
     end
   end
 end

@@ -1,7 +1,9 @@
 require 'timezone/lookup/basic'
 require 'minitest/autorun'
 
-class BasicLookupTest < ::Minitest::Unit::TestCase
+class BasicLookupTest < ::Minitest::Test
+  parallelize_me!
+
   def config
     @config ||= Struct.new(:protocol, :url).new('http', 'example.com')
   end

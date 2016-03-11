@@ -12,7 +12,9 @@ end
 
 RuboCop::RakeTask.new
 
-task default: [:test, :rubocop]
+task(:utc) { ENV['TZ'] = 'UTC' }
+
+task default: [:utc, :test, :rubocop]
 
 task :parse do
   require 'timezone/parser'

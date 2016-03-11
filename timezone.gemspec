@@ -24,7 +24,7 @@ Gem::Specification.new do |s|
   s.rdoc_options = ['--charset=UTF-8']
   s.require_paths = ['lib']
 
-  s.add_development_dependency('rake', '~> 10.5')
+  s.add_development_dependency('rake')
   s.add_development_dependency('minitest', '~> 5.8')
   s.add_development_dependency('rubocop', '~> 0.37')
   s.add_development_dependency('timecop', '~> 0.8')

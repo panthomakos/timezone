@@ -25,13 +25,7 @@ module Timezone
       #
       # @return [#get] an instance of a request handler
       def client
-        # TODO: Remove http_client once on 1.0.0
-        @client ||=
-          if !config.request_handler.nil?
-            config.request_handler.new(config)
-          else
-            config.http_client.new(config.protocol, config.url)
-          end
+        @client ||= config.request_handler.new(config)
       end
 
       # Returns a timezone name for a given lat, long pair.

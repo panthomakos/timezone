@@ -15,16 +15,7 @@ module Timezone
   #     end
   #
   class NetHTTPClient
-    def initialize(protocol, url = nil)
-      # TODO: Remove once on 1.0.0 #initialize(config)
-      config = protocol
-
-      if url
-        config = OpenStruct.new
-        config.protocol = protocol
-        config.url = url
-      end
-
+    def initialize(config)
       uri = URI.parse("#{config.protocol}://#{config.url}")
       @http = Net::HTTP.new(uri.host, uri.port)
       @http.open_timeout = config.open_timeout || 5
