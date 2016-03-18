@@ -1,5 +1,7 @@
 # master (unreleased)
 
+* Updated with `tzdata-2016b-1`. (panthomakos)
+
 # 0.99.0
 
 * Added nice `to_s` and `inspect` methods for `::Timezone::Zone`. (panthomakos)
