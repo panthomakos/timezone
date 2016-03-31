@@ -20,7 +20,7 @@ module Timezone
 
       # @!visibility private
       def callback
-        @callback || -> (_, _, message) { warn(message) }
+        @callback || ->(_, _, message) { warn(message) }
       end
 
       # @!visibility private

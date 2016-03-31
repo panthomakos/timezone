@@ -1,6 +1,7 @@
 # master (unreleased)
 
 * Updated with `tzdata-2016c-1`. (panthomakos)
+* [#51](https://github.com/panthomakos/timezone/issues/51) Fixed syntax for Ruby 1.9.3. (panthomakos)
 
 # 0.99.1
 
