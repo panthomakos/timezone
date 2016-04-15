@@ -87,6 +87,10 @@ For more information on the `::Timezone::Zone` object, see the [RubyDocs](http:/
 
         Timezone::Lookup.config(:geonames) do |c|
           c.username = 'your_geonames_username_goes_here'
+
+          # Optional - sets a radius in km to find the timezone
+          #            for the closest point of land in the circle
+          c.radius = 10
         end
 
 ### Lookup Configuration with Google
