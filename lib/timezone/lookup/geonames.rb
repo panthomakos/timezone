@@ -14,7 +14,7 @@ module Timezone
 
         config.protocol ||= 'http'.freeze
         config.url ||= 'api.geonames.org'.freeze
-
+        config.radius ||= 0
         super
       end
 
@@ -40,6 +40,7 @@ module Timezone
         query = URI.encode_www_form(
           'lat' => lat,
           'lng' => long,
+          'radius' => config.radius,
           'username' => config.username)
         "/timezoneJSON?#{query}"
       end
