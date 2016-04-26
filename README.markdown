@@ -19,6 +19,8 @@ Use the [`timezone`](https://rubygems.org/gems/timezone) gem - available on Ruby
 
 Version `1.0.0` of `timezone` will be released in the coming months. The `0.99.*` releases are backwards-forwards-compatible preparatory releases for `1.0.0`. Once `1.0.0` has been released, previous major versions will no longer be updated to include new timezone data. Any method that will be removed in `1.0.0` has been deprecated and warnings are included when deprecated methods are used. There have been some configuration changes - deprecation warnings and upgrade instructions are provided for those as well.
 
+NOTE: once you have upgraded your configuration, deprecated methods will not longer work. For this reason it is recommended that you upgrade your method calls first or that you upgrade everything at once.
+
 Additionally, if you would like to provide your own deprecation logging, you can use `Timezone::Deprecate.callback`. For instance, to log to an external logger, you might use:
 
     Timezone::Deprecate.callback = lambda do |klass, method, message|
