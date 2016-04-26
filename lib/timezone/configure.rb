@@ -110,6 +110,8 @@ module Timezone
       def http_client; @config.http_client; end
 
       def request_handler; nil; end
+
+      def radius; @config.radius; end
     end
 
     private_constant :GeonamesConfigMapper
@@ -209,6 +211,18 @@ module Timezone
     #   of the `timezone gem. Use `Timezone::Lookup instead.
     def self.username=(username)
       @@username = username
+    end
+
+    # @deprecated `Timezone::Configure` will be removed in the release
+    #   of the `timezone gem. Use `Timezone::Lookup instead.
+    def self.radius
+      @@radius ||= 0
+    end
+
+    # @deprecated `Timezone::Configure` will be removed in the release
+    #   of the `timezone gem. Use `Timezone::Lookup instead.
+    def self.radius=(radius)
+      @@radius = radius
     end
 
     # @deprecated `Timezone::Configure` will be removed in the release
