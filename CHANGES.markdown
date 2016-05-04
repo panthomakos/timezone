@@ -2,6 +2,7 @@
 
 * Remove deprecated code. (panthomakos)
 * Updated with `tzdata-2016d-1`. (panthomakos)
+* Improve Geonames exception messaging. (panthomakos)
 
 # 0.99.2
 

@@ -21,15 +21,15 @@ module Timezone
       def lookup(lat, long)
         response = client.get(url(lat, long))
 
-        return unless response.code =~ /^2\d\d$/
+        return unless response.body
 
         data = JSON.parse(response.body)
 
-        if data['status'] && data['status']['value'] == 18
-          raise(Timezone::Error::GeoNames, 'api limit reached')
-        end
+        return data['timezoneId'] if data['timezoneId']
 
-        data['timezoneId']
+        return unless data['status']
+
+        raise(Timezone::Error::GeoNames, data['status']['message'])
       rescue => e
         raise(Timezone::Error::GeoNames, e.message)
       end

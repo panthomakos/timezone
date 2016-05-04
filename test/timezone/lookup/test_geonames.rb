@@ -35,13 +35,42 @@ class TestGeonames < ::Minitest::Test
     assert_equal 'Australia/Adelaide', mine.lookup(*coordinates)
   end
 
+  def assert_exception(lookup, message)
+    exception = false
+
+    begin
+      lookup.lookup(*coordinates)
+    rescue Timezone::Error::GeoNames => e
+      exception = true
+      assert_equal message, e.message
+    end
+
+    assert(exception)
+  end
+
   def test_api_limit
     mine = lookup
-    mine.client.body = File.open(mock_path + '/api_limit_reached.txt').read
+    mine.client.body = File.open(mock_path + '/api_limit_reached.json').read
 
-    assert_raises Timezone::Error::GeoNames, 'api limit reached' do
-      mine.lookup(*coordinates)
-    end
+    assert_exception(
+      mine,
+      'the daily limit of 30000 credits for XXXXX has been exceeded. ' \
+        'Please throttle your requests or use the commercial service.'
+    )
+  end
+
+  def test_invalid_latlong
+    mine = lookup
+    mine.client.body = File.open(mock_path + '/invalid_latlong.json').read
+
+    assert_exception(mine, 'invalid lat/lng')
+  end
+
+  def test_invalid_parameter
+    mine = lookup
+    mine.client.body = File.open(mock_path + '/invalid_parameter.json').read
+
+    assert_exception(mine, 'error parsing parameter')
   end
 
   private
