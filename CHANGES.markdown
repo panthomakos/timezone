@@ -1,6 +1,7 @@
 # master (unreleased)
 
 * Changed binary search method of zone for mathn compatibility. (cbillen)
+* Allowing a default stub (garyharan)
 
 # 1.0.0
 

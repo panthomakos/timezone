@@ -7,15 +7,20 @@ module Timezone
     class Test < ::Timezone::Lookup::Basic
       def initialize(_config)
         @stubs = {}
+        @default_stub = nil
       end
 
       def stub(lat, long, timezone)
         @stubs[key(lat, long)] = timezone
       end
 
+      def default(timezone)
+        @default_stub = timezone
+      end
+
       def lookup(lat, long)
         @stubs.fetch(key(lat, long)) do
-          raise ::Timezone::Error::Test, 'missing stub'
+          @default_stub || raise(::Timezone::Error::Test, 'missing stub')
         end
       end
 
