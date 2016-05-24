@@ -25,7 +25,8 @@ module Timezone
 
         data = JSON.parse(response.body)
 
-        return data['timezoneId'] if data['timezoneId']
+        timezone_id = get_timezone_id(data)
+        return timezone_id if timezone_id
 
         return unless data['status']
 
@@ -35,6 +36,16 @@ module Timezone
       end
 
       private
+
+      def get_timezone_id(data)
+        return data['timezoneId'] if data['timezoneId']
+
+        if config.offset_etc_zones && data['gmtOffset']
+          return unless data['gmtOffset'].is_a? Numeric
+          return 'Etc/UTC' if data['gmtOffset'] == 0
+          "Etc/GMT#{format('%+d', -data['gmtOffset'])}"
+        end
+      end
 
       def url(lat, long)
         query = URI.encode_www_form(

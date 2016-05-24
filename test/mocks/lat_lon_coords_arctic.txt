@@ -1,0 +1,1 @@
+{"rawOffset":3,"dstOffset":0,"gmtOffset":3,"lng":40,"lat":89}
