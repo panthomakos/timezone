@@ -24,7 +24,7 @@ class TestTest < ::Minitest::Test
 
   def test_default_stub
     mine = lookup
-    mine.default_stub('America/Toronto')
+    mine.default('America/Toronto')
 
     assert_equal 'America/Toronto', mine.lookup(-12, 12)
   end

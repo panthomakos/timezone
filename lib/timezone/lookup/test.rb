@@ -14,7 +14,7 @@ module Timezone
         @stubs[key(lat, long)] = timezone
       end
 
-      def default_stub(timezone)
+      def default(timezone)
         @default_stub = timezone
       end
 
