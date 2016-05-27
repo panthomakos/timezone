@@ -236,7 +236,7 @@ module Timezone
 
       return from if from == to
 
-      mid = ((from + to) / 2).to_i
+      mid = (from + to).div(2)
 
       if yield(time, private_rules[mid])
         return mid if mid == 0
