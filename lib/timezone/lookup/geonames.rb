@@ -40,7 +40,8 @@ module Timezone
         query = URI.encode_www_form(
           'lat' => lat,
           'lng' => long,
-          'username' => config.username)
+          'username' => config.username
+        )
         "/timezoneJSON?#{query}"
       end
     end

@@ -64,7 +64,8 @@ module Timezone
       def url(lat, long)
         query = URI.encode_www_form(
           'location' => "#{lat},#{long}",
-          'timestamp' => Time.now.to_i)
+          'timestamp' => Time.now.to_i
+        )
 
         authorize("/maps/api/timezone/json?#{query}")
       end
