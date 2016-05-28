@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.authors     = ['Pan Thomakos']
   s.email       = ['pan.thomakos@gmail.com']
-  s.homepage    = 'http://github.com/panthomakos/timezone'
+  s.homepage    = "http://github.com/panthomakos/timezone/tree/#{Timezone::VERSION}"
   s.summary     = "timezone-#{Timezone::VERSION}"
   s.license     = 'MIT'
   s.description = 'Accurate current and historical timezones for Ruby with ' \
