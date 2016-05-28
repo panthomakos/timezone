@@ -1,4 +1,4 @@
 module Timezone
   # The current gem version.
-  VERSION = '0.99.2'.freeze
+  VERSION = '1.0.0'.freeze
 end
