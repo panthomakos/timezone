@@ -1,7 +1,5 @@
 # master (unreleased)
 
-# 1.0.0
-
 * Remove deprecated code. (panthomakos)
 * Updated with `tzdata-2016d-1`. (panthomakos)
 * Improve Geonames exception messaging. (panthomakos)
