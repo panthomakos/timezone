@@ -3,22 +3,23 @@ $:.push File.expand_path('../lib', __FILE__)
 require 'timezone/version'
 
 Gem::Specification.new do |s|
-  s.name        = 'timezone'
-  s.version     = Timezone::VERSION
-  s.platform    = Gem::Platform::RUBY
-  s.authors     = ['Pan Thomakos']
-  s.email       = ['pan.thomakos@gmail.com']
-  s.homepage    = "http://github.com/panthomakos/timezone/tree/#{Timezone::VERSION}"
-  s.summary     = "timezone-#{Timezone::VERSION}"
-  s.license     = 'MIT'
+  s.name = 'timezone'
+  s.version = Timezone::VERSION
+  s.platform = Gem::Platform::RUBY
+  s.authors = ['Pan Thomakos']
+  s.email = ['pan.thomakos@gmail.com']
+  s.homepage =
+    "http://github.com/panthomakos/timezone/tree/#{Timezone::VERSION}"
+  s.summary = "timezone-#{Timezone::VERSION}"
+  s.license = 'MIT'
   s.description = 'Accurate current and historical timezones for Ruby with ' \
     'support for Geonames and Google latitude - longitude lookups.'
 
   s.rubyforge_project = 'timezone'
 
-  s.files         = `git ls-files`.split("\n")
-  s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
-  s.executables   = `git ls-files -- bin/*`
+  s.files = `git ls-files`.split("\n")
+  s.test_files = `git ls-files -- {test,spec,features}/*`.split("\n")
+  s.executables = `git ls-files -- bin/*`
     .split("\n").map { |f| File.basename(f) }
   s.extra_rdoc_files = ['README.markdown', 'License.txt']
   s.rdoc_options = ['--charset=UTF-8']
