@@ -7,6 +7,7 @@
 * Remove deprecated code. (panthomakos)
 * Updated with `tzdata-2016d-1`. (panthomakos)
 * Improve Geonames exception messaging. (panthomakos)
+* Allowing a default stub (garyharan)
 
 # 0.99.2
 
