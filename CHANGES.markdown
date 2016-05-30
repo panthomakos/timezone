@@ -1,13 +1,13 @@
 # master (unreleased)
 
 * Changed binary search method of zone for mathn compatibility. (cbillen)
+* Allowing a default stub (garyharan)
 
 # 1.0.0
 
 * Remove deprecated code. (panthomakos)
 * Updated with `tzdata-2016d-1`. (panthomakos)
 * Improve Geonames exception messaging. (panthomakos)
-* Allowing a default stub (garyharan)
 
 # 0.99.2
 
