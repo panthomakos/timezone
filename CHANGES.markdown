@@ -1,6 +1,6 @@
 # master (unreleased)
 
-* Changed binary search method of zone for mathn compatibility
+* Changed binary search method of zone for mathn compatibility. (cbillen)
 
 # 1.0.0
 
