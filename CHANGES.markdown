@@ -1,5 +1,7 @@
 # master (unreleased)
 
+* Changed binary search method of zone for mathn compatibility
+
 # 1.0.0
 
 * Remove deprecated code. (panthomakos)
