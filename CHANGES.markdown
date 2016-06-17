@@ -1,7 +1,8 @@
 # master (unreleased)
 
 * Changed binary search method of zone for mathn compatibility. (cbillen)
-* Allowing a default stub (garyharan)
+* Allowed a default test stub. (garyharan)
+* Updated with `tzdata-2016e-1`. (panthomakos)
 
 # 1.0.0
 
