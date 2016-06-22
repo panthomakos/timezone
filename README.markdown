@@ -103,6 +103,30 @@ After configuring the API of your choice, pass the lookup coordinates to `Timezo
     timezone.utc_to_local(Time.now)
     => 2011-02-12 12:02:13 UTC
 
+### Latitude - Longitude Lookups for [Etcetera](https://www.ietf.org/timezones/data/etcetera) areas
+
+By default both Geonames and Google do not provide results for lookups outside of continents and country borders. For example, if you try coordinates `[0, 0]` (somewhere in the Atlantic Ocean), you will get an exception.
+
+But there is a way to get lookups for the whole Earth surface working (with Geonames only). Just add the `offset_etc_areas` option to the lookup configuration:
+
+        Timezone::Lookup.config(:geonames) do |c|
+          c.username = 'your_geonames_username_goes_here'
+          c.offset_etc_zones = true
+        end
+
+Then try to lookup coordinates in Etc area:
+
+    timezone = Timezone.lookup(89, 40)
+    => #<Timezone::Zone name: "Etc/GMT-3">
+
+    timezone.name
+    => "Etc/GMT-3"
+
+    timezone.utc_offset
+    => 10800
+
+NOTE: `Etc/GMT` zones have POSIX-style signs in their names, with positive signs west of Greenwich. For example, "Etc/GMT-3" zone has a negative sign, but a positive UTC offset (10800 seconds or +3 hours) and its time is ahead of UTC (east of Greenwich) by 3 hours.
+
 ## Error States and Nil Objects
 
 All exceptions raised by the `timezone` gem are subclasses of `::Timezone::Error::Base`. `timezone` also provides a default `nil` timezone object that behaves like a `Timezone::Zone` except that it is invalid.

@@ -1,5 +1,6 @@
 # master (unreleased)
 
+* Added support for lookups of `Etc` areas with Geonames (tgrave)
 * Changed binary search method of zone for mathn compatibility. (cbillen)
 * Allowed a default test stub. (garyharan)
 * Updated with `tzdata-2016e-1`. (panthomakos)
