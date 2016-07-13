@@ -1,5 +1,7 @@
 # master (unreleased)
 
+* Updated with `tzdata-2016f-1`. (panthomakos)
+
 # 1.1.0
 
 * Added support for lookups of `Etc` areas with Geonames (tgrave)
