@@ -30,6 +30,11 @@ class TestZone < ::Minitest::Test
     assert_equal 'Europe/Paris', paris.name
   end
 
+  def test_abbr
+    assert_equal 'PDT', la.abbr(Time.new(2011, 6, 05))
+    assert_equal 'PST', la.abbr(Time.new(2011, 11, 20))
+  end
+
   def test_valid?
     assert la.valid?
     assert paris.valid?

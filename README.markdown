@@ -38,6 +38,9 @@ Simple querying of time, in any timezone, is accomplished by first retrieving a 
     timezone.time_with_offset(Time.utc(2010, 1, 1, 0, 0, 0))
     => 2009-12-31 16:00:00 -0800
 
+    timezone.abbr(Time.new(2016, 9, 4, 1, 0, 0))
+    => "PDT"
+
 NOTE: time is always returned in the UTC timezone when using the `utc_to_local` function, but it accurately reflects the actual time in the specified timezone. The reason for this is that this function also takes into account daylight savings time and historical changes in timezone, which can alter the offset. If you want a time with the appropriate offset at the given time, then use the `time_with_offset` function as shown above.
 
 You can use the timezone object to convert local times into the best UTC

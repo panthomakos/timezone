@@ -1,5 +1,7 @@
 # master (unreleased)
 
+* Added `::Timezone::Zone#abbr` method. (panthomakos)
+
 # 1.1.1
 
 * Updated with `tzdata-2016f-1`. (panthomakos)

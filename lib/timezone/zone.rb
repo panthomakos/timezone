@@ -123,6 +123,16 @@ module Timezone
       Time.new(utc.year, utc.month, utc.day, utc.hour, utc.min, utc.sec, offset)
     end
 
+    # The timezone abbreviation, at the given time.
+    #
+    # @param time [#to_time] the source time
+    # @return [String] the timezone abbreviation, at the given time
+    def abbr(time)
+      time = sanitize(time)
+
+      rule_for_utc(time)[NAME_BIT]
+    end
+
     # If, at the given time, the timezone was observing Daylight Savings.
     #
     # @param time [#to_time] the source time
