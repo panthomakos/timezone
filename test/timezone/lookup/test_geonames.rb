@@ -100,6 +100,13 @@ class TestGeonames < ::Minitest::Test
     assert_exception(mine, 'invalid lat/lng')
   end
 
+  def test_no_result_found
+    mine = lookup
+    mine.client.body = File.open(mock_path + '/no_result_found.json').read
+
+    assert_nil(mine.lookup(10, 10))
+  end
+
   def test_invalid_parameter
     mine = lookup
     mine.client.body = File.open(mock_path + '/invalid_parameter.json').read

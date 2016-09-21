@@ -7,6 +7,12 @@ module Timezone
   module Lookup
     # @!visibility private
     class Geonames < ::Timezone::Lookup::Basic
+      # Status code used by GeoNames to indicate that the lookup succeeded, but
+      # there is no timezone information for the given <lat, lng>. This can
+      # happen if the <lat, lng> resolves to a point in the middle of the ocean,
+      # for example.
+      NO_TIMEZONE_INFORMATION = 15
+
       def initialize(config)
         if config.username.nil?
           raise(::Timezone::Error::InvalidConfig, 'missing username'.freeze)
@@ -29,6 +35,8 @@ module Timezone
         return timezone_id if timezone_id
 
         return unless data['status']
+
+        return if NO_TIMEZONE_INFORMATION == data['status']['value']
 
         raise(Timezone::Error::GeoNames, data['status']['message'])
       rescue => e
