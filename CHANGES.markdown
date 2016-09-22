@@ -1,5 +1,7 @@
 # master (unreleased)
 
+# 1.2.0
+
 * Added `::Timezone::Zone#abbr` method. (panthomakos)
 * Handle GeoNames error code 15 - "no result found". (panthomakos)
 
