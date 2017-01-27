@@ -10,14 +10,12 @@ class TestGoogle < ::Minitest::Test
     [-34.92771808058, 138.477041423321]
   end
 
-  def config
+  def lookup(body = nil, &_block)
     config = OpenStruct.new
-    config.request_handler = HTTPTestClient
     config.api_key = 'MTIzYWJj'
-    config
-  end
+    config.request_handler = HTTPTestClientFactory.new(body)
+    yield config if block_given?
 
-  def lookup
     Timezone::Lookup::Google.new(config)
   end
 
@@ -33,15 +31,14 @@ class TestGoogle < ::Minitest::Test
   end
 
   def test_google_using_lat_long_coordinates
-    mine = lookup
-    mine.client.body = File.open(mock_path + '/google_lat_lon_coords.txt').read
+    mine = lookup(File.open(mock_path + '/google_lat_lon_coords.txt').read)
 
     assert_equal 'Australia/Adelaide', mine.lookup(*coordinates)
   end
 
   def test_google_request_denied_read_lat_long_coordinates
-    mine = lookup
-    mine.client.body = nil
+    mine = lookup(nil)
+
     assert_raises Timezone::Error::Google, 'The provided API key is invalid.' do
       mine.lookup(*coordinates)
     end
@@ -61,13 +58,10 @@ class TestGoogle < ::Minitest::Test
   end
 
   def test_url_enterprise
-    econfig = config
-    econfig.client_id = '123&asdf'
-
-    enterprise = Timezone::Lookup::Google.new(econfig)
+    mine = lookup { |c| c.client_id = '123&asdf' }
 
     Timecop.freeze(Time.at(1_433_347_661)) do
-      result = enterprise.send(:url, '123', '123')
+      result = mine.send(:url, '123', '123')
       params = {
         'location' => '123%2C123',
         'timestamp' => '1433347661',

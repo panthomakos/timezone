@@ -16,8 +16,7 @@ module Timezone
   #
   class NetHTTPClient
     def initialize(config)
-      uri = URI.parse("#{config.protocol}://#{config.url}")
-      @http = Net::HTTP.new(uri.host, uri.port)
+      @http = Net::HTTP.new(config.uri.host, config.uri.port)
       @http.open_timeout = config.open_timeout || 5
       @http.read_timeout = config.read_timeout || 5
       @http.use_ssl = (config.protocol == 'https'.freeze)

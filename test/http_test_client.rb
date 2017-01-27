@@ -12,3 +12,13 @@ class HTTPTestClient
     HTTPTestClient::Response.new(body)
   end
 end
+
+class HTTPTestClientFactory
+  def initialize(body)
+    @body = body
+  end
+
+  def new(config)
+    HTTPTestClient.new(config).tap { |c| c.body = @body }
+  end
+end

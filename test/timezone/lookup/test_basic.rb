@@ -1,11 +1,12 @@
 require 'timezone/lookup/basic'
 require 'minitest/autorun'
+require 'ostruct'
 
 class BasicLookupTest < ::Minitest::Test
   parallelize_me!
 
   def config
-    @config ||= Struct.new(:protocol, :url).new('http', 'example.com')
+    @config ||= OpenStruct.new(protocol: 'http', url: 'example.com')
   end
 
   def lookup

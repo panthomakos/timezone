@@ -17,10 +17,10 @@ class TestGeonames < ::Minitest::Test
     }
   end
 
-  def lookup(&_block)
+  def lookup(body = nil, &_block)
     config = OpenStruct.new
     config.username = 'timezone'
-    config.request_handler = HTTPTestClient
+    config.request_handler = HTTPTestClientFactory.new(body)
     yield config if block_given?
 
     Timezone::Lookup::Geonames.new(config)
@@ -38,28 +38,23 @@ class TestGeonames < ::Minitest::Test
   end
 
   def test_lookup
-    mine = lookup
-    mine.client.body = File.open(mock_path + '/lat_lon_coords.txt').read
+    mine = lookup(File.open(mock_path + '/lat_lon_coords.txt').read)
 
     assert_equal 'Australia/Adelaide', mine.lookup(*coordinates)
   end
 
   def test_lookup_with_etc
     etc_data.each do |key, data|
-      mine = lookup { |c| c.offset_etc_zones = true }
-      mine.client.body = File.open(
-        mock_path + "/lat_lon_coords_#{key}.txt"
-      ).read
+      body = File.open(mock_path + "/lat_lon_coords_#{key}.txt").read
+      mine = lookup(body) { |c| c.offset_etc_zones = true }
 
       assert_equal data[:name], mine.lookup(*data[:coordinates])
     end
   end
 
   def test_wrong_offset
-    mine = lookup { |c| c.offset_etc_zones = true }
-    mine.client.body = File.open(
-      mock_path + '/lat_lon_coords_wrong_offset.txt'
-    ).read
+    body = File.open(mock_path + '/lat_lon_coords_wrong_offset.txt').read
+    mine = lookup(body) { |c| c.offset_etc_zones = true }
 
     assert_nil mine.lookup(*coordinates)
   end
@@ -83,8 +78,7 @@ class TestGeonames < ::Minitest::Test
   end
 
   def test_api_limit
-    mine = lookup
-    mine.client.body = File.open(mock_path + '/api_limit_reached.json').read
+    mine = lookup(File.open(mock_path + '/api_limit_reached.json').read)
 
     assert_exception(
       mine,
@@ -94,22 +88,19 @@ class TestGeonames < ::Minitest::Test
   end
 
   def test_invalid_latlong
-    mine = lookup
-    mine.client.body = File.open(mock_path + '/invalid_latlong.json').read
+    mine = lookup(File.open(mock_path + '/invalid_latlong.json').read)
 
     assert_exception(mine, 'invalid lat/lng')
   end
 
   def test_no_result_found
-    mine = lookup
-    mine.client.body = File.open(mock_path + '/no_result_found.json').read
+    mine = lookup(File.open(mock_path + '/no_result_found.json').read)
 
     assert_nil(mine.lookup(10, 10))
   end
 
   def test_invalid_parameter
-    mine = lookup
-    mine.client.body = File.open(mock_path + '/invalid_parameter.json').read
+    mine = lookup(File.open(mock_path + '/invalid_parameter.json').read)
 
     assert_exception(mine, 'error parsing parameter')
   end

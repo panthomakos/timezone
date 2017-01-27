@@ -18,6 +18,8 @@ module Timezone
           raise(::Timezone::Error::InvalidConfig, 'missing url')
         end
 
+        config.uri ||= URI.parse("#{config.protocol}://#{config.url}")
+
         @config = config
       end
 
@@ -25,7 +27,7 @@ module Timezone
       #
       # @return [#get] an instance of a request handler
       def client
-        @client ||= config.request_handler.new(config)
+        config.request_handler.new(config)
       end
 
       # Returns a timezone name for a given lat, long pair.
