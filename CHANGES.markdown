@@ -1,5 +1,7 @@
 # master (unreleased)
 
+* Fix [#71](https://github.com/panthomakos/timezone/issues/71): make lookups thread-safe. (panthomakos)
+
 # 1.2.4
 
 * Updated with `tzdata-2016j-1`. (panthomakos)
