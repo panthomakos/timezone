@@ -62,7 +62,7 @@ class TestZone < ::Minitest::Test
     assert la < paris
     assert la == zone('America/Los_Angeles')
 
-    assert_equal nil, paris <=> 8
+    assert_nil paris <=> 8
   end
 
   def test_est5edt_dst_now

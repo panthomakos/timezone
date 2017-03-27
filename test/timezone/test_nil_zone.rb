@@ -9,7 +9,7 @@ class TestNilZone < ::Minitest::Test
   end
 
   def test_name
-    assert_equal nil, @zone.name
+    assert_nil @zone.name
   end
 
   def test_to_s
