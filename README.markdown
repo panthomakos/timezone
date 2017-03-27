@@ -13,7 +13,7 @@ Accurate current and history timezones for Ruby.
 
 Use the [`timezone`](https://rubygems.org/gems/timezone) gem - available on RubyGems. Semantic versioning is used, so if you would like to remain up-to-date and avoid any backwards-incompatible changes, use the following in your `Gemfile`:
 
-    gem 'timezone', '~> 1.0'
+    gem 'timezone', '~> 0.99.2'
 
 ## RubyDocs
 
