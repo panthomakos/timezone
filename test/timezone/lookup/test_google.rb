@@ -73,6 +73,12 @@ class TestGoogle < ::Minitest::Test
     end
   end
 
+  def test_no_result_found
+    mine = lookup(File.open(mock_path + '/google_no_result_found.json').read)
+
+    assert_nil(mine.lookup(26.188703, -78.987053))
+  end
+
   private
 
   def mock_path
