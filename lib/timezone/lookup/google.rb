@@ -10,6 +10,10 @@ module Timezone
   module Lookup
     # @!visibility private
     class Google < ::Timezone::Lookup::Basic
+      # Indicates that no time zone data could be found for the specified
+      # <lat, lng>. This can occur if the query is incomplete or ambiguous.
+      NO_TIMEZONE_INFORMATION = 'ZERO_RESULTS'.freeze
+
       def initialize(config)
         if config.api_key.nil?
           raise(::Timezone::Error::InvalidConfig, 'missing api key'.freeze)
@@ -30,6 +34,8 @@ module Timezone
 
         return unless response.code =~ /^2\d\d$/
         data = JSON.parse(response.body)
+
+        return if data['status'.freeze] == NO_TIMEZONE_INFORMATION
 
         if data['status'.freeze] != 'OK'.freeze
           raise(Timezone::Error::Google, data['errorMessage'])
