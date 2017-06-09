@@ -1,5 +1,7 @@
 # master (unreleased)
 
+* Handle `ZERO_RESULTS` response from Google API. (zhublik)
+
 # 1.2.7
 
 * Updated with `tzdata-2017b-1`. (panthomakos)
