@@ -170,6 +170,21 @@ Latitude - longitude lookups can raise `::Timezone::Error::Lookup` exceptions wh
     Timezone.lookup(10, 100000){ |name| "#{name} is invalid" }
     => " is invalid"
 
+## Using Geonames and Google Lookups
+
+`timezone` can be configured to use both Google and Geonames lookups. For instance, you may choose to fallback to Google if a Geonames lookup fails. The return value from a `::Timezone::Lookup.config` call can be stored and re-used to trigger lookups for the configured service. For instance:
+
+    GEONAMES_LOOKUP = Timezone::Lookup.config(:geonames) { |c| c.username = ... }
+    GOOGLE_LOOKUP = Timezone::Lookup.config(:google) { |c| c.api_key = ... }
+
+    lat, lon = 89, 40
+
+    begin
+      GEONAMES_LOOKUP.lookup(lat, lon)
+    rescue ::Timezone::Error::Lookup
+      GOOGLE_LOOKUP.lookup(lat, lon)
+    end
+
 ## Listing Timezones
 
 Retrieving the complete list of timezones can be accomplished using the `::Timezone::names` function. NOTE: the list is not ordered.
