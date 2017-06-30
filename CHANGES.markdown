@@ -1,5 +1,7 @@
 # master (unreleased)
 
+# 1.2.8
+
 * Handle `ZERO_RESULTS` response from Google API. (zhublik)
 
 # 1.2.7
