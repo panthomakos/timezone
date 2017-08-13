@@ -1,5 +1,7 @@
 # master (unreleased)
 
+* Fix fractional seconds for `time_with_zone` method. (Aupajo)
+
 # 1.2.8
 
 * Handle `ZERO_RESULTS` response from Google API. (zhublik)
