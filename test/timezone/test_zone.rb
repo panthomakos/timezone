@@ -165,6 +165,16 @@ class TestZone < ::Minitest::Test
     )
   end
 
+  def test_time_with_offset_and_fractional_seconds
+    utc = Time.utc(2011, 1, 4, 3, 51, 29.123)
+    time_with_offset = zone('Asia/Kathmandu').time_with_offset(utc)
+    assert_equal 123_000, time_with_offset.usec
+
+    utc = Time.utc(2011, 1, 4, 3, 51, 29, 123_456)
+    time_with_offset = zone('Asia/Kathmandu').time_with_offset(utc)
+    assert_equal 123_456, time_with_offset.usec
+  end
+
   def test_australian_timezone_with_dst
     utc = Time.utc(2010, 12, 23, 19, 37, 15)
     local = Time.utc(2010, 12, 24, 6, 7, 15)

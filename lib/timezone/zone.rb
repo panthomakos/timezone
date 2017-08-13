@@ -120,7 +120,16 @@ module Timezone
 
       utc = utc_to_local(time)
       offset = utc_offset(time)
-      Time.new(utc.year, utc.month, utc.day, utc.hour, utc.min, utc.sec, offset)
+
+      Time.new(
+        utc.year,
+        utc.month,
+        utc.day,
+        utc.hour,
+        utc.min,
+        utc.sec + utc.subsec,
+        offset
+      )
     end
 
     # The timezone abbreviation, at the given time.
