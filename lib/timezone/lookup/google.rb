@@ -14,7 +14,7 @@ module Timezone
     class Google < ::Timezone::Lookup::Basic
       # Indicates that no time zone data could be found for the specified
       # <lat, lng>. This can occur if the query is incomplete or ambiguous.
-      NO_TIMEZONE_INFORMATION = 'ZERO_RESULTS'
+      NO_TIMEZONE_INFORMATION = 'ZERO_RESULTS'.freeze
 
       def initialize(config)
         if config.api_key.nil?
