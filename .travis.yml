@@ -3,7 +3,7 @@ branches:
   only:
     - master
 script:
-  - rake
+  - bundle exec rake
 rvm:
   - 2.0.0-p648
   - 2.1.9
