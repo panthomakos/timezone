@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Timezone
   # This class provides a way to set a custom hook for deprecations.
   module Deprecate

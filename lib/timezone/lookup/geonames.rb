@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'timezone/lookup/basic'
 require 'timezone/error'
 require 'json'
@@ -15,11 +17,11 @@ module Timezone
 
       def initialize(config)
         if config.username.nil?
-          raise(::Timezone::Error::InvalidConfig, 'missing username'.freeze)
+          raise(::Timezone::Error::InvalidConfig, 'missing username')
         end
 
-        config.protocol ||= 'http'.freeze
-        config.url ||= 'api.geonames.org'.freeze
+        config.protocol ||= 'http'
+        config.url ||= 'api.geonames.org'
 
         super
       end
@@ -48,11 +50,12 @@ module Timezone
       def get_timezone_id(data)
         return data['timezoneId'] if data['timezoneId']
 
-        if config.offset_etc_zones && data['gmtOffset']
-          return unless data['gmtOffset'].is_a? Numeric
-          return 'Etc/UTC' if data['gmtOffset'] == 0
-          "Etc/GMT#{format('%+d', -data['gmtOffset'])}"
-        end
+        return unless config.offset_etc_zones
+        return unless data['gmtOffset']
+        return unless data['gmtOffset'].is_a? Numeric
+
+        return 'Etc/UTC' if data['gmtOffset'].zero?
+        "Etc/GMT#{format('%+d', -data['gmtOffset'])}"
       end
 
       def url(lat, long)

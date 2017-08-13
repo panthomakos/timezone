@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'json'
 require 'date'
 require 'time'
@@ -257,15 +259,15 @@ module Timezone
 
       mid = (from + to).div(2)
 
-      if yield(time, private_rules[mid])
-        return mid if mid == 0
-
-        return mid unless yield(time, private_rules[mid - 1])
-
-        binary_search(time, from, mid - 1, &block)
-      else
+      unless yield(time, private_rules[mid])
         return binary_search(time, mid + 1, to, &block)
       end
+
+      return mid if mid.zero?
+
+      return mid unless yield(time, private_rules[mid - 1])
+
+      binary_search(time, from, mid - 1, &block)
     end
   end
 end

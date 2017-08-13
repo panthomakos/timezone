@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'timezone'
 
 # Simple script to validate that lookups are threadsafe.

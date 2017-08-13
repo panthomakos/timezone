@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'timezone/lookup/basic'
 require 'minitest/autorun'
 require 'ostruct'

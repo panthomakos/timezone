@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Timezone
   # Error messages that can be raised by this gem. To catch any
   # related error message, use Error::Base.

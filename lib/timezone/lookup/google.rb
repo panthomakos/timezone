@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'timezone/lookup/basic'
 require 'timezone/error'
 require 'json'
@@ -12,15 +14,15 @@ module Timezone
     class Google < ::Timezone::Lookup::Basic
       # Indicates that no time zone data could be found for the specified
       # <lat, lng>. This can occur if the query is incomplete or ambiguous.
-      NO_TIMEZONE_INFORMATION = 'ZERO_RESULTS'.freeze
+      NO_TIMEZONE_INFORMATION = 'ZERO_RESULTS'
 
       def initialize(config)
         if config.api_key.nil?
-          raise(::Timezone::Error::InvalidConfig, 'missing api key'.freeze)
+          raise(::Timezone::Error::InvalidConfig, 'missing api key')
         end
 
-        config.protocol ||= 'https'.freeze
-        config.url ||= 'maps.googleapis.com'.freeze
+        config.protocol ||= 'https'
+        config.url ||= 'maps.googleapis.com'
 
         super
       end
@@ -28,20 +30,20 @@ module Timezone
       def lookup(lat, long)
         response = client.get(url(lat, long))
 
-        if response.code == '403'.freeze
-          raise(Timezone::Error::Google, '403 Forbidden'.freeze)
+        if response.code == '403'
+          raise(Timezone::Error::Google, '403 Forbidden')
         end
 
         return unless response.code =~ /^2\d\d$/
         data = JSON.parse(response.body)
 
-        return if data['status'.freeze] == NO_TIMEZONE_INFORMATION
+        return if data['status'] == NO_TIMEZONE_INFORMATION
 
-        if data['status'.freeze] != 'OK'.freeze
+        if data['status'] != 'OK'
           raise(Timezone::Error::Google, data['errorMessage'])
         end
 
-        data['timeZoneId'.freeze]
+        data['timeZoneId']
       rescue => e
         raise(Timezone::Error::Google, e.message)
       end

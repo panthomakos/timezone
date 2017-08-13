@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'timezone/nil_zone'
 require 'minitest/autorun'
 

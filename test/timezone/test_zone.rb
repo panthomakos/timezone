@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'timecop'
 require 'timezone/zone'
 require 'minitest/autorun'
@@ -31,7 +33,7 @@ class TestZone < ::Minitest::Test
   end
 
   def test_abbr
-    assert_equal 'PDT', la.abbr(Time.new(2011, 6, 05))
+    assert_equal 'PDT', la.abbr(Time.new(2011, 6, 5))
     assert_equal 'PST', la.abbr(Time.new(2011, 11, 20))
   end
 
@@ -75,20 +77,20 @@ class TestZone < ::Minitest::Test
   end
 
   def test_utc_offsets
-    assert_equal(36_000, utc_offset('Australia/Sydney', 2011, 06, 05))
-    assert_equal(-25_200, utc_offset('America/Los_Angeles', 2011, 06, 05))
-    assert_equal(20_700, utc_offset('Asia/Kathmandu', 2011, 06, 05))
-    assert_equal(-18_000, utc_offset('America/New_York', 2011, 01, 11))
-    assert_equal(-14_400, utc_offset('America/New_York', 2011, 06, 11))
+    assert_equal(36_000, utc_offset('Australia/Sydney', 2011, 6, 5))
+    assert_equal(-25_200, utc_offset('America/Los_Angeles', 2011, 6, 5))
+    assert_equal(20_700, utc_offset('Asia/Kathmandu', 2011, 6, 5))
+    assert_equal(-18_000, utc_offset('America/New_York', 2011, 1, 11))
+    assert_equal(-14_400, utc_offset('America/New_York', 2011, 6, 11))
   end
 
   def test_dst
-    refute dst?('Australia/Sydney', 2011, 06, 05)
-    assert dst?('America/Los_Angeles', 2011, 06, 05)
-    refute dst?('Asia/Kathmandu', 2011, 06, 05)
+    refute dst?('Australia/Sydney', 2011, 6, 5)
+    assert dst?('America/Los_Angeles', 2011, 6, 5)
+    refute dst?('Asia/Kathmandu', 2011, 6, 5)
 
-    refute dst?('America/New_York', 2011, 01, 11)
-    assert dst?('America/New_York', 2011, 06, 11)
+    refute dst?('America/New_York', 2011, 1, 11)
+    assert dst?('America/New_York', 2011, 6, 11)
   end
 
   def test_gmt_timezone
@@ -150,15 +152,15 @@ class TestZone < ::Minitest::Test
     local = Time.new(2011, 1, 4, 9, 36, 29, 20_700)
     assert_equal local.to_s, zone('Asia/Kathmandu').time_with_offset(utc).to_s
 
-    utc = Time.utc(2014, 12, 15, 22, 00, 00)
-    local = Time.new(2014, 12, 15, 14, 00, 00, '-08:00')
+    utc = Time.utc(2014, 12, 15, 22, 0, 0)
+    local = Time.new(2014, 12, 15, 14, 0, 0, '-08:00')
     assert_equal(
       local.to_s,
       zone('America/Los_Angeles').time_with_offset(utc).to_s
     )
 
-    utc = Time.utc(2014, 4, 5, 22, 00, 00)
-    local = Time.new(2014, 4, 5, 15, 00, 00, '-07:00')
+    utc = Time.utc(2014, 4, 5, 22, 0, 0)
+    local = Time.new(2014, 4, 5, 15, 0, 0, '-07:00')
     assert_equal(
       local.to_s,
       zone('America/Los_Angeles').time_with_offset(utc).to_s
@@ -228,12 +230,12 @@ class TestZone < ::Minitest::Test
     assert_equal timezone.utc_offset(utc), 10_800
   end
 
-  EQUIVALENCE_METHODS = [
-    :time,
-    :local_to_utc,
-    :time_with_offset,
-    :dst?,
-    :utc_offset
+  EQUIVALENCE_METHODS = %i[
+    time
+    local_to_utc
+    time_with_offset
+    dst?
+    utc_offset
   ].freeze
 
   def check_equivalence(name, time, other)

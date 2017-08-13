@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'timezone/zone'
 require 'timezone/nil_zone'
 require 'timezone/lookup'
@@ -41,7 +43,7 @@ module Timezone
     return ::Timezone::Zone.new(name) if Loader.valid?(name)
 
     if block_given? && default != :__block
-      warn('warning: block supersedes default value argument'.freeze)
+      warn('warning: block supersedes default value argument')
     end
 
     return block.call(name) if block_given?

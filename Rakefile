@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'bundler/setup'
 Bundler::GemHelper.install_tasks
 
@@ -14,7 +16,7 @@ RuboCop::RakeTask.new
 
 task(:utc) { ENV['TZ'] = 'UTC' }
 
-task default: [:utc, :test, :rubocop]
+task default: %i[utc test rubocop]
 
 task :parse do
   require 'timezone/parser'

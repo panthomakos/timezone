@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'timezone/lookup/geonames'
 require 'minitest/autorun'
 require_relative '../../http_test_client'

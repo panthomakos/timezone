@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class HTTPTestClient
   Response = Struct.new(:body) do
     def code; '200'; end
@@ -5,8 +7,7 @@ class HTTPTestClient
 
   attr_accessor :body
 
-  def initialize(_config)
-  end
+  def initialize(_config); end
 
   def get(_url)
     HTTPTestClient::Response.new(body)

@@ -1,3 +1,25 @@
+Layout/AlignParameters:
+  EnforcedStyle: with_fixed_indentation
+
+Layout/EmptyLineBetweenDefs:
+  Enabled: true
+
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+
+Layout/SpaceAfterComma:
+  Enabled: true
+
+Layout/SpaceAroundEqualsInParameterDefault:
+  Enabled: true
+
+Layout/SpaceAroundOperators:
+  Enabled: true
+
+Layout/SpaceBeforeSemicolon:
+  Enabled: true
+
+
 Lint/DuplicateMethods:
   Enabled: true
 
@@ -29,22 +51,13 @@ Performance/RedundantBlockCall:
   Enabled: true
 
 
-Style/AlignParameters:
-  EnforcedStyle: with_fixed_indentation
-
 Style/ClassVars:
-  Enabled: true
-
-Style/DeprecatedHashMethods:
   Enabled: true
 
 Style/Documentation:
   Enabled: true
 
 Style/DoubleNegation:
-  Enabled: true
-
-Style/EmptyLineBetweenDefs:
   Enabled: true
 
 Style/EmptyLiteral:
@@ -59,13 +72,13 @@ Style/HashSyntax:
 Style/MethodName:
   Enabled: true
 
-Style/MultilineMethodCallIndentation:
-  EnforcedStyle: indented
-
 Style/NumericLiterals:
   MinDigits: 5
 
 Style/OpMethod:
+  Enabled: true
+
+Style/PreferredHashMethods:
   Enabled: true
 
 Style/RedundantReturn:
@@ -76,18 +89,6 @@ Style/RedundantSelf:
 
 Style/SingleLineMethods:
   Enabled: false
-
-Style/SpaceAfterComma:
-  Enabled: true
-
-Style/SpaceAroundEqualsInParameterDefault:
-  Enabled: true
-
-Style/SpaceAroundOperators:
-  Enabled: true
-
-Style/SpaceBeforeSemicolon:
-  Enabled: true
 
 Style/SpecialGlobalVars:
   EnforcedStyle: use_perl_names

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'uri'
 require 'net/http'
 
@@ -19,7 +21,7 @@ module Timezone
       @http = Net::HTTP.new(config.uri.host, config.uri.port)
       @http.open_timeout = config.open_timeout || 5
       @http.read_timeout = config.read_timeout || 5
-      @http.use_ssl = (config.protocol == 'https'.freeze)
+      @http.use_ssl = (config.protocol == 'https')
     end
 
     def get(url)

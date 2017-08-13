@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'time'
 
 module Timezone
@@ -6,7 +8,7 @@ module Timezone
   class Parser
     LINE = /\s*(.+)\s*=\s*(.+)\s*isdst=(\d+)\s*gmtoff=([\+\-]*\d+)/
 
-    ZONEINFO_DIR = '/usr/share/zoneinfo'.freeze
+    ZONEINFO_DIR = '/usr/share/zoneinfo'
 
     attr_reader :zoneinfo
 
@@ -25,7 +27,7 @@ module Timezone
     class Line
       attr_accessor :source, :name, :dst, :offset
 
-      SOURCE_FORMAT = '%a %b %e %H:%M:%S %Y %Z'.freeze
+      SOURCE_FORMAT = '%a %b %e %H:%M:%S %Y %Z'
 
       def initialize(match)
         self.source = Time.strptime(match[1] + 'C', SOURCE_FORMAT).to_i

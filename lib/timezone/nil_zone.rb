@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Timezone
   # A "nil" timezone object - representative of a missing timezone.
   class NilZone
@@ -12,14 +14,14 @@ module Timezone
     #
     # @return [String]
     def to_s
-      'NilZone'.freeze
+      'NilZone'
     end
 
     # A stubbed timezone debug string.
     #
     # @return [String]
     def inspect
-      '#<Timezone::NilZone>'.freeze
+      '#<Timezone::NilZone>'
     end
 
     # If this is a valid timezone.

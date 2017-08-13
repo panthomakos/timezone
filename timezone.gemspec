@@ -1,4 +1,6 @@
+# frozen_string_literal: true
 # -*- encoding: utf-8 -*-
+
 $:.push File.expand_path('../lib', __FILE__)
 require 'timezone/version'
 
@@ -27,6 +29,6 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency('rake')
   s.add_development_dependency('minitest', '~> 5.8')
-  s.add_development_dependency('rubocop', '= 0.40')
+  s.add_development_dependency('rubocop', '= 0.49.1')
   s.add_development_dependency('timecop', '~> 0.8')
 end
