@@ -241,6 +241,11 @@ You can provide your own lookup stubs using the built in `::Timezone::Lookup::Te
 
     ::Timezone.lookup(-11, 11)
     => Timezone::Error::Test: missing stub
+    
+You can also provide a fallback lookup, which will be returned if you query an un-stubbed lookup value.
+
+    ::Timezone::Lookup.lookup.default('America/Los_Angeles')
+    => "America/Los_Angeles"
 
 ## Build Status [![Build Status](https://secure.travis-ci.org/panthomakos/timezone.png?branch=master)](http://travis-ci.org/panthomakos/timezone)
 
