@@ -1,6 +1,7 @@
 # master (unreleased)
 
 * Fix fractional seconds for `time_with_zone` method. (Aupajo)
+* Update with `tzdata-2017c-1`. (panthomakos)
 
 # 1.2.8
 
