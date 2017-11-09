@@ -44,7 +44,7 @@ module Timezone
         end
 
         data['timeZoneId']
-      rescue => e
+      rescue StandardError => e
         raise(Timezone::Error::Google, e.message)
       end
 

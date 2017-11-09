@@ -34,39 +34,39 @@ module Timezone
         yield(options.config) if block_given?
         @lookup = options.make_lookup
       end
+    end
 
-      # Responsible for collecting options in the DSL and creating
-      # lookup objects using those options.
-      class OptionSetter
-        LOOKUPS = {
-          geonames: ::Timezone::Lookup::Geonames,
-          google: ::Timezone::Lookup::Google,
-          test: ::Timezone::Lookup::Test
-        }.freeze
+    # Responsible for collecting options in the DSL and creating
+    # lookup objects using those options.
+    class OptionSetter
+      LOOKUPS = {
+        geonames: ::Timezone::Lookup::Geonames,
+        google: ::Timezone::Lookup::Google,
+        test: ::Timezone::Lookup::Test
+      }.freeze
 
-        INVALID_LOOKUP = 'Invalid lookup specified'.freeze
+      INVALID_LOOKUP = 'Invalid lookup specified'.freeze
 
-        attr_reader :config
+      attr_reader :config
 
-        def initialize(lookup)
-          if lookup.is_a?(Symbol)
-            lookup = LOOKUPS.fetch(lookup) do
-              raise ::Timezone::Error::InvalidConfig, INVALID_LOOKUP
-            end
+      def initialize(lookup)
+        if lookup.is_a?(Symbol)
+          lookup = LOOKUPS.fetch(lookup) do
+            raise ::Timezone::Error::InvalidConfig, INVALID_LOOKUP
           end
-
-          @lookup = lookup
-
-          @config = OpenStruct.new
         end
 
-        def make_lookup
-          config.request_handler ||= ::Timezone::NetHTTPClient
-          @lookup.new(config)
-        end
+        @lookup = lookup
+
+        @config = OpenStruct.new
       end
 
-      private_constant :OptionSetter
+      def make_lookup
+        config.request_handler ||= ::Timezone::NetHTTPClient
+        @lookup.new(config)
+      end
     end
+
+    private_constant :OptionSetter
   end
 end
