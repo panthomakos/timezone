@@ -1,0 +1,7 @@
+{
+   "dstOffset": 0,
+   "rawOffset": 10800,
+   "status": "OK",
+   "timeZoneId": "Africa/Khartoum",
+   "timeZoneName": "East Africa Time"
+}
