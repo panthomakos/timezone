@@ -134,6 +134,17 @@ module Timezone
       )
     end
 
+    # Parse the given local time as String to Time object with correct offset
+    # @param time_string [String] the source time as String
+    # @return [Time] the time in the local timezone with the UTC offset
+    def parse_local(time_string)
+      time = sanitize Time.parse(time_string)
+      Time.new(
+        time.year, time.month, time.day, time.hour, time.min, time.sec,
+        utc_offset(time)
+      )
+    end
+
     # The timezone abbreviation, at the given time.
     #
     # @param time [#to_time] the source time

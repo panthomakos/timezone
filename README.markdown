@@ -38,6 +38,9 @@ Simple querying of time, in any timezone, is accomplished by first retrieving a 
     timezone.time_with_offset(Time.utc(2010, 1, 1, 0, 0, 0))
     => 2009-12-31 16:00:00 -0800
 
+    timezone.parse_local('2016-09-04 01:00')
+    => 2016-09-04 01:00:00 -0700
+
     timezone.abbr(Time.new(2016, 9, 4, 1, 0, 0))
     => "PDT"
 
