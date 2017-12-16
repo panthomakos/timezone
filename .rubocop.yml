@@ -1,5 +1,5 @@
 AllCops:
-  TargetRubyVersion: 2.0
+  TargetRubyVersion: 2.2
 
 Layout/AlignParameters:
   EnforcedStyle: with_fixed_indentation
@@ -54,6 +54,13 @@ Performance/RedundantBlockCall:
   Enabled: true
 
 
+Naming/MethodName:
+  Enabled: true
+
+Naming/BinaryOperatorParameterName:
+  Enabled: true
+
+
 Style/ClassVars:
   Enabled: true
 
@@ -72,14 +79,8 @@ Style/GuardClause:
 Style/HashSyntax:
   Enabled: true
 
-Style/MethodName:
-  Enabled: true
-
 Style/NumericLiterals:
   MinDigits: 5
-
-Style/OpMethod:
-  Enabled: true
 
 Style/PreferredHashMethods:
   Enabled: true
@@ -104,3 +105,6 @@ Style/TrivialAccessors:
 
 Style/UnneededPercentQ:
   Enabled: true
+
+Style/DateTime:
+  Enabled: false
