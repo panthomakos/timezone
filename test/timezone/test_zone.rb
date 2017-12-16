@@ -167,6 +167,26 @@ class TestZone < ::Minitest::Test
     )
   end
 
+  def test_parse_local
+    local = Time.new(2011, 1, 4, 9, 36, 29, 20_700)
+    assert_equal(
+      local.to_s,
+      zone('Asia/Kathmandu').parse_local('2011-01-04 09:36:29').to_s
+    )
+
+    local = Time.new(2014, 12, 15, 14, 0, 0, '-08:00')
+    assert_equal(
+      local.to_s,
+      zone('America/Los_Angeles').parse_local('2014-12-15 14:00').to_s
+    )
+
+    local = Time.new(2014, 4, 5, 15, 0, 0, '-07:00')
+    assert_equal(
+      local.to_s,
+      zone('America/Los_Angeles').parse_local('2014-04-05 15:00').to_s
+    )
+  end
+
   def test_time_with_offset_and_fractional_seconds
     utc = Time.utc(2011, 1, 4, 3, 51, 29.123)
     time_with_offset = zone('Asia/Kathmandu').time_with_offset(utc)
