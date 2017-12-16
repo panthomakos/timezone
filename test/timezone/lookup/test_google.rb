@@ -38,6 +38,17 @@ class TestGoogle < ::Minitest::Test
     assert_equal 'Australia/Adelaide', mine.lookup(*coordinates)
   end
 
+  def test_google_using_lat_long_coordinates_and_timestamp
+    mine = lookup(
+      File.open(mock_path + '/google_lat_lon_coords_and_timestamp.txt').read
+    )
+
+    assert_equal(
+      'Africa/Khartoum',
+      mine.lookup(*coordinates, timestamp: Time.new(2016, 3, 15, 0, 0, 0).to_i)
+    )
+  end
+
   def test_google_request_denied_read_lat_long_coordinates
     mine = lookup(nil)
 
