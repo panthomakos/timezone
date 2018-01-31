@@ -29,6 +29,6 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency('minitest', '~> 5.8')
   s.add_development_dependency('rake')
-  s.add_development_dependency('rubocop', '= 0.51')
+  s.add_development_dependency('rubocop', '~> 0.52', '>= 0.52.1')
   s.add_development_dependency('timecop', '~> 0.8')
 end
