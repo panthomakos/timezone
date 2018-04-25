@@ -2,12 +2,18 @@
 
 require 'timezone'
 require 'minitest/autorun'
-require 'mathn'
 
-class TestTimezone < ::Minitest::Test
-  parallelize_me!
+begin
+  require 'mathn'
 
-  def test_lookup_mathn_compatibility
-    Timezone['America/Regina'].utc_offset
+  class TestTimezone < ::Minitest::Test
+    parallelize_me!
+
+    def test_lookup_mathn_compatibility
+      Timezone['America/Regina'].utc_offset
+    end
   end
+rescue LoadError => e
+  raise e unless e.path == 'mathn'
+  # Ruby 2.5 doesn't have `mathn` in Stdlib
 end
