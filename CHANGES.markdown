@@ -1,5 +1,7 @@
 # master (unreleased)
 
+# 1.2.12
+
 * Updated with `tzdata-2018e-1`. (panthomakos)
 
 # 1.2.11
