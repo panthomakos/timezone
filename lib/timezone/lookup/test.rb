@@ -16,6 +16,10 @@ module Timezone
         @stubs[key(lat, long)] = timezone
       end
 
+      def unstub(lat, long)
+        @stubs.delete(key(lat, long))
+      end
+
       def default(timezone)
         @default_stub = timezone
       end

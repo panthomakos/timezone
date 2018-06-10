@@ -18,6 +18,18 @@ class TestTest < ::Minitest::Test
     assert_equal 'America/Los_Angeles', mine.lookup(-10, 10)
   end
 
+  def test_simple_unstub
+    mine = lookup
+    mine.stub(-10, 10, nil)
+
+    assert_nil mine.lookup(-10, 10)
+
+    mine.unstub(-10, 10)
+    assert_raises(::Timezone::Error::Test) do
+      mine.lookup(-10, 10)
+    end
+  end
+
   def test_missing_stub
     assert_raises(::Timezone::Error::Test) do
       lookup.lookup(100, 100)
