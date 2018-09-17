@@ -61,7 +61,7 @@ module Timezone
     def utc_to_local(time)
       time = sanitize(time)
 
-      time.utc + utc_offset(time)
+      (time + utc_offset(time)).utc
     end
 
     alias time utc_to_local
@@ -109,7 +109,7 @@ module Timezone
     def local_to_utc(time)
       time = sanitize(time)
 
-      time.utc - rule_for_local(time).rules.first[OFFSET_BIT]
+      (time - rule_for_local(time).rules.first[OFFSET_BIT]).utc
     end
 
     # Converts the given time to the local timezone and includes the UTC
@@ -199,7 +199,6 @@ module Timezone
     private_constant :RuleSet
 
     def rule_for_local(local)
-      local = local.utc if local.respond_to?(:utc)
       local = local.to_i
 
       # For each rule, convert the local time into the UTC equivalent for
@@ -245,7 +244,6 @@ module Timezone
     end
 
     def rule_for_utc(time)
-      time = time.utc if time.respond_to?(:utc)
       time = time.to_i
 
       private_rules[binary_search(time) { |t, r| match?(t, r) }]
