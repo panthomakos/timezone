@@ -12,11 +12,11 @@ class TestZone < ::Minitest::Test
   end
 
   def utc_offset(name, year, month, day)
-    zone(name).utc_offset(Time.new(year, month, day))
+    zone(name).utc_offset(Time.new(year, month, day).freeze)
   end
 
   def dst?(name, year, month, day)
-    zone(name).dst?(Time.new(year, month, day))
+    zone(name).dst?(Time.new(year, month, day).freeze)
   end
 
   def la
@@ -33,8 +33,8 @@ class TestZone < ::Minitest::Test
   end
 
   def test_abbr
-    assert_equal 'PDT', la.abbr(Time.new(2011, 6, 5))
-    assert_equal 'PST', la.abbr(Time.new(2011, 11, 20))
+    assert_equal 'PDT', la.abbr(Time.new(2011, 6, 5).freeze)
+    assert_equal 'PST', la.abbr(Time.new(2011, 11, 20).freeze)
   end
 
   def test_valid?
@@ -94,7 +94,8 @@ class TestZone < ::Minitest::Test
   end
 
   def test_gmt_timezone
-    assert_equal Time.now.utc.to_i, zone('GMT').utc_to_local(Time.now).to_i
+    t = Time.now.freeze
+    assert_equal t.dup.utc.to_i, zone('GMT').utc_to_local(t).to_i
   end
 
   def test_historical_time
@@ -187,23 +188,23 @@ class TestZone < ::Minitest::Test
     timezone = zone('America/Los_Angeles')
 
     # Time maps to two rules - we pick the first
-    local = Time.utc(2015, 11, 1, 1, 50, 0)
-    utc = Time.utc(2015, 11, 1, 8, 50, 0)
+    local = Time.utc(2015, 11, 1, 1, 50, 0).freeze
+    utc = Time.utc(2015, 11, 1, 8, 50, 0).freeze
     assert_equal(utc.to_s, timezone.local_to_utc(local).to_s)
 
     # Time is above the maximum - we pick the last rule
-    local = Time.utc(3000, 1, 1, 0, 0, 0)
-    utc = Time.utc(3000, 1, 1, 8, 0, 0)
+    local = Time.utc(3000, 1, 1, 0, 0, 0).freeze
+    utc = Time.utc(3000, 1, 1, 8, 0, 0).freeze
     assert_equal(utc.to_s, timezone.local_to_utc(local).to_s)
 
     # Time maps to a single rule - we pick that rule
-    local = Time.utc(2015, 11, 1, 0, 1, 0)
-    utc = Time.utc(2015, 11, 1, 7, 1, 0)
+    local = Time.utc(2015, 11, 1, 0, 1, 0).freeze
+    utc = Time.utc(2015, 11, 1, 7, 1, 0).freeze
     assert_equal(utc.to_s, timezone.local_to_utc(local).to_s)
 
     # Time is missing - we pick the first closest rule
-    local = Time.utc(2015, 3, 8, 2, 50, 0)
-    utc = Time.utc(2015, 3, 8, 9, 50, 0)
+    local = Time.utc(2015, 3, 8, 2, 50, 0).freeze
+    utc = Time.utc(2015, 3, 8, 9, 50, 0).freeze
     assert_equal(utc.to_s, timezone.local_to_utc(local).to_s)
   end
 
