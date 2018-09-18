@@ -1,5 +1,12 @@
 # master (unreleased)
 
+# 1.3.0
+
+* Add `unstub` method for removing test stubs. (arthurnn)
+* Fix errors caused by using a frozen time in Ruby 2.4+. (nobu)
+* Improve timezone data parsing. (panthomakos)
+* Updated with `tzdata-2018e-2`. (panthomakos)
+
 # 1.2.12
 
 * Updated with `tzdata-2018e-1`. (panthomakos)
