@@ -9,7 +9,7 @@ module Timezone
 
     def test_load
       assert_equal(
-        [[1_483_228_800, 'GMT', false, 0]],
+        [[0, 'GMT', false, 0]],
         Loader.load('GMT')
       )
 

@@ -18,7 +18,7 @@ task(:utc) { ENV['TZ'] = 'UTC' }
 
 task default: %i[utc test rubocop]
 
-task :parse do
+task parse: :utc do
   require 'timezone/parser'
 
   Timezone::Parser.new.perform

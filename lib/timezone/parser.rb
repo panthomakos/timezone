@@ -6,6 +6,9 @@ module Timezone
   # @!visibility private
   # Responsible for parsing timezone data into an exportable format.
   class Parser
+    MIN_YEAR = -500
+    MAX_YEAR = 2039
+
     LINE = /\s*(.+)\s*=\s*(.+)\s*isdst=(\d+)\s*gmtoff=([\+\-]*\d+)/
 
     ZONEINFO_DIR = '/usr/share/zoneinfo'.freeze
@@ -17,11 +20,43 @@ module Timezone
     end
 
     def perform
-      Dir["#{zoneinfo}/right/**/*"].each do |file|
+      FileUtils.rm_rf('data')
+
+      Dir["#{zoneinfo}/posix/**/*"].each do |file|
         next if File.directory?(file)
         parse(file)
       end
     end
+
+    # Represents a single timezone data file line for a reference timezone.
+    class RefLine
+      def initialize(zone)
+        first =
+          `zdump -i posix/#{zone}`
+            .split("\n")
+            .reject(&:empty?)
+            .reject { |line| line.start_with?('TZ=') }
+            .first
+
+        _date, _time, raw_offset, @name = first.split(' ')
+        @offset = parse_offset(raw_offset)
+      end
+
+      def to_s
+        "0:#{@name}:0:#{@offset}"
+      end
+
+      private
+
+      def parse_offset(offset)
+        arity = offset.start_with?('-') ? -1 : 1
+
+        match = offset.match(/^[\-\+](\d{2})$/)
+        arity * match[1].to_i * 60 * 60
+      end
+    end
+
+    private_constant :RefLine
 
     # Represents a single timezone data file line.
     class Line
@@ -50,7 +85,7 @@ module Timezone
     private
 
     def parse(file)
-      zone = file.gsub("#{zoneinfo}/right/", '')
+      zone = file.gsub("#{zoneinfo}/posix/", '')
       print "Parsing #{zone}... "
       data = zdump(zone)
 
@@ -58,7 +93,7 @@ module Timezone
       result = []
 
       data.split("\n").each do |line|
-        match = line.gsub('right/' + zone + ' ', '').match(LINE)
+        match = line.gsub('posix/' + zone + ' ', '').match(LINE)
         next if match.nil?
 
         line = Line.new(match)
@@ -77,12 +112,14 @@ module Timezone
         result << line
       end
 
+      result << RefLine.new(zone) if result.empty?
+
       write(zone, result)
       puts 'DONE'
     end
 
     def zdump(zone)
-      `zdump -v right/#{zone}`
+      `zdump -v -c #{MIN_YEAR},#{MAX_YEAR} posix/#{zone}`
     end
 
     def write(zone, data)
