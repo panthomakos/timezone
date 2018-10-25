@@ -260,14 +260,14 @@ class TestZone < ::Minitest::Test
   end
 
   def test_datetime_equivalence
-    #assert_equal 'UTC', Time.now.zone, 'This test must be run in UTC'
+    # assert_equal 'UTC', Time.now.zone, 'This test must be run in UTC'
 
-    time = Time.new(2011, 2, 3, 13, 5, 0, "+00:00")
+    time = Time.new(2011, 2, 3, 13, 5, 0, '+00:00')
     datetime = DateTime.new(2011, 2, 3, 13, 5, 0, 0)
 
     check_equivalence('America/Los_Angeles', time, datetime)
 
-    time = Time.new(2011, 6, 3, 13, 5, 0, "+00:00")
+    time = Time.new(2011, 6, 3, 13, 5, 0, '+00:00')
     datetime = DateTime.new(2011, 6, 3, 13, 5, 0, 0)
 
     check_equivalence('America/Los_Angeles', time, datetime)
