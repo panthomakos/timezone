@@ -1,5 +1,9 @@
 # master (unreleased)
 
+# 1.3.1
+
+* Updated with `tzdata-2018f-2`. (panthomakos)
+
 # 1.3.0
 
 * Add `unstub` method for removing test stubs. (arthurnn)
