@@ -7,6 +7,7 @@ require 'timezone/loader'
 
 # Main entry point for all timezone related functionality.
 module Timezone
+  extend Warning
   # A list of all timezone names.
   #
   # @return [Array<String>] all the timezone names
