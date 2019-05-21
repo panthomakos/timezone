@@ -179,10 +179,6 @@ module Timezone
 
     private
 
-    def private_rules
-      @rules ||= Loader.load(name)
-    end
-
     def sanitize(time)
       time.to_time
     end
@@ -200,11 +196,15 @@ module Timezone
 
     def rule_for_local(local)
       local = local.to_i
+      rules = Loader.load(name)
 
       # For each rule, convert the local time into the UTC equivalent for
       # that rule offset, and then check if the UTC time matches the rule.
-      index = binary_search(local) { |t, r| match?(t - r[OFFSET_BIT], r) }
-      match = private_rules[index]
+      index =
+        binary_search(rules, local) do |t, r|
+          match?(t - r[OFFSET_BIT], r)
+        end
+      match = rules[index]
 
       utc = local - match[OFFSET_BIT]
 
@@ -213,7 +213,7 @@ module Timezone
       return RuleSet.new(:missing, [match]) if rule_for_utc(utc) != match
 
       # If the match is the last rule, then return it.
-      return RuleSet.new(:single, [match]) if index == private_rules.length - 1
+      return RuleSet.new(:single, [match]) if index == rules.length - 1
 
       # If the UTC equivalent time falls within the last hour(s) of the time
       # change which were replayed during a fall-back in time, then return
@@ -234,10 +234,10 @@ module Timezone
       last_hour =
         match[SOURCE_BIT] -
         match[OFFSET_BIT] +
-        private_rules[index + 1][OFFSET_BIT]
+        rules[index + 1][OFFSET_BIT]
 
       if utc > last_hour
-        RuleSet.new(:double, private_rules[index..(index + 1)])
+        RuleSet.new(:double, rules[index..(index + 1)])
       else
         RuleSet.new(:single, [match])
       end
@@ -245,27 +245,28 @@ module Timezone
 
     def rule_for_utc(time)
       time = time.to_i
+      rules = Loader.load(name)
 
-      private_rules[binary_search(time) { |t, r| match?(t, r) }]
+      rules[binary_search(rules, time) { |t, r| match?(t, r) }]
     end
 
     # Find the first rule that matches using binary search.
-    def binary_search(time, from = 0, to = nil, &block)
-      to = private_rules.length - 1 if to.nil?
+    def binary_search(rules, time, from = 0, to = nil, &block)
+      to = rules.length - 1 if to.nil?
 
       return from if from == to
 
       mid = (from + to).div(2)
 
-      unless yield(time, private_rules[mid])
-        return binary_search(time, mid + 1, to, &block)
+      unless yield(time, rules[mid])
+        return binary_search(rules, time, mid + 1, to, &block)
       end
 
       return mid if mid.zero?
 
-      return mid unless yield(time, private_rules[mid - 1])
+      return mid unless yield(time, rules[mid - 1])
 
-      binary_search(time, from, mid - 1, &block)
+      binary_search(rules, time, from, mid - 1, &block)
     end
   end
 end

@@ -1,5 +1,7 @@
 # master (unreleased)
 
+* Remove `@rules` from `Zone`'s `Marshall::dump`. (panthomakos)
+
 # 1.3.4
 
 * Updated with `tzdata-2019a-1`. (panthomakos)
