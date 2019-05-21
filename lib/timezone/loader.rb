@@ -8,12 +8,15 @@ module Timezone # rubocop:disable Style/Documentation
     ZONE_FILE_PATH = File.expand_path(File.dirname(__FILE__) + '/../../data')
     SOURCE_BIT = 0
 
+    @rules = {} # cache of loaded rules
+
     class << self
       def load(name)
-        raise ::Timezone::Error::InvalidZone unless valid?(name)
+        @rules.fetch(name) do
+          raise ::Timezone::Error::InvalidZone unless valid?(name)
 
-        @rules ||= {}
-        @rules[name] ||= parse_zone_data(get_zone_data(name))
+          @rules[name] = parse_zone_data(get_zone_data(name))
+        end
       end
 
       def names
