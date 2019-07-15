@@ -1,6 +1,7 @@
 # master (unreleased)
 
-* Remove `@rules` from `Zone`'s `Marshall::dump`. (panthomakos)
+* Remove `@rules` from `Zone`'s `Marshall::dump`. ([@panthomakos][])
+* Updated with `tzdata-2019b-1`. ([@panthomakos][])
 
 # 1.3.4
 
@@ -211,3 +212,5 @@
 # 0.1.2
 
 * Fixed `#utc_offset` rule selection. (natemueller)
+
+[@panthomakos]: https://github.com/panthomakos
