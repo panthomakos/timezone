@@ -11,28 +11,42 @@ module Timezone
 
     LINE = /\s*(.+)\s*=\s*(.+)\s*isdst=(\d+)\s*gmtoff=([\+\-]*\d+)/
 
-    ZONEINFO_DIR = '/usr/share/zoneinfo'.freeze
+    # Bookkeeping files that we do not want to parse.
+    IGNORE = ['leapseconds', 'posixrules', 'tzdata.zi'].freeze
 
-    attr_reader :zoneinfo
-
-    def initialize(zoneinfo = ZONEINFO_DIR)
-      @zoneinfo = zoneinfo
+    def initialize(root)
+      @config = Config.new(root)
     end
 
     def perform
       FileUtils.rm_rf('data')
 
-      Dir["#{zoneinfo}/posix/**/*"].each do |file|
+      Dir["#{@config.zoneinfo}/**/*"].each do |file|
         next if File.directory?(file)
+        next if file.end_with?('.tab')
+        next if IGNORE.include?(File.basename(file))
         parse(file)
       end
     end
 
+    # Represents a timezone database config.
+    class Config
+      def initialize(root)
+        @root = root
+        @zoneinfo = File.join(@root, 'usr/share/zoneinfo')
+        @zdump = File.join(@root, 'usr/bin/zdump')
+      end
+
+      attr_reader :root, :zoneinfo, :zdump
+    end
+
+    private_constant :Config
+
     # Represents a single timezone data file line for a reference timezone.
     class RefLine
-      def initialize(zone)
+      def initialize(config, file)
         first =
-          `zdump -i posix/#{zone}`
+          `#{config.zdump} -i #{file}`
             .split("\n")
             .reject(&:empty?)
             .reject { |line| line.start_with?('TZ=') }
@@ -85,15 +99,15 @@ module Timezone
     private
 
     def parse(file)
-      zone = file.gsub("#{zoneinfo}/posix/", '')
+      zone = file.gsub("#{@config.zoneinfo}/", '')
       print "Parsing #{zone}... "
-      data = zdump(zone)
+      data = zdump(file)
 
       last = 0
       result = []
 
       data.split("\n").each do |line|
-        match = line.gsub('posix/' + zone + ' ', '').match(LINE)
+        match = line.gsub(/^#{file}\s+/, '').match(LINE)
         next if match.nil?
 
         line = Line.new(match)
@@ -112,14 +126,14 @@ module Timezone
         result << line
       end
 
-      result << RefLine.new(zone) if result.empty?
+      result << RefLine.new(@config, file) if result.empty?
 
       write(zone, result)
       puts 'DONE'
     end
 
-    def zdump(zone)
-      `zdump -v -c #{MIN_YEAR},#{MAX_YEAR} posix/#{zone}`
+    def zdump(file)
+      `#{@config.zdump} -v -c #{MIN_YEAR},#{MAX_YEAR} #{file}`
     end
 
     def write(zone, data)
