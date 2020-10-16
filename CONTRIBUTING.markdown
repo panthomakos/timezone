@@ -6,8 +6,14 @@
 
 # How to Acquire New TZData Information
 
-* Ensure system `tzdata` package is up to date with most recent release from [IANA](http://www.iana.org/time-zones).
-* Run `bundle exec rake parse` to parse files in `posix/` directory into the local `data` directory.
+* Download and unzip the IANA timezone database (code and data) into the same directory. Use the timezone database README instructions to install. For example:
+
+        make TOPDIR=$HOME/Downloads/tz install
+
+* Provide the root directory (TOPDIR) as the TZPATH environment variable. For example:
+
+        TZPATH=$HOME/Downloads/tz bundle exec rake parse
+
 * Commit changes. For an example, see [this commit](https://github.com/panthomakos/timezone/commit/5815112d7a6c8740844189db0f05281e9c98f58f).
 
 # Notes

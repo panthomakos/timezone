@@ -19,13 +19,6 @@ task(:utc) { ENV['TZ'] = 'UTC' }
 task default: %i[utc test rubocop]
 
 task parse: :utc do
-  # Download and unzip the IANA timezone database (code and data) into the
-  # same directory. Use the timezone database README instructions to install.
-  # For example:
-  #
-  #     make TOPDIR=$HOME/Downloads/tz install
-  #
-  # Provide the root directory (TOPDIR) as the TZPATH environment variable.
   path = ENV['TZPATH'] || File.join(ENV['HOME'], 'Downloads', 'tz')
 
   require 'timezone/parser'
