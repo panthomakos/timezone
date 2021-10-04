@@ -133,7 +133,7 @@ module Timezone
     end
 
     def zdump(file)
-      `#{@config.zdump} -v -c #{MIN_YEAR},#{MAX_YEAR} #{file}`
+      `#{@config.zdump} -V -c #{MIN_YEAR},#{MAX_YEAR} #{file}`
     end
 
     def write(zone, data)
