@@ -32,13 +32,11 @@ class TestTimezone < ::Minitest::Test
   end
 
   def test_fetch_warning
-    warning = false
-
-    Timezone.stub(:warn, ->(_) { warning = true }) do
+    _out, err = capture_io do
       Timezone.fetch('foo/bar', 'a') { 'b' }
     end
 
-    assert warning, 'warning was not issued'
+    assert_equal "warning: block supersedes default value argument\n", err
   end
 
   def test_lookup
