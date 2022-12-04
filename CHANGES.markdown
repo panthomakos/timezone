@@ -1,5 +1,7 @@
 # master (unreleased)
 
+* Updated with `tzdata-2022g` ([@panthomakos][])
+
 # 1.3.20
 
 * Updated with `tzdata-2022f` ([@panthomakos][])
