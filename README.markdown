@@ -2,10 +2,10 @@
 
 Accurate current and history timezones for Ruby.
 
-* Uses [tz-database][tz-database] for up-to-date historical timezone calculations.
-* Uses the [geonames API][geonames-api] or the [Google Timezone API][google-api] for timezone latitude and longitude lookup.
+* Uses [IANA Timezone Database][tz-database] for up-to-date historical timezone calculations.
+* Uses the [Geonames API][geonames-api] or the [Google Timezone API][google-api] for timezone latitude and longitude lookup.
 
-[tz-database]: http://www.twinsun.com/tz/tz-link.htm
+[tz-database]: https://www.iana.org/time-zones
 [geonames-api]: http://www.geonames.org/export/web-services.html
 [google-api]: https://developers.google.com/maps/documentation/timezone/
 
