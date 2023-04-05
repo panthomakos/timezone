@@ -9,7 +9,7 @@ module Timezone
   # Configure timezone lookups.
   module Lookup
     class << self
-      MISSING_LOOKUP = 'No lookup configured'.freeze
+      MISSING_LOOKUP = 'No lookup configured'
       private_constant :MISSING_LOOKUP
 
       # Returns the lookup object
@@ -45,7 +45,7 @@ module Timezone
         test: ::Timezone::Lookup::Test
       }.freeze
 
-      INVALID_LOOKUP = 'Invalid lookup specified'.freeze
+      INVALID_LOOKUP = 'Invalid lookup specified'
 
       attr_reader :config
 

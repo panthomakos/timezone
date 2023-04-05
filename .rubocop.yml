@@ -1,14 +1,17 @@
+require:
+  - rubocop-performance
+
 AllCops:
   TargetRubyVersion: 2.2
-
-Layout/AlignParameters:
-  EnforcedStyle: with_fixed_indentation
 
 Layout/EmptyLineBetweenDefs:
   Enabled: true
 
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented
+
+Layout/ParameterAlignment:
+  EnforcedStyle: with_fixed_indentation
 
 Layout/SpaceAfterComma:
   Enabled: true
@@ -22,6 +25,10 @@ Layout/SpaceAroundOperators:
 Layout/SpaceBeforeSemicolon:
   Enabled: true
 
+Lint/MissingSuper:
+  Enabled: true
+  Exclude:
+    - lib/timezone/lookup/test.rb 
 
 Lint/DuplicateMethods:
   Enabled: true
@@ -103,7 +110,7 @@ Style/StringLiterals:
 Style/TrivialAccessors:
   Enabled: true
 
-Style/UnneededPercentQ:
+Style/RedundantPercentQ:
   Enabled: true
 
 Style/DateTime:

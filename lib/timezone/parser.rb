@@ -9,7 +9,7 @@ module Timezone
     MIN_YEAR = -500
     MAX_YEAR = 2039
 
-    LINE = /\s*(.+)\s*=\s*(.+)\s*isdst=(\d+)\s*gmtoff=([\+\-]*\d+)/
+    LINE = /\s*(.+)\s*=\s*(.+)\s*isdst=(\d+)\s*gmtoff=([+-]*\d+)/.freeze
 
     # Bookkeeping files that we do not want to parse.
     IGNORE = ['leapseconds', 'posixrules', 'tzdata.zi'].freeze
@@ -25,6 +25,7 @@ module Timezone
         next if File.directory?(file)
         next if file.end_with?('.tab')
         next if IGNORE.include?(File.basename(file))
+
         parse(file)
       end
     end
@@ -65,7 +66,7 @@ module Timezone
       def parse_offset(offset)
         arity = offset.start_with?('-') ? -1 : 1
 
-        match = offset.match(/^[\-\+](\d{2})$/)
+        match = offset.match(/^[-+](\d{2})$/)
         arity * match[1].to_i * 60 * 60
       end
     end
@@ -76,10 +77,10 @@ module Timezone
     class Line
       attr_accessor :source, :name, :dst, :offset
 
-      SOURCE_FORMAT = '%a %b %e %H:%M:%S %Y %Z'.freeze
+      SOURCE_FORMAT = '%a %b %e %H:%M:%S %Y %Z'
 
       def initialize(match)
-        self.source = Time.strptime(match[1] + 'C', SOURCE_FORMAT).to_i
+        self.source = Time.strptime("#{match[1]}C", SOURCE_FORMAT).to_i
         self.name = match[2].split(' ').last
         self.dst = match[3].to_i
         self.offset = match[4].to_i

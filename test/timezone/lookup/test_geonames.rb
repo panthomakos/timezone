@@ -40,7 +40,7 @@ class TestGeonames < ::Minitest::Test
   end
 
   def test_lookup
-    mine = lookup(File.open(mock_path + '/lat_lon_coords.txt').read)
+    mine = lookup(File.open("#{mock_path}/lat_lon_coords.txt").read)
 
     assert_equal 'Australia/Adelaide', mine.lookup(*coordinates)
   end
@@ -55,7 +55,7 @@ class TestGeonames < ::Minitest::Test
   end
 
   def test_wrong_offset
-    body = File.open(mock_path + '/lat_lon_coords_wrong_offset.txt').read
+    body = File.open("#{mock_path}/lat_lon_coords_wrong_offset.txt").read
     mine = lookup(body) { |c| c.offset_etc_zones = true }
 
     assert_nil mine.lookup(*coordinates)
@@ -80,7 +80,7 @@ class TestGeonames < ::Minitest::Test
   end
 
   def test_api_limit
-    mine = lookup(File.open(mock_path + '/api_limit_reached.json').read)
+    mine = lookup(File.open("#{mock_path}/api_limit_reached.json").read)
 
     assert_exception(
       mine,
@@ -90,19 +90,19 @@ class TestGeonames < ::Minitest::Test
   end
 
   def test_invalid_latlong
-    mine = lookup(File.open(mock_path + '/invalid_latlong.json').read)
+    mine = lookup(File.open("#{mock_path}/invalid_latlong.json").read)
 
     assert_exception(mine, 'invalid lat/lng')
   end
 
   def test_no_result_found
-    mine = lookup(File.open(mock_path + '/no_result_found.json').read)
+    mine = lookup(File.open("#{mock_path}/no_result_found.json").read)
 
     assert_nil(mine.lookup(10, 10))
   end
 
   def test_invalid_parameter
-    mine = lookup(File.open(mock_path + '/invalid_parameter.json').read)
+    mine = lookup(File.open("#{mock_path}/invalid_parameter.json").read)
 
     assert_exception(mine, 'error parsing parameter')
   end

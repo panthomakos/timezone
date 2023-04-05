@@ -33,7 +33,7 @@ class TestGoogle < ::Minitest::Test
   end
 
   def test_google_using_lat_long_coordinates
-    mine = lookup(File.open(mock_path + '/google_lat_lon_coords.txt').read)
+    mine = lookup(File.open("#{mock_path}/google_lat_lon_coords.txt").read)
 
     assert_equal 'Australia/Adelaide', mine.lookup(*coordinates)
   end
@@ -76,7 +76,7 @@ class TestGoogle < ::Minitest::Test
   end
 
   def test_no_result_found
-    mine = lookup(File.open(mock_path + '/google_no_result_found.json').read)
+    mine = lookup(File.open("#{mock_path}/google_no_result_found.json").read)
 
     assert_nil(mine.lookup(26.188703, -78.987053))
   end

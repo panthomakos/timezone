@@ -20,7 +20,7 @@ class TestTimezone < ::Minitest::Test
 
   def test_fetch
     assert Timezone.fetch('Australia/Sydney').valid?
-    assert_equal 'foo', Timezone.fetch('foo/bar') { 'foo' }
+    assert_equal 'foo', Timezone.fetch('foo/bar', 'foo')
     assert_raises Timezone::Error::InvalidZone do
       Timezone.fetch('foo/bar')
     end
