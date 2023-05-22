@@ -6,7 +6,7 @@ require 'minitest/autorun'
 begin
   require 'mathn'
 
-  class TestTimezone < ::Minitest::Test
+  class TestTimezone < Minitest::Test
     parallelize_me!
 
     def test_lookup_mathn_compatibility

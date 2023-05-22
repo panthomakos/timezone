@@ -4,7 +4,7 @@ require 'timecop'
 require 'timezone/zone'
 require 'minitest/autorun'
 
-class TestZone < ::Minitest::Test
+class TestZone < Minitest::Test
   parallelize_me!
 
   def zone(name)

@@ -3,7 +3,7 @@
 require 'timezone'
 require 'minitest/autorun'
 
-class TestTimezone < ::Minitest::Test
+class TestTimezone < Minitest::Test
   parallelize_me!
 
   def test_names
@@ -20,7 +20,12 @@ class TestTimezone < ::Minitest::Test
 
   def test_fetch
     assert Timezone.fetch('Australia/Sydney').valid?
-    assert_equal 'foo', Timezone.fetch('foo/bar', 'foo')
+
+    # Explicitly testing block syntax, so disable Cop
+    # rubocop:disable Style/RedundantFetchBlock
+    assert_equal 'foo', Timezone.fetch('foo/bar') { 'foo' }
+    # rubocop:enable Style/RedundantFetchBlock
+
     assert_raises Timezone::Error::InvalidZone do
       Timezone.fetch('foo/bar')
     end

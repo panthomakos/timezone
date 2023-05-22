@@ -3,9 +3,7 @@ require:
 
 AllCops:
   TargetRubyVersion: 2.2
-
-Layout/EmptyLineBetweenDefs:
-  Enabled: true
+  NewCops: enable
 
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented
@@ -13,29 +11,9 @@ Layout/MultilineMethodCallIndentation:
 Layout/ParameterAlignment:
   EnforcedStyle: with_fixed_indentation
 
-Layout/SpaceAfterComma:
-  Enabled: true
-
-Layout/SpaceAroundEqualsInParameterDefault:
-  Enabled: true
-
-Layout/SpaceAroundOperators:
-  Enabled: true
-
-Layout/SpaceBeforeSemicolon:
-  Enabled: true
-
 Lint/MissingSuper:
-  Enabled: true
   Exclude:
     - lib/timezone/lookup/test.rb 
-
-Lint/DuplicateMethods:
-  Enabled: true
-
-Lint/UnusedMethodArgument:
-  Enabled: true
-
 
 Metrics/AbcSize:
   Enabled: false
@@ -46,7 +24,7 @@ Metrics/ClassLength:
 # Offense count: 13
 # Configuration parameters: AllowHeredoc, AllowURI, URISchemes.
 # URISchemes: http, https
-Metrics/LineLength:
+Layout/LineLength:
   Max: 80
 
 Metrics/MethodLength:
@@ -56,62 +34,17 @@ Metrics/MethodLength:
 Metrics/PerceivedComplexity:
   Max: 8
 
-
-Performance/RedundantBlockCall:
-  Enabled: true
-
-
-Naming/MethodName:
-  Enabled: true
-
-Naming/BinaryOperatorParameterName:
-  Enabled: true
-
-
-Style/ClassVars:
-  Enabled: true
-
-Style/Documentation:
-  Enabled: true
-
-Style/DoubleNegation:
-  Enabled: true
-
-Style/EmptyLiteral:
-  Enabled: true
-
-Style/GuardClause:
-  Enabled: true
-
-Style/HashSyntax:
-  Enabled: true
-
 Style/NumericLiterals:
   MinDigits: 5
 
-Style/PreferredHashMethods:
-  Enabled: true
-
-Style/RedundantReturn:
-  Enabled: true
-
-Style/RedundantSelf:
-  Enabled: true
+Style/OpenStructUse:
+  Enabled: false
 
 Style/SingleLineMethods:
   Enabled: false
 
 Style/SpecialGlobalVars:
   EnforcedStyle: use_perl_names
-
-Style/StringLiterals:
-  Enabled: true
-
-Style/TrivialAccessors:
-  Enabled: true
-
-Style/RedundantPercentQ:
-  Enabled: true
 
 Style/DateTime:
   Enabled: false

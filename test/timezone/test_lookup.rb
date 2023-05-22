@@ -3,7 +3,7 @@
 require 'timezone/lookup'
 require 'minitest/autorun'
 
-class TestLookup < ::Minitest::Test
+class TestLookup < Minitest::Test
   def test_test_config
     Timezone::Lookup.config(:test)
 

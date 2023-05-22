@@ -3,7 +3,7 @@
 require 'timezone/deprecate'
 require 'minitest/autorun'
 
-class TestDeprecate < ::Minitest::Test
+class TestDeprecate < Minitest::Test
   # This test should not be parallelized because it tests the result
   # of a single class-level attribute.
   def test_callback
