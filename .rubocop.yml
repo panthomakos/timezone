@@ -8,6 +8,9 @@ AllCops:
 Gemspec/DevelopmentDependencies:
   Enabled: false
 
+Layout/LineLength:
+  Max: 80
+
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented
 
@@ -24,12 +27,6 @@ Metrics/AbcSize:
 Metrics/ClassLength:
   Enabled: false
 
-# Offense count: 13
-# Configuration parameters: AllowHeredoc, AllowURI, URISchemes.
-# URISchemes: http, https
-Layout/LineLength:
-  Max: 80
-
 Metrics/MethodLength:
   Enabled: false
 
@@ -42,6 +39,11 @@ Style/NumericLiterals:
 
 Style/OpenStructUse:
   Enabled: false
+
+Style/RedundantInitialize:
+  Exclude:
+    - test/http_test_client.rb
+    - test/timezone/test_lookup.rb 
 
 Style/SingleLineMethods:
   Enabled: false
