@@ -1,46 +1,31 @@
+require:
+  - rubocop-performance
+
 AllCops:
   TargetRubyVersion: 2.2
+  NewCops: enable
 
-Layout/AlignParameters:
-  EnforcedStyle: with_fixed_indentation
+Gemspec/DevelopmentDependencies:
+  Enabled: false
 
-Layout/EmptyLineBetweenDefs:
-  Enabled: true
+Layout/LineLength:
+  Max: 80
 
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented
 
-Layout/SpaceAfterComma:
-  Enabled: true
+Layout/ParameterAlignment:
+  EnforcedStyle: with_fixed_indentation
 
-Layout/SpaceAroundEqualsInParameterDefault:
-  Enabled: true
-
-Layout/SpaceAroundOperators:
-  Enabled: true
-
-Layout/SpaceBeforeSemicolon:
-  Enabled: true
-
-
-Lint/DuplicateMethods:
-  Enabled: true
-
-Lint/UnusedMethodArgument:
-  Enabled: true
-
+Lint/MissingSuper:
+  Exclude:
+    - lib/timezone/lookup/test.rb 
 
 Metrics/AbcSize:
   Enabled: false
 
 Metrics/ClassLength:
   Enabled: false
-
-# Offense count: 13
-# Configuration parameters: AllowHeredoc, AllowURI, URISchemes.
-# URISchemes: http, https
-Metrics/LineLength:
-  Max: 80
 
 Metrics/MethodLength:
   Enabled: false
@@ -49,62 +34,22 @@ Metrics/MethodLength:
 Metrics/PerceivedComplexity:
   Max: 8
 
-
-Performance/RedundantBlockCall:
-  Enabled: true
-
-
-Naming/MethodName:
-  Enabled: true
-
-Naming/BinaryOperatorParameterName:
-  Enabled: true
-
-
-Style/ClassVars:
-  Enabled: true
-
-Style/Documentation:
-  Enabled: true
-
-Style/DoubleNegation:
-  Enabled: true
-
-Style/EmptyLiteral:
-  Enabled: true
-
-Style/GuardClause:
-  Enabled: true
-
-Style/HashSyntax:
-  Enabled: true
-
 Style/NumericLiterals:
   MinDigits: 5
 
-Style/PreferredHashMethods:
-  Enabled: true
+Style/OpenStructUse:
+  Enabled: false
 
-Style/RedundantReturn:
-  Enabled: true
-
-Style/RedundantSelf:
-  Enabled: true
+Style/RedundantInitialize:
+  Exclude:
+    - test/http_test_client.rb
+    - test/timezone/test_lookup.rb 
 
 Style/SingleLineMethods:
   Enabled: false
 
 Style/SpecialGlobalVars:
   EnforcedStyle: use_perl_names
-
-Style/StringLiterals:
-  Enabled: true
-
-Style/TrivialAccessors:
-  Enabled: true
-
-Style/UnneededPercentQ:
-  Enabled: true
 
 Style/DateTime:
   Enabled: false

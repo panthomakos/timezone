@@ -6,7 +6,6 @@ require 'time'
 
 require 'timezone/loader'
 require 'timezone/error'
-require 'timezone/loader'
 
 module Timezone
   # This object represents a real-world timezone. Each instance provides
@@ -187,7 +186,7 @@ module Timezone
     #
     # Each rule has a SOURCE bit which is the number of seconds, since the
     # Epoch, up to which the rule is valid.
-    def match?(seconds, rule) #:nodoc:
+    def match?(seconds, rule) # :nodoc:
       seconds <= rule[SOURCE_BIT]
     end
 

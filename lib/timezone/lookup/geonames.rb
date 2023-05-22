@@ -38,7 +38,7 @@ module Timezone
 
         return unless data['status']
 
-        return if NO_TIMEZONE_INFORMATION == data['status']['value']
+        return if data['status']['value'] == NO_TIMEZONE_INFORMATION
 
         raise(Timezone::Error::GeoNames, data['status']['message'])
       rescue StandardError => e
@@ -55,6 +55,7 @@ module Timezone
         return unless data['gmtOffset'].is_a? Numeric
 
         return 'Etc/UTC' if data['gmtOffset'].zero?
+
         "Etc/GMT#{format('%+d', -data['gmtOffset'])}"
       end
 

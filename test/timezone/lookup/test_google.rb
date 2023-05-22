@@ -5,18 +5,18 @@ require 'minitest/autorun'
 require 'timecop'
 require_relative '../../http_test_client'
 
-class TestGoogle < ::Minitest::Test
+class TestGoogle < Minitest::Test
   parallelize_me!
 
   def coordinates
     [-34.92771808058, 138.477041423321]
   end
 
-  def lookup(body = nil, &_block)
+  def lookup(body = nil, &block)
     config = OpenStruct.new
     config.api_key = 'MTIzYWJj'
     config.request_handler = HTTPTestClientFactory.new(body)
-    yield config if block_given?
+    yield config if block
 
     Timezone::Lookup::Google.new(config)
   end
@@ -33,7 +33,7 @@ class TestGoogle < ::Minitest::Test
   end
 
   def test_google_using_lat_long_coordinates
-    mine = lookup(File.open(mock_path + '/google_lat_lon_coords.txt').read)
+    mine = lookup(File.read("#{mock_path}/google_lat_lon_coords.txt"))
 
     assert_equal 'Australia/Adelaide', mine.lookup(*coordinates)
   end
@@ -76,7 +76,7 @@ class TestGoogle < ::Minitest::Test
   end
 
   def test_no_result_found
-    mine = lookup(File.open(mock_path + '/google_no_result_found.json').read)
+    mine = lookup(File.read("#{mock_path}/google_no_result_found.json"))
 
     assert_nil(mine.lookup(26.188703, -78.987053))
   end

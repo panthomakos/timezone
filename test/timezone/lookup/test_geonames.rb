@@ -4,7 +4,7 @@ require 'timezone/lookup/geonames'
 require 'minitest/autorun'
 require_relative '../../http_test_client'
 
-class TestGeonames < ::Minitest::Test
+class TestGeonames < Minitest::Test
   parallelize_me!
 
   def coordinates
@@ -19,11 +19,11 @@ class TestGeonames < ::Minitest::Test
     }
   end
 
-  def lookup(body = nil, &_block)
+  def lookup(body = nil, &block)
     config = OpenStruct.new
     config.username = 'timezone'
     config.request_handler = HTTPTestClientFactory.new(body)
-    yield config if block_given?
+    yield config if block
 
     Timezone::Lookup::Geonames.new(config)
   end
@@ -40,14 +40,14 @@ class TestGeonames < ::Minitest::Test
   end
 
   def test_lookup
-    mine = lookup(File.open(mock_path + '/lat_lon_coords.txt').read)
+    mine = lookup(File.read("#{mock_path}/lat_lon_coords.txt"))
 
     assert_equal 'Australia/Adelaide', mine.lookup(*coordinates)
   end
 
   def test_lookup_with_etc
     etc_data.each do |key, data|
-      body = File.open(mock_path + "/lat_lon_coords_#{key}.txt").read
+      body = File.read(mock_path + "/lat_lon_coords_#{key}.txt")
       mine = lookup(body) { |c| c.offset_etc_zones = true }
 
       assert_equal data[:name], mine.lookup(*data[:coordinates])
@@ -55,7 +55,7 @@ class TestGeonames < ::Minitest::Test
   end
 
   def test_wrong_offset
-    body = File.open(mock_path + '/lat_lon_coords_wrong_offset.txt').read
+    body = File.read("#{mock_path}/lat_lon_coords_wrong_offset.txt")
     mine = lookup(body) { |c| c.offset_etc_zones = true }
 
     assert_nil mine.lookup(*coordinates)
@@ -80,29 +80,29 @@ class TestGeonames < ::Minitest::Test
   end
 
   def test_api_limit
-    mine = lookup(File.open(mock_path + '/api_limit_reached.json').read)
+    mine = lookup(File.read("#{mock_path}/api_limit_reached.json"))
 
     assert_exception(
       mine,
       'the daily limit of 30000 credits for XXXXX has been exceeded. ' \
-        'Please throttle your requests or use the commercial service.'
+      'Please throttle your requests or use the commercial service.'
     )
   end
 
   def test_invalid_latlong
-    mine = lookup(File.open(mock_path + '/invalid_latlong.json').read)
+    mine = lookup(File.read("#{mock_path}/invalid_latlong.json"))
 
     assert_exception(mine, 'invalid lat/lng')
   end
 
   def test_no_result_found
-    mine = lookup(File.open(mock_path + '/no_result_found.json').read)
+    mine = lookup(File.read("#{mock_path}/no_result_found.json"))
 
     assert_nil(mine.lookup(10, 10))
   end
 
   def test_invalid_parameter
-    mine = lookup(File.open(mock_path + '/invalid_parameter.json').read)
+    mine = lookup(File.read("#{mock_path}/invalid_parameter.json"))
 
     assert_exception(mine, 'error parsing parameter')
   end

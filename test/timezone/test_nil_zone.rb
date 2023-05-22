@@ -3,7 +3,7 @@
 require 'timezone/nil_zone'
 require 'minitest/autorun'
 
-class TestNilZone < ::Minitest::Test
+class TestNilZone < Minitest::Test
   parallelize_me!
 
   def setup

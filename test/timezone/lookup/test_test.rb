@@ -4,7 +4,7 @@ require 'timezone/lookup/test'
 require 'timezone'
 require 'minitest/autorun'
 
-class TestTest < ::Minitest::Test
+class TestTest < Minitest::Test
   parallelize_me!
 
   def lookup

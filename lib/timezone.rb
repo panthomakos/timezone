@@ -39,14 +39,14 @@ module Timezone
   #
   # @raise [Timezone::Error::InvalidZone] if the timezone is not found
   #   and a default value and block have not been provided
-  def self.fetch(name, default = :__block, &block)
+  def self.fetch(name, default = :__block)
     return ::Timezone::Zone.new(name) if Loader.valid?(name)
 
     if block_given? && default != :__block
       warn('warning: block supersedes default value argument')
     end
 
-    return block.call(name) if block_given?
+    return yield(name) if block_given?
     return default unless default == :__block
 
     raise ::Timezone::Error::InvalidZone

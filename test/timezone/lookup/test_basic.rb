@@ -4,7 +4,7 @@ require 'timezone/lookup/basic'
 require 'minitest/autorun'
 require 'ostruct'
 
-class BasicLookupTest < ::Minitest::Test
+class BasicLookupTest < Minitest::Test
   parallelize_me!
 
   def config

@@ -19,7 +19,7 @@ task(:utc) { ENV['TZ'] = 'UTC' }
 task default: %i[utc test rubocop]
 
 task parse: :utc do
-  path = ENV['TZPATH'] || File.join(ENV['HOME'], 'Downloads', 'tz')
+  path = ENV['TZPATH'] || File.join(Dir.home, 'Downloads', 'tz')
 
   require 'timezone/parser'
 
