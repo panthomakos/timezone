@@ -28,8 +28,8 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency('minitest', '~> 5.8')
   s.add_development_dependency('rake', '~> 12')
-  s.add_development_dependency('rubocop', '= 1.51.0')
-  s.add_development_dependency('rubocop-performance', '= 1.18.0')
+  s.add_development_dependency('rubocop', '<= 1.51.0', '>= 0.5.1')
+  s.add_development_dependency('rubocop-performance', '<= 1.18.0')
   s.add_development_dependency('timecop', '~> 0.8')
   s.metadata['rubygems_mfa_required'] = 'true'
 end
