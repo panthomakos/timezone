@@ -12,11 +12,11 @@ class TestGoogle < Minitest::Test
     [-34.92771808058, 138.477041423321]
   end
 
-  def lookup(body = nil, &_block)
+  def lookup(body = nil, &block)
     config = OpenStruct.new
     config.api_key = 'MTIzYWJj'
     config.request_handler = HTTPTestClientFactory.new(body)
-    yield config if _block
+    yield config if block
 
     Timezone::Lookup::Google.new(config)
   end

@@ -53,7 +53,7 @@ module Timezone
             .reject { |line| line.start_with?('TZ=') }
             .first
 
-        _date, _time, raw_offset, @name = first.split(' ')
+        _date, _time, raw_offset, @name = first.split
         @offset = parse_offset(raw_offset)
       end
 
@@ -81,7 +81,7 @@ module Timezone
 
       def initialize(match)
         self.source = Time.strptime("#{match[1]}C", SOURCE_FORMAT).to_i
-        self.name = match[2].split(' ').last
+        self.name = match[2].split.last
         self.dst = match[3].to_i
         self.offset = match[4].to_i
       end

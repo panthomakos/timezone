@@ -19,11 +19,11 @@ class TestGeonames < Minitest::Test
     }
   end
 
-  def lookup(body = nil, &_block)
+  def lookup(body = nil, &block)
     config = OpenStruct.new
     config.username = 'timezone'
     config.request_handler = HTTPTestClientFactory.new(body)
-    yield config if _block
+    yield config if block
 
     Timezone::Lookup::Geonames.new(config)
   end
