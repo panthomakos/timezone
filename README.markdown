@@ -248,5 +248,3 @@ You can also provide a fallback lookup, which will be returned if you query an u
 
     ::Timezone::Lookup.lookup.default('America/Los_Angeles')
     => "America/Los_Angeles"
-
-## Code Quality [![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/panthomakos/timezone)
