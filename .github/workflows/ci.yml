@@ -1,4 +1,4 @@
-name: Rake
+name: CI
 
 on:
   push:

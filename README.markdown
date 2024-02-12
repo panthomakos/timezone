@@ -1,4 +1,6 @@
 # Timezone
+![ci](https://github.com/panthomakos/timezone/actions/workflows/ci.yml/badge.svg)
+[![maintainability](https://api.codeclimate.com/v1/badges/d19a4a37dcbd373ac566/maintainability)](https://codeclimate.com/github/panthomakos/timezone/maintainability)
 
 Accurate current and history timezones for Ruby.
 
