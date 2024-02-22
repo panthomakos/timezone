@@ -41,8 +41,6 @@ module Timezone
         return if NO_TIMEZONE_INFORMATION == data['status']['value']
 
         raise(Timezone::Error::GeoNames, data['status']['message'])
-      rescue StandardError => e
-        raise(Timezone::Error::GeoNames, e.message)
       end
 
       private
