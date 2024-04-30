@@ -1,5 +1,7 @@
 # master (unreleased)
 
+# 1.3.26
+
 * Fix Rake 13/OpenStruct incompatibility ([@panthomakos][])
 
 # 1.3.25
