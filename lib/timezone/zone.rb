@@ -6,7 +6,6 @@ require 'time'
 
 require 'timezone/loader'
 require 'timezone/error'
-require 'timezone/loader'
 
 module Timezone
   # This object represents a real-world timezone. Each instance provides
