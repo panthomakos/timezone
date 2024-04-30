@@ -3,6 +3,7 @@
 require 'timezone/lookup/google'
 require 'minitest/autorun'
 require 'timecop'
+require 'ostruct'
 require_relative '../../http_test_client'
 
 class TestGoogle < ::Minitest::Test
@@ -10,6 +11,10 @@ class TestGoogle < ::Minitest::Test
 
   def coordinates
     [-34.92771808058, 138.477041423321]
+  end
+
+  def lookup_file(file_name, &block)
+    lookup(File.open(File.join(mock_path, file_name)).read, &block)
   end
 
   def lookup(body = nil, &_block)
@@ -33,7 +38,7 @@ class TestGoogle < ::Minitest::Test
   end
 
   def test_google_using_lat_long_coordinates
-    mine = lookup(File.open(mock_path + '/google_lat_lon_coords.txt').read)
+    mine = lookup_file('/google_lat_lon_coords.txt')
 
     assert_equal 'Australia/Adelaide', mine.lookup(*coordinates)
   end
@@ -76,7 +81,7 @@ class TestGoogle < ::Minitest::Test
   end
 
   def test_no_result_found
-    mine = lookup(File.open(mock_path + '/google_no_result_found.json').read)
+    mine = lookup_file('/google_no_result_found.json')
 
     assert_nil(mine.lookup(26.188703, -78.987053))
   end

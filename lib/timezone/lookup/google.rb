@@ -14,7 +14,7 @@ module Timezone
     class Google < ::Timezone::Lookup::Basic
       # Indicates that no time zone data could be found for the specified
       # <lat, lng>. This can occur if the query is incomplete or ambiguous.
-      NO_TIMEZONE_INFORMATION = 'ZERO_RESULTS'.freeze
+      NO_TIMEZONE_INFORMATION = 'ZERO_RESULTS'
 
       def initialize(config)
         if config.api_key.nil?
@@ -34,7 +34,8 @@ module Timezone
           raise(Timezone::Error::Google, '403 Forbidden')
         end
 
-        return unless response.code =~ /^2\d\d$/
+        return unless /^2\d\d$/.match?(response.code)
+
         data = JSON.parse(response.body)
 
         return if data['status'] == NO_TIMEZONE_INFORMATION

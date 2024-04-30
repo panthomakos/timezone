@@ -8,7 +8,7 @@ class TestLookup < ::Minitest::Test
     Timezone::Lookup.config(:test)
 
     assert_equal Timezone::Lookup::Test,
-      Timezone::Lookup.lookup.class
+                 Timezone::Lookup.lookup.class
   end
 
   def test_geonames_config
@@ -17,10 +17,10 @@ class TestLookup < ::Minitest::Test
     end
 
     assert_equal Timezone::Lookup::Geonames,
-      Timezone::Lookup.lookup.class
+                 Timezone::Lookup.lookup.class
 
     assert_equal Timezone::NetHTTPClient,
-      Timezone::Lookup.lookup.config.request_handler
+                 Timezone::Lookup.lookup.config.request_handler
   end
 
   def test_google_config
@@ -29,10 +29,10 @@ class TestLookup < ::Minitest::Test
     end
 
     assert_equal Timezone::Lookup::Google,
-      Timezone::Lookup.lookup.class
+                 Timezone::Lookup.lookup.class
 
     assert_equal Timezone::NetHTTPClient,
-      Timezone::Lookup.lookup.config.request_handler
+                 Timezone::Lookup.lookup.config.request_handler
   end
 
   def test_custom_config

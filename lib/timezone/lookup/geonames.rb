@@ -55,6 +55,7 @@ module Timezone
         return unless data['gmtOffset'].is_a? Numeric
 
         return 'Etc/UTC' if data['gmtOffset'].zero?
+
         "Etc/GMT#{format('%+d', -data['gmtOffset'])}"
       end
 

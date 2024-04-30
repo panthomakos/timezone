@@ -1,14 +1,21 @@
-AllCops:
-  TargetRubyVersion: 2.2
+require: rubocop-performance
 
-Layout/AlignParameters:
-  EnforcedStyle: with_fixed_indentation
+AllCops:
+  TargetRubyVersion: 2.4
+  NewCops: enable
+  SuggestExtensions: false
+
+Gemspec/RequiredRubyVersion:
+  Enabled: false
 
 Layout/EmptyLineBetweenDefs:
   Enabled: true
 
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented
+
+Layout/ParameterAlignment:
+  EnforcedStyle: with_fixed_indentation
 
 Layout/SpaceAfterComma:
   Enabled: true
@@ -22,6 +29,9 @@ Layout/SpaceAroundOperators:
 Layout/SpaceBeforeSemicolon:
   Enabled: true
 
+
+Lint/MissingSuper:
+  Enabled: false
 
 Lint/DuplicateMethods:
   Enabled: true
@@ -39,7 +49,7 @@ Metrics/ClassLength:
 # Offense count: 13
 # Configuration parameters: AllowHeredoc, AllowURI, URISchemes.
 # URISchemes: http, https
-Metrics/LineLength:
+Layout/LineLength:
   Max: 80
 
 Metrics/MethodLength:
@@ -85,11 +95,20 @@ Style/NumericLiterals:
 Style/PreferredHashMethods:
   Enabled: true
 
+Style/RedundantArgument:
+  Enabled: false
+
+Style/RedundantFetchBlock:
+  Enabled: false
+
 Style/RedundantReturn:
   Enabled: true
 
 Style/RedundantSelf:
   Enabled: true
+
+Style/SafeNavigation:
+  Enabled: false
 
 Style/SingleLineMethods:
   Enabled: false
@@ -103,7 +122,7 @@ Style/StringLiterals:
 Style/TrivialAccessors:
   Enabled: true
 
-Style/UnneededPercentQ:
+Style/RedundantPercentQ:
   Enabled: true
 
 Style/DateTime:

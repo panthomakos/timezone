@@ -3,6 +3,7 @@
 require 'timezone/lookup/test'
 require 'timezone'
 require 'minitest/autorun'
+require 'ostruct'
 
 class TestTest < ::Minitest::Test
   parallelize_me!
