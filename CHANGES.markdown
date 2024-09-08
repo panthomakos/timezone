@@ -1,5 +1,7 @@
 # master (unreleased)
 
+* Updated with `tzdata-2024b` ([@panthomakos][])
+
 # 1.3.26
 
 * Fix Rake 13/OpenStruct incompatibility ([@panthomakos][])
