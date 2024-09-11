@@ -15,6 +15,10 @@ Gem::Specification.new do |s|
   s.description = 'Accurate current and historical timezones for Ruby with ' \
     'support for Geonames and Google latitude - longitude lookups.'
 
+  s.metadata =    {
+    'changelog_uri' => 'https://github.com/panthomakos/timezone/blob/master/CHANGES.markdown'
+  }
+
   s.files       = `git ls-files`.split("\n")
   s.test_files  = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables = `git ls-files -- bin/*`
