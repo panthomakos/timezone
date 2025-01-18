@@ -1,5 +1,7 @@
 # master (unreleased)
 
+# 1.3.28
+
 * Updated with `tzdata-2025a` ([@panthomakos][])
 
 # 1.3.27
