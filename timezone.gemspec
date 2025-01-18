@@ -28,6 +28,7 @@ Gem::Specification.new do |s|
   s.rdoc_options     = ['--charset=UTF-8']
   s.require_paths    = ['lib']
 
+  s.add_runtime_dependency('base64', '~> 0.2')
   s.add_runtime_dependency('ostruct', '~> 0.6')
 
   s.add_development_dependency('minitest', '~> 5.8')
