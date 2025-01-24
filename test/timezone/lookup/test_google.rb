@@ -53,22 +53,31 @@ class TestGoogle < ::Minitest::Test
 
   def test_url_non_enterprise
     Timecop.freeze(Time.at(1_433_347_661)) do
-      result = lookup.send(:url, '123', '123')
+      mine = lookup('{ "status": "OK" }')
+
       params = {
         'location' => '123%2C123',
         'timestamp' => '1433347661',
         'key' => 'MTIzYWJj'
       }.map { |k, v| "#{k}=#{v}" }
 
-      assert_equal "/maps/api/timezone/json?#{params.join('&')}", result
+      url_method = Minitest::Mock.new
+      url_method.expect(
+        :call, "/maps/api/timezone/json?#{params.join('&')}", %w[123 123]
+      )
+
+      mine.stub :url, url_method do
+        mine.lookup('123', '123')
+      end
+
+      url_method.verify
     end
   end
 
   def test_url_enterprise
-    mine = lookup { |c| c.client_id = '123&asdf' }
+    mine = lookup('{ "status": "OK" }') { |c| c.client_id = '123&asdf' }
 
     Timecop.freeze(Time.at(1_433_347_661)) do
-      result = mine.send(:url, '123', '123')
       params = {
         'location' => '123%2C123',
         'timestamp' => '1433347661',
@@ -76,7 +85,16 @@ class TestGoogle < ::Minitest::Test
         'signature' => 'B1TNSSvIw9Wvf_ZjjW5uRzGm4F4='
       }.map { |k, v| "#{k}=#{v}" }
 
-      assert_equal "/maps/api/timezone/json?#{params.join('&')}", result
+      url_method = Minitest::Mock.new
+      url_method.expect(
+        :call, "/maps/api/timezone/json?#{params.join('&')}", %w[123 123]
+      )
+
+      mine.stub :url, url_method do
+        mine.lookup('123', '123')
+      end
+
+      url_method.verify
     end
   end
 
