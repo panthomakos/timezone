@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 require 'timezone'
+require 'timezone/version'
 require 'minitest/autorun'
+require 'rbconfig'
 
 class TestTimezone < ::Minitest::Test
   parallelize_me!
@@ -11,6 +13,19 @@ class TestTimezone < ::Minitest::Test
     refute Timezone.names.empty?
     assert Timezone.names.include?('Australia/Sydney')
     assert Timezone.names.include?('America/Los_Angeles')
+  end
+
+  # Runs outside Bundler, which would otherwise load timezone/version
+  # through the gemspec and hide a missing require.
+  def test_require_loads_version
+    lib = File.expand_path('../lib', __dir__)
+    env = defined?(Bundler) ? Bundler.unbundled_env : ENV.to_h
+    code = "require 'timezone'; print Timezone::VERSION"
+    cmd = [RbConfig.ruby, '-I', lib, '-e', code]
+    output = IO.popen(env, cmd, unsetenv_others: true, &:read)
+
+    assert $?.success?
+    assert_equal Timezone::VERSION, output
   end
 
   def test_get

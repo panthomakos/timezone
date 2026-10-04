@@ -1,5 +1,7 @@
 # master (unreleased)
 
+* `require 'timezone'` now also defines `Timezone::VERSION` ([@panthomakos][])
+
 # 1.3.31
 
 * Updated with `tzdata-2026a`, `tzdata-2026b`, `tzdata-2026c`, `tzdata-2026d`, and `tzdata-2026e` ([@panthomakos][])
