@@ -1,7 +1,5 @@
 # master (unreleased)
 
-* `Timezone::VERSION` is now available with just `require 'timezone'`; a separate `require 'timezone/version'` is no longer needed ([@panthomakos][])
-
 # 1.3.31
 
 * Updated with `tzdata-2026a`, `tzdata-2026b`, `tzdata-2026c`, `tzdata-2026d`, and `tzdata-2026e` ([@panthomakos][])
