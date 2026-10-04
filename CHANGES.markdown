@@ -1,6 +1,6 @@
 # master (unreleased)
 
-* `require 'timezone'` now also defines `Timezone::VERSION` ([@panthomakos][])
+* `Timezone::VERSION` is now available with just `require 'timezone'`; a separate `require 'timezone/version'` is no longer needed ([@panthomakos][])
 
 # 1.3.31
 
