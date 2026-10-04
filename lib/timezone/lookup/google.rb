@@ -6,7 +6,7 @@ require 'json'
 require 'uri'
 require 'base64'
 require 'openssl'
-require 'cgi'
+require 'cgi/escape'
 
 module Timezone
   module Lookup
