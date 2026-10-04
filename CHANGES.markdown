@@ -1,5 +1,6 @@
 # master (unreleased)
 
+* Updated with `tzdata-2026a`, `tzdata-2026b`, `tzdata-2026c`, `tzdata-2026d`, and `tzdata-2026e` ([@panthomakos][])
 * Add Ruby 4.0 to testing matrix ([@panthomakos][])
 * Require `cgi/escape` instead of `cgi`, which is removed in Ruby 4.0 ([@panthomakos][])
 
