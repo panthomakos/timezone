@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'timezone/version'
 require 'timezone/zone'
 require 'timezone/nil_zone'
 require 'timezone/lookup'
