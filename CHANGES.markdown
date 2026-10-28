@@ -1,5 +1,9 @@
 # master (unreleased)
 
+# 1.3.32
+
+* Updated with `tzdata-2026f` ([@panthomakos][])
+
 # 1.3.31
 
 * Updated with `tzdata-2026a`, `tzdata-2026b`, `tzdata-2026c`, `tzdata-2026d`, and `tzdata-2026e` ([@panthomakos][])
