@@ -8,7 +8,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         ruby-version: ['2.5', '2.6', '2.7', '3.0', '3.1', '3.2', '3.3', '3.4', '4.0']
@@ -24,7 +24,7 @@ jobs:
       run: bundle exec rake utc test
 
   rubocop:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         ruby-version: ['3.0']
