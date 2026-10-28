@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
 module Timezone
-  VERSION = '1.3.31'
+  VERSION = '1.3.32'
 end
